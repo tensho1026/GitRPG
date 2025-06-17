@@ -6,10 +6,12 @@ import Link from "next/link";
 import { saveUserToDatabase } from "@/actions/user/saveUser";
 import { updateCommits } from "@/actions/github/updateCommits";
 import { useEffect, useTransition } from "react";
+import HomeScreen from "@/components/Home";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
+  console.log(session);
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
@@ -35,15 +37,7 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen">
-      {status === "authenticated" ? (
-        <div>
-          <Link href="/auth">
-            <h1>ログイン済み</h1>
-          </Link>
-        </div>
-      ) : (
-        <AuthButton />
-      )}
+      {status === "authenticated" ? <HomeScreen /> : <AuthButton />}
     </div>
   );
 }
