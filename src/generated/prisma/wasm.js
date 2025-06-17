@@ -128,6 +128,16 @@ exports.Prisma.UsersScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserStatusScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  level: 'level',
+  commit: 'commit',
+  coin: 'coin',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -140,7 +150,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  Users: 'Users'
+  Users: 'Users',
+  UserStatus: 'UserStatus'
 };
 
 /**

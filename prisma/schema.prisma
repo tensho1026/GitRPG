@@ -4,10 +4,10 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator schema {
-  provider = "prisma-schema-generator"
-  output   = "../src/generated/prisma"
-}
+// generator schema {
+//   provider = "prisma-schema-generator"
+//   output   = "../src/generated/prisma"
+// }
 
 generator client {
   provider = "prisma-client-js"
@@ -25,4 +25,17 @@ model Users {
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+  status    UserStatus?
+}
+
+model UserStatus {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  level     Int      @default(1)
+  commit    Int      @default(0)
+  coin      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      Users    @relation(fields: [userId], references: [id])
 }

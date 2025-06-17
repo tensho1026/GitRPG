@@ -18,6 +18,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  * 
  */
 export type Users = $Result.DefaultSelection<Prisma.$UsersPayload>
+/**
+ * Model UserStatus
+ * 
+ */
+export type UserStatus = $Result.DefaultSelection<Prisma.$UserStatusPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -153,6 +158,16 @@ export class PrismaClient<
     * ```
     */
   get users(): Prisma.UsersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userStatus`: Exposes CRUD operations for the **UserStatus** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserStatuses
+    * const userStatuses = await prisma.userStatus.findMany()
+    * ```
+    */
+  get userStatus(): Prisma.UserStatusDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -593,7 +608,8 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    Users: 'Users'
+    Users: 'Users',
+    UserStatus: 'UserStatus'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -612,7 +628,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users"
+      modelProps: "users" | "userStatus"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -687,6 +703,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UsersCountArgs<ExtArgs>
             result: $Utils.Optional<UsersCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserStatus: {
+        payload: Prisma.$UserStatusPayload<ExtArgs>
+        fields: Prisma.UserStatusFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserStatusFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserStatusFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          findFirst: {
+            args: Prisma.UserStatusFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserStatusFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          findMany: {
+            args: Prisma.UserStatusFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>[]
+          }
+          create: {
+            args: Prisma.UserStatusCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          createMany: {
+            args: Prisma.UserStatusCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserStatusCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>[]
+          }
+          delete: {
+            args: Prisma.UserStatusDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          update: {
+            args: Prisma.UserStatusUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserStatusDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserStatusUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserStatusUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserStatusUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserStatusPayload>
+          }
+          aggregate: {
+            args: Prisma.UserStatusAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserStatus>
+          }
+          groupBy: {
+            args: Prisma.UserStatusGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserStatusGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserStatusCountArgs<ExtArgs>
+            result: $Utils.Optional<UserStatusCountAggregateOutputType> | number
           }
         }
       }
@@ -775,6 +865,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     users?: UsersOmit
+    userStatus?: UserStatusOmit
   }
 
   /* Types for Logging */
@@ -1033,6 +1124,7 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    status?: boolean | Users$statusArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1060,10 +1152,17 @@ export namespace Prisma {
   }
 
   export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["users"]>
+  export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    status?: boolean | Users$statusArgs<ExtArgs>
+  }
+  export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UsersIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UsersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Users"
-    objects: {}
+    objects: {
+      status: Prisma.$UserStatusPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -1464,6 +1563,7 @@ export namespace Prisma {
    */
   export interface Prisma__UsersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    status<T extends Users$statusArgs<ExtArgs> = {}>(args?: Subset<T, Users$statusArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1515,6 +1615,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where: UsersWhereUniqueInput
@@ -1533,6 +1637,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where: UsersWhereUniqueInput
@@ -1550,6 +1658,10 @@ export namespace Prisma {
      * Omit specific fields from the Users
      */
     omit?: UsersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
     /**
      * Filter, which Users to fetch.
      */
@@ -1599,6 +1711,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UsersWhereInput
@@ -1647,6 +1763,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * Filter, which Users to fetch.
      */
     where?: UsersWhereInput
@@ -1689,6 +1809,10 @@ export namespace Prisma {
      * Omit specific fields from the Users
      */
     omit?: UsersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
     /**
      * The data needed to create a Users.
      */
@@ -1737,6 +1861,10 @@ export namespace Prisma {
      * Omit specific fields from the Users
      */
     omit?: UsersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
     /**
      * The data needed to update a Users.
      */
@@ -1804,6 +1932,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * The filter to search for the Users to update in case it exists.
      */
     where: UsersWhereUniqueInput
@@ -1830,6 +1962,10 @@ export namespace Prisma {
      */
     omit?: UsersOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+    /**
      * Filter which Users to delete.
      */
     where: UsersWhereUniqueInput
@@ -1850,6 +1986,25 @@ export namespace Prisma {
   }
 
   /**
+   * Users.status
+   */
+  export type Users$statusArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    where?: UserStatusWhereInput
+  }
+
+  /**
    * Users without action
    */
   export type UsersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1861,6 +2016,1136 @@ export namespace Prisma {
      * Omit specific fields from the Users
      */
     omit?: UsersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UsersInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserStatus
+   */
+
+  export type AggregateUserStatus = {
+    _count: UserStatusCountAggregateOutputType | null
+    _avg: UserStatusAvgAggregateOutputType | null
+    _sum: UserStatusSumAggregateOutputType | null
+    _min: UserStatusMinAggregateOutputType | null
+    _max: UserStatusMaxAggregateOutputType | null
+  }
+
+  export type UserStatusAvgAggregateOutputType = {
+    level: number | null
+    commit: number | null
+    coin: number | null
+  }
+
+  export type UserStatusSumAggregateOutputType = {
+    level: number | null
+    commit: number | null
+    coin: number | null
+  }
+
+  export type UserStatusMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    level: number | null
+    commit: number | null
+    coin: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserStatusMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    level: number | null
+    commit: number | null
+    coin: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserStatusCountAggregateOutputType = {
+    id: number
+    userId: number
+    level: number
+    commit: number
+    coin: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserStatusAvgAggregateInputType = {
+    level?: true
+    commit?: true
+    coin?: true
+  }
+
+  export type UserStatusSumAggregateInputType = {
+    level?: true
+    commit?: true
+    coin?: true
+  }
+
+  export type UserStatusMinAggregateInputType = {
+    id?: true
+    userId?: true
+    level?: true
+    commit?: true
+    coin?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserStatusMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    level?: true
+    commit?: true
+    coin?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserStatusCountAggregateInputType = {
+    id?: true
+    userId?: true
+    level?: true
+    commit?: true
+    coin?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserStatusAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserStatus to aggregate.
+     */
+    where?: UserStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserStatuses to fetch.
+     */
+    orderBy?: UserStatusOrderByWithRelationInput | UserStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserStatuses
+    **/
+    _count?: true | UserStatusCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserStatusAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserStatusSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserStatusMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserStatusMaxAggregateInputType
+  }
+
+  export type GetUserStatusAggregateType<T extends UserStatusAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserStatus]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserStatus[P]>
+      : GetScalarType<T[P], AggregateUserStatus[P]>
+  }
+
+
+
+
+  export type UserStatusGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserStatusWhereInput
+    orderBy?: UserStatusOrderByWithAggregationInput | UserStatusOrderByWithAggregationInput[]
+    by: UserStatusScalarFieldEnum[] | UserStatusScalarFieldEnum
+    having?: UserStatusScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserStatusCountAggregateInputType | true
+    _avg?: UserStatusAvgAggregateInputType
+    _sum?: UserStatusSumAggregateInputType
+    _min?: UserStatusMinAggregateInputType
+    _max?: UserStatusMaxAggregateInputType
+  }
+
+  export type UserStatusGroupByOutputType = {
+    id: string
+    userId: string
+    level: number
+    commit: number
+    coin: number
+    createdAt: Date
+    updatedAt: Date
+    _count: UserStatusCountAggregateOutputType | null
+    _avg: UserStatusAvgAggregateOutputType | null
+    _sum: UserStatusSumAggregateOutputType | null
+    _min: UserStatusMinAggregateOutputType | null
+    _max: UserStatusMaxAggregateOutputType | null
+  }
+
+  type GetUserStatusGroupByPayload<T extends UserStatusGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserStatusGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserStatusGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserStatusGroupByOutputType[P]>
+            : GetScalarType<T[P], UserStatusGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserStatusSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    level?: boolean
+    commit?: boolean
+    coin?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userStatus"]>
+
+  export type UserStatusSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    level?: boolean
+    commit?: boolean
+    coin?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userStatus"]>
+
+  export type UserStatusSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    level?: boolean
+    commit?: boolean
+    coin?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userStatus"]>
+
+  export type UserStatusSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    level?: boolean
+    commit?: boolean
+    coin?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
+  export type UserStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type UserStatusIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type UserStatusIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $UserStatusPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserStatus"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      level: number
+      commit: number
+      coin: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userStatus"]>
+    composites: {}
+  }
+
+  type UserStatusGetPayload<S extends boolean | null | undefined | UserStatusDefaultArgs> = $Result.GetResult<Prisma.$UserStatusPayload, S>
+
+  type UserStatusCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserStatusFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserStatusCountAggregateInputType | true
+    }
+
+  export interface UserStatusDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserStatus'], meta: { name: 'UserStatus' } }
+    /**
+     * Find zero or one UserStatus that matches the filter.
+     * @param {UserStatusFindUniqueArgs} args - Arguments to find a UserStatus
+     * @example
+     * // Get one UserStatus
+     * const userStatus = await prisma.userStatus.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserStatusFindUniqueArgs>(args: SelectSubset<T, UserStatusFindUniqueArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserStatus that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserStatusFindUniqueOrThrowArgs} args - Arguments to find a UserStatus
+     * @example
+     * // Get one UserStatus
+     * const userStatus = await prisma.userStatus.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserStatusFindUniqueOrThrowArgs>(args: SelectSubset<T, UserStatusFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserStatus that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusFindFirstArgs} args - Arguments to find a UserStatus
+     * @example
+     * // Get one UserStatus
+     * const userStatus = await prisma.userStatus.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserStatusFindFirstArgs>(args?: SelectSubset<T, UserStatusFindFirstArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserStatus that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusFindFirstOrThrowArgs} args - Arguments to find a UserStatus
+     * @example
+     * // Get one UserStatus
+     * const userStatus = await prisma.userStatus.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserStatusFindFirstOrThrowArgs>(args?: SelectSubset<T, UserStatusFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserStatuses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserStatuses
+     * const userStatuses = await prisma.userStatus.findMany()
+     * 
+     * // Get first 10 UserStatuses
+     * const userStatuses = await prisma.userStatus.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userStatusWithIdOnly = await prisma.userStatus.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserStatusFindManyArgs>(args?: SelectSubset<T, UserStatusFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserStatus.
+     * @param {UserStatusCreateArgs} args - Arguments to create a UserStatus.
+     * @example
+     * // Create one UserStatus
+     * const UserStatus = await prisma.userStatus.create({
+     *   data: {
+     *     // ... data to create a UserStatus
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserStatusCreateArgs>(args: SelectSubset<T, UserStatusCreateArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserStatuses.
+     * @param {UserStatusCreateManyArgs} args - Arguments to create many UserStatuses.
+     * @example
+     * // Create many UserStatuses
+     * const userStatus = await prisma.userStatus.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserStatusCreateManyArgs>(args?: SelectSubset<T, UserStatusCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserStatuses and returns the data saved in the database.
+     * @param {UserStatusCreateManyAndReturnArgs} args - Arguments to create many UserStatuses.
+     * @example
+     * // Create many UserStatuses
+     * const userStatus = await prisma.userStatus.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserStatuses and only return the `id`
+     * const userStatusWithIdOnly = await prisma.userStatus.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserStatusCreateManyAndReturnArgs>(args?: SelectSubset<T, UserStatusCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserStatus.
+     * @param {UserStatusDeleteArgs} args - Arguments to delete one UserStatus.
+     * @example
+     * // Delete one UserStatus
+     * const UserStatus = await prisma.userStatus.delete({
+     *   where: {
+     *     // ... filter to delete one UserStatus
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserStatusDeleteArgs>(args: SelectSubset<T, UserStatusDeleteArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserStatus.
+     * @param {UserStatusUpdateArgs} args - Arguments to update one UserStatus.
+     * @example
+     * // Update one UserStatus
+     * const userStatus = await prisma.userStatus.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserStatusUpdateArgs>(args: SelectSubset<T, UserStatusUpdateArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserStatuses.
+     * @param {UserStatusDeleteManyArgs} args - Arguments to filter UserStatuses to delete.
+     * @example
+     * // Delete a few UserStatuses
+     * const { count } = await prisma.userStatus.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserStatusDeleteManyArgs>(args?: SelectSubset<T, UserStatusDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserStatuses
+     * const userStatus = await prisma.userStatus.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserStatusUpdateManyArgs>(args: SelectSubset<T, UserStatusUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserStatuses and returns the data updated in the database.
+     * @param {UserStatusUpdateManyAndReturnArgs} args - Arguments to update many UserStatuses.
+     * @example
+     * // Update many UserStatuses
+     * const userStatus = await prisma.userStatus.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserStatuses and only return the `id`
+     * const userStatusWithIdOnly = await prisma.userStatus.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserStatusUpdateManyAndReturnArgs>(args: SelectSubset<T, UserStatusUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserStatus.
+     * @param {UserStatusUpsertArgs} args - Arguments to update or create a UserStatus.
+     * @example
+     * // Update or create a UserStatus
+     * const userStatus = await prisma.userStatus.upsert({
+     *   create: {
+     *     // ... data to create a UserStatus
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserStatus we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserStatusUpsertArgs>(args: SelectSubset<T, UserStatusUpsertArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserStatuses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusCountArgs} args - Arguments to filter UserStatuses to count.
+     * @example
+     * // Count the number of UserStatuses
+     * const count = await prisma.userStatus.count({
+     *   where: {
+     *     // ... the filter for the UserStatuses we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserStatusCountArgs>(
+      args?: Subset<T, UserStatusCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserStatusCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserStatusAggregateArgs>(args: Subset<T, UserStatusAggregateArgs>): Prisma.PrismaPromise<GetUserStatusAggregateType<T>>
+
+    /**
+     * Group by UserStatus.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserStatusGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserStatusGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserStatusGroupByArgs['orderBy'] }
+        : { orderBy?: UserStatusGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserStatusGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserStatusGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserStatus model
+   */
+  readonly fields: UserStatusFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserStatus.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserStatusClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserStatus model
+   */
+  interface UserStatusFieldRefs {
+    readonly id: FieldRef<"UserStatus", 'String'>
+    readonly userId: FieldRef<"UserStatus", 'String'>
+    readonly level: FieldRef<"UserStatus", 'Int'>
+    readonly commit: FieldRef<"UserStatus", 'Int'>
+    readonly coin: FieldRef<"UserStatus", 'Int'>
+    readonly createdAt: FieldRef<"UserStatus", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserStatus", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserStatus findUnique
+   */
+  export type UserStatusFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which UserStatus to fetch.
+     */
+    where: UserStatusWhereUniqueInput
+  }
+
+  /**
+   * UserStatus findUniqueOrThrow
+   */
+  export type UserStatusFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which UserStatus to fetch.
+     */
+    where: UserStatusWhereUniqueInput
+  }
+
+  /**
+   * UserStatus findFirst
+   */
+  export type UserStatusFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which UserStatus to fetch.
+     */
+    where?: UserStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserStatuses to fetch.
+     */
+    orderBy?: UserStatusOrderByWithRelationInput | UserStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserStatuses.
+     */
+    cursor?: UserStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserStatuses.
+     */
+    distinct?: UserStatusScalarFieldEnum | UserStatusScalarFieldEnum[]
+  }
+
+  /**
+   * UserStatus findFirstOrThrow
+   */
+  export type UserStatusFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which UserStatus to fetch.
+     */
+    where?: UserStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserStatuses to fetch.
+     */
+    orderBy?: UserStatusOrderByWithRelationInput | UserStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserStatuses.
+     */
+    cursor?: UserStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserStatuses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserStatuses.
+     */
+    distinct?: UserStatusScalarFieldEnum | UserStatusScalarFieldEnum[]
+  }
+
+  /**
+   * UserStatus findMany
+   */
+  export type UserStatusFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter, which UserStatuses to fetch.
+     */
+    where?: UserStatusWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserStatuses to fetch.
+     */
+    orderBy?: UserStatusOrderByWithRelationInput | UserStatusOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserStatuses.
+     */
+    cursor?: UserStatusWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserStatuses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserStatuses.
+     */
+    skip?: number
+    distinct?: UserStatusScalarFieldEnum | UserStatusScalarFieldEnum[]
+  }
+
+  /**
+   * UserStatus create
+   */
+  export type UserStatusCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserStatus.
+     */
+    data: XOR<UserStatusCreateInput, UserStatusUncheckedCreateInput>
+  }
+
+  /**
+   * UserStatus createMany
+   */
+  export type UserStatusCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserStatuses.
+     */
+    data: UserStatusCreateManyInput | UserStatusCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserStatus createManyAndReturn
+   */
+  export type UserStatusCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserStatuses.
+     */
+    data: UserStatusCreateManyInput | UserStatusCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserStatus update
+   */
+  export type UserStatusUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserStatus.
+     */
+    data: XOR<UserStatusUpdateInput, UserStatusUncheckedUpdateInput>
+    /**
+     * Choose, which UserStatus to update.
+     */
+    where: UserStatusWhereUniqueInput
+  }
+
+  /**
+   * UserStatus updateMany
+   */
+  export type UserStatusUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserStatuses.
+     */
+    data: XOR<UserStatusUpdateManyMutationInput, UserStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which UserStatuses to update
+     */
+    where?: UserStatusWhereInput
+    /**
+     * Limit how many UserStatuses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserStatus updateManyAndReturn
+   */
+  export type UserStatusUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * The data used to update UserStatuses.
+     */
+    data: XOR<UserStatusUpdateManyMutationInput, UserStatusUncheckedUpdateManyInput>
+    /**
+     * Filter which UserStatuses to update
+     */
+    where?: UserStatusWhereInput
+    /**
+     * Limit how many UserStatuses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserStatus upsert
+   */
+  export type UserStatusUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserStatus to update in case it exists.
+     */
+    where: UserStatusWhereUniqueInput
+    /**
+     * In case the UserStatus found by the `where` argument doesn't exist, create a new UserStatus with this data.
+     */
+    create: XOR<UserStatusCreateInput, UserStatusUncheckedCreateInput>
+    /**
+     * In case the UserStatus was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserStatusUpdateInput, UserStatusUncheckedUpdateInput>
+  }
+
+  /**
+   * UserStatus delete
+   */
+  export type UserStatusDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
+    /**
+     * Filter which UserStatus to delete.
+     */
+    where: UserStatusWhereUniqueInput
+  }
+
+  /**
+   * UserStatus deleteMany
+   */
+  export type UserStatusDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserStatuses to delete
+     */
+    where?: UserStatusWhereInput
+    /**
+     * Limit how many UserStatuses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserStatus without action
+   */
+  export type UserStatusDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserStatus
+     */
+    select?: UserStatusSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserStatus
+     */
+    omit?: UserStatusOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserStatusInclude<ExtArgs> | null
   }
 
 
@@ -1887,6 +3172,19 @@ export namespace Prisma {
   };
 
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+
+
+  export const UserStatusScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    level: 'level',
+    commit: 'commit',
+    coin: 'coin',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserStatusScalarFieldEnum = (typeof UserStatusScalarFieldEnum)[keyof typeof UserStatusScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -1950,6 +3248,20 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -1964,6 +3276,7 @@ export namespace Prisma {
     image?: StringFilter<"Users"> | string
     createdAt?: DateTimeFilter<"Users"> | Date | string
     updatedAt?: DateTimeFilter<"Users"> | Date | string
+    status?: XOR<UserStatusNullableScalarRelationFilter, UserStatusWhereInput> | null
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -1972,6 +3285,7 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    status?: UserStatusOrderByWithRelationInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -1983,6 +3297,7 @@ export namespace Prisma {
     image?: StringFilter<"Users"> | string
     createdAt?: DateTimeFilter<"Users"> | Date | string
     updatedAt?: DateTimeFilter<"Users"> | Date | string
+    status?: XOR<UserStatusNullableScalarRelationFilter, UserStatusWhereInput> | null
   }, "id">
 
   export type UsersOrderByWithAggregationInput = {
@@ -2007,12 +3322,80 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Users"> | Date | string
   }
 
+  export type UserStatusWhereInput = {
+    AND?: UserStatusWhereInput | UserStatusWhereInput[]
+    OR?: UserStatusWhereInput[]
+    NOT?: UserStatusWhereInput | UserStatusWhereInput[]
+    id?: StringFilter<"UserStatus"> | string
+    userId?: StringFilter<"UserStatus"> | string
+    level?: IntFilter<"UserStatus"> | number
+    commit?: IntFilter<"UserStatus"> | number
+    coin?: IntFilter<"UserStatus"> | number
+    createdAt?: DateTimeFilter<"UserStatus"> | Date | string
+    updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type UserStatusOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type UserStatusWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: UserStatusWhereInput | UserStatusWhereInput[]
+    OR?: UserStatusWhereInput[]
+    NOT?: UserStatusWhereInput | UserStatusWhereInput[]
+    level?: IntFilter<"UserStatus"> | number
+    commit?: IntFilter<"UserStatus"> | number
+    coin?: IntFilter<"UserStatus"> | number
+    createdAt?: DateTimeFilter<"UserStatus"> | Date | string
+    updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id" | "userId">
+
+  export type UserStatusOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserStatusCountOrderByAggregateInput
+    _avg?: UserStatusAvgOrderByAggregateInput
+    _max?: UserStatusMaxOrderByAggregateInput
+    _min?: UserStatusMinOrderByAggregateInput
+    _sum?: UserStatusSumOrderByAggregateInput
+  }
+
+  export type UserStatusScalarWhereWithAggregatesInput = {
+    AND?: UserStatusScalarWhereWithAggregatesInput | UserStatusScalarWhereWithAggregatesInput[]
+    OR?: UserStatusScalarWhereWithAggregatesInput[]
+    NOT?: UserStatusScalarWhereWithAggregatesInput | UserStatusScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserStatus"> | string
+    userId?: StringWithAggregatesFilter<"UserStatus"> | string
+    level?: IntWithAggregatesFilter<"UserStatus"> | number
+    commit?: IntWithAggregatesFilter<"UserStatus"> | number
+    coin?: IntWithAggregatesFilter<"UserStatus"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
+  }
+
   export type UsersCreateInput = {
     id: string
     name: string
     image: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    status?: UserStatusCreateNestedOneWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -2021,6 +3404,7 @@ export namespace Prisma {
     image: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    status?: UserStatusUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -2029,6 +3413,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: UserStatusUpdateOneWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -2037,6 +3422,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: UserStatusUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -2059,6 +3445,75 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserStatusCreateInput = {
+    id?: string
+    level?: number
+    commit?: number
+    coin?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UsersCreateNestedOneWithoutStatusInput
+  }
+
+  export type UserStatusUncheckedCreateInput = {
+    id?: string
+    userId: string
+    level?: number
+    commit?: number
+    coin?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserStatusUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutStatusNestedInput
+  }
+
+  export type UserStatusUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserStatusCreateManyInput = {
+    id?: string
+    userId: string
+    level?: number
+    commit?: number
+    coin?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserStatusUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserStatusUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -2087,6 +3542,11 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type UserStatusNullableScalarRelationFilter = {
+    is?: UserStatusWhereInput | null
+    isNot?: UserStatusWhereInput | null
   }
 
   export type UsersCountOrderByAggregateInput = {
@@ -2145,12 +3605,140 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type UsersScalarRelationFilter = {
+    is?: UsersWhereInput
+    isNot?: UsersWhereInput
+  }
+
+  export type UserStatusCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserStatusAvgOrderByAggregateInput = {
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+  }
+
+  export type UserStatusMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserStatusMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserStatusSumOrderByAggregateInput = {
+    level?: SortOrder
+    commit?: SortOrder
+    coin?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type UserStatusCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
+    connect?: UserStatusWhereUniqueInput
+  }
+
+  export type UserStatusUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
+    connect?: UserStatusWhereUniqueInput
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type UserStatusUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
+    upsert?: UserStatusUpsertWithoutUserInput
+    disconnect?: UserStatusWhereInput | boolean
+    delete?: UserStatusWhereInput | boolean
+    connect?: UserStatusWhereUniqueInput
+    update?: XOR<XOR<UserStatusUpdateToOneWithWhereWithoutUserInput, UserStatusUpdateWithoutUserInput>, UserStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserStatusUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
+    upsert?: UserStatusUpsertWithoutUserInput
+    disconnect?: UserStatusWhereInput | boolean
+    delete?: UserStatusWhereInput | boolean
+    connect?: UserStatusWhereUniqueInput
+    update?: XOR<XOR<UserStatusUpdateToOneWithWhereWithoutUserInput, UserStatusUpdateWithoutUserInput>, UserStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UsersCreateNestedOneWithoutStatusInput = {
+    create?: XOR<UsersCreateWithoutStatusInput, UsersUncheckedCreateWithoutStatusInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutStatusInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UsersUpdateOneRequiredWithoutStatusNestedInput = {
+    create?: XOR<UsersCreateWithoutStatusInput, UsersUncheckedCreateWithoutStatusInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutStatusInput
+    upsert?: UsersUpsertWithoutStatusInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutStatusInput, UsersUpdateWithoutStatusInput>, UsersUncheckedUpdateWithoutStatusInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -2218,6 +3806,133 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type UserStatusCreateWithoutUserInput = {
+    id?: string
+    level?: number
+    commit?: number
+    coin?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserStatusUncheckedCreateWithoutUserInput = {
+    id?: string
+    level?: number
+    commit?: number
+    coin?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserStatusCreateOrConnectWithoutUserInput = {
+    where: UserStatusWhereUniqueInput
+    create: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserStatusUpsertWithoutUserInput = {
+    update: XOR<UserStatusUpdateWithoutUserInput, UserStatusUncheckedUpdateWithoutUserInput>
+    create: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
+    where?: UserStatusWhereInput
+  }
+
+  export type UserStatusUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserStatusWhereInput
+    data: XOR<UserStatusUpdateWithoutUserInput, UserStatusUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserStatusUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserStatusUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    commit?: IntFieldUpdateOperationsInput | number
+    coin?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsersCreateWithoutStatusInput = {
+    id: string
+    name: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UsersUncheckedCreateWithoutStatusInput = {
+    id: string
+    name: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UsersCreateOrConnectWithoutStatusInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutStatusInput, UsersUncheckedCreateWithoutStatusInput>
+  }
+
+  export type UsersUpsertWithoutStatusInput = {
+    update: XOR<UsersUpdateWithoutStatusInput, UsersUncheckedUpdateWithoutStatusInput>
+    create: XOR<UsersCreateWithoutStatusInput, UsersUncheckedCreateWithoutStatusInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutStatusInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutStatusInput, UsersUncheckedUpdateWithoutStatusInput>
+  }
+
+  export type UsersUpdateWithoutStatusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsersUncheckedUpdateWithoutStatusInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
