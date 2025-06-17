@@ -20,9 +20,13 @@ import {
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getUserStatus } from "@/actions/user/status/getUserStatus";
+import { UserStatus } from "@/types/user/userStatus";
 
 export default function HomeScreen() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   // const maxCommitsInDay = Math.max(...userData.weeklyCommits)
   const days = ["月", "火", "水", "木", "金", "土", "日"];
   // Mock data - replace with real user data
@@ -45,6 +49,21 @@ export default function HomeScreen() {
     weeklyCommits: [2, 0, 5, 3, 1, 4, 6], // Last 7 days
     thisWeekTotal: 21,
   };
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.email) {
+      getUserStatus(session?.user?.email ?? "")
+        .then((status) => {
+          if (status) {
+            setUserStatus(status as UserStatus);
+            console.log("取得したユーザー情報:", status);
+          }
+        })
+        .catch((err) => {
+          console.error("ユーザー情報取得失敗:", err);
+        });
+    }
+  }, [status, session?.user?.email]);
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden">

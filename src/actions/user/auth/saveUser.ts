@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../prisma/prisma";
+import { prisma } from "../../../../prisma/prisma";
 
 export const saveUserToDatabase = async (user: {
   email: string;

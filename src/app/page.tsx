@@ -2,16 +2,17 @@
 
 import { useSession } from "next-auth/react";
 import AuthButton from "./components/auth/Auth-Button";
-import Link from "next/link";
-import { saveUserToDatabase } from "@/actions/user/saveUser";
+
 import { updateCommits } from "@/actions/github/updateCommits";
 import { useEffect, useTransition } from "react";
 import HomeScreen from "@/components/Home";
+import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
-  console.log(session);
+
+  // console.log(session);
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
@@ -31,9 +32,23 @@ export default function Home() {
               console.error("コミット取得失敗:", err);
             });
         }
+
+        // getUserStatus(session?.user?.email ?? "")
+        //   .then((status) => {
+        //     if (status) {
+        //       setUserStatus(status as UserStatus);
+        //       console.log("取得したユーザー情報:", status);
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.error("ユーザー情報取得失敗:", err);
+        //   });
       });
     }
   }, [session, status]);
+
+
+
 
   return (
     <div className="h-screen w-screen">
