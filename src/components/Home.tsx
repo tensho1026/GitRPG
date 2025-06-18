@@ -15,6 +15,7 @@ import {
 } from "@/lib/leveling";
 import UserBasicInfo from "./home/UserBasicInfo";
 import UserStatus from "./home/UserStatus";
+import Link from "next/link";
 
 export default function HomeScreen() {
   const { data: session, status } = useSession();
@@ -213,10 +214,12 @@ export default function HomeScreen() {
                   </div>
                 </div>
 
-                <Button className="w-full bg-gradient-to-b from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 border-4 border-orange-500 text-white font-mono font-bold pixel-text pixel-border">
-                  <Shirt className="w-4 h-4 mr-2" />
-                  装備変更
-                </Button>
+                <Link href="/item">
+                  <Button className="w-full bg-gradient-to-b from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 border-4 border-orange-500 text-white font-mono font-bold pixel-text pixel-border">
+                    <Shirt className="w-4 h-4 mr-2" />
+                    装備変更
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
