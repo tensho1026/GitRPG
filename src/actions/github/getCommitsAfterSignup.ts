@@ -11,7 +11,7 @@ export const getCommitsAfterSignup = async (
 
   if (!user || !user.createdAt) throw new Error("ユーザー情報が不正です");
 
-  const fromDate = user.createdAt.toISOString(); 
+  const fromDate = user.createdAt.toISOString();
   const { commits, issues, pullRequests, reviews } =
     await fetchTotalContributions(accessToken, fromDate);
 

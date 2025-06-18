@@ -26,6 +26,7 @@ model Users {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   status    UserStatus?
+  items     Items[]
 }
 
 model UserStatus {
@@ -37,5 +38,17 @@ model UserStatus {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user      Users    @relation(fields: [userId], references: [id])
+}
+
+model Items {
+  id        String   @id @default(cuid())
+  name      String
+  attack    Int?
+  defense   Int?
+  price     Int
+  owned     Boolean  @default(false)
+  equipped  Boolean  @default(false)
+  userId    String
   user      Users    @relation(fields: [userId], references: [id])
 }

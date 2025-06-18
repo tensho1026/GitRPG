@@ -138,6 +138,17 @@ exports.Prisma.UserStatusScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ItemsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  attack: 'attack',
+  defense: 'defense',
+  price: 'price',
+  owned: 'owned',
+  equipped: 'equipped',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -148,10 +159,16 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
   Users: 'Users',
-  UserStatus: 'UserStatus'
+  UserStatus: 'UserStatus',
+  Items: 'Items'
 };
 
 /**

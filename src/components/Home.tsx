@@ -9,10 +9,7 @@ import { useEffect, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { UserStatuses } from "@/types/user/userStatus";
 
-import {
-  getLevelFromCommits,
-  getRemainingCommitsToNextLevel,
-} from "@/lib/leveling";
+import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import UserBasicInfo from "./home/UserBasicInfo";
 import UserStatus from "./home/UserStatus";
 import Link from "next/link";
@@ -22,9 +19,7 @@ export default function HomeScreen() {
   const [userStatus, setUserStatus] = useState<UserStatuses | null>(null);
   const days = ["月", "火", "水", "木", "金", "土", "日"];
 
-  const currentLevel = userStatus?.status?.commit
-    ? getLevelFromCommits(userStatus.status.commit)
-    : 1;
+  const currentLevel = userStatus?.status?.level ?? 1;
   const remainingCommits = userStatus?.status?.commit
     ? getRemainingCommitsToNextLevel(userStatus.status.commit)
     : 10;
@@ -41,7 +36,7 @@ export default function HomeScreen() {
     registrationDate: userStatus?.createdAt?.toLocaleDateString(),
     level: currentLevel,
     totalCommits: userStatus?.status?.commit ?? 0,
-    coins: userStatus?.status?.commit ?? 0,
+    coins: userStatus?.status?.coin ?? 0,
     commitsToNextLevel: remainingCommits,
     equippedItems: {
       weapon: "魔法の剣",
@@ -101,7 +96,7 @@ export default function HomeScreen() {
             <UserStatus
               currentLevel={currentLevel}
               totalCommits={userStatus?.status?.commit ?? 0}
-              coins={userStatus?.status?.commit ?? 0}
+              coins={userStatus?.status?.coin ?? 0}
               remainingCommits={remainingCommits}
               progressPercentage={progressPercentage}
             />
