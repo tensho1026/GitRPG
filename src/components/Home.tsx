@@ -3,28 +3,34 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Zap,
-  Sword,
-  Shield,
-  Shirt,
-  Star,
-  TrendingUp,
-  MapPin,
-  User,
-  Coins,
-} from "lucide-react";
+import { Zap, Sword, Shield, Shirt, MapPin, User } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import { UserStatus } from "@/types/user/userStatus";
-import UserBasicInfo from "./home/userBasicInfo";
+import { UserStatuses } from "@/types/user/userStatus";
+
+import {
+  getLevelFromCommits,
+  getRemainingCommitsToNextLevel,
+} from "@/lib/leveling";
+import UserBasicInfo from "./home/UserBasicInfo";
+import UserStatus from "./home/UserStatus";
 
 export default function HomeScreen() {
   const { data: session, status } = useSession();
-  const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
-  // const maxCommitsInDay = Math.max(...userData.weeklyCommits)
+  const [userStatus, setUserStatus] = useState<UserStatuses | null>(null);
   const days = ["月", "火", "水", "木", "金", "土", "日"];
+
+  const currentLevel = userStatus?.status?.commit
+    ? getLevelFromCommits(userStatus.status.commit)
+    : 1;
+  const remainingCommits = userStatus?.status?.commit
+    ? getRemainingCommitsToNextLevel(userStatus.status.commit)
+    : 10;
+  const progressPercentage = userStatus?.status?.commit
+    ? ((userStatus.status.commit % 10) / 10) * 100
+    : 0;
+
   // Mock data - replace with real user data
   const userData = {
     name: `冒険者${session?.user?.name}`,
@@ -32,10 +38,10 @@ export default function HomeScreen() {
     avatar: session?.user?.image,
     githubUrl: `https://github.com/${session?.user?.name}`,
     registrationDate: userStatus?.createdAt?.toLocaleDateString(),
-    level: userStatus?.status?.level,
-    totalCommits: userStatus?.status?.commit,
-    coins: userStatus?.status?.commit,
-    commitsToNextLevel: 23,
+    level: currentLevel,
+    totalCommits: userStatus?.status?.commit ?? 0,
+    coins: userStatus?.status?.commit ?? 0,
+    commitsToNextLevel: remainingCommits,
     equippedItems: {
       weapon: "魔法の剣",
       armor: "竜鱗の鎧",
@@ -51,7 +57,7 @@ export default function HomeScreen() {
       getUserStatus(session?.user?.email ?? "")
         .then((status) => {
           if (status) {
-            setUserStatus(status as UserStatus);
+            setUserStatus(status as UserStatuses);
             console.log("取得したユーザー情報:", status);
           }
         })
@@ -91,71 +97,13 @@ export default function HomeScreen() {
 
           {/* Current Status - Takes 2 columns */}
           <div className="lg:col-span-2">
-            <Card className="bg-gradient-to-b from-blue-800/95 to-blue-900/95 border-4 border-cyan-400 shadow-2xl pixel-border h-full">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <TrendingUp className="w-6 h-6 text-cyan-300 mr-2" />
-                  <h2 className="text-cyan-200 font-mono text-lg pixel-text font-bold">
-                    📊 現在のステータス
-                  </h2>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
-                    <div className="text-cyan-300 font-mono text-2xl pixel-text font-bold">
-                      Lv.{userData.level}
-                    </div>
-                    <div className="text-blue-200 font-mono text-xs pixel-text">
-                      ✅ 現在のレベル
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
-                    <div className="text-cyan-300 font-mono text-xl pixel-text font-bold">
-                      {userData.totalCommits}
-                    </div>
-                    <div className="text-blue-200 font-mono text-xs pixel-text">
-                      💻 総コミット数
-                    </div>
-                  </div>
-
-                  <div className="bg-yellow-600/80 p-4 rounded pixel-border border-2 border-yellow-400 text-center">
-                    <div className="flex items-center justify-center mb-1">
-                      <Coins className="w-5 h-5 text-yellow-200 mr-1" />
-                      <span className="text-yellow-100 font-mono text-xl pixel-text font-bold">
-                        {userData.coins}
-                      </span>
-                    </div>
-                    <div className="text-yellow-200 font-mono text-xs pixel-text">
-                      🪙 コイン数
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-purple-700/60 p-4 rounded pixel-border border-2 border-purple-400">
-                  <div className="flex items-center justify-center mb-2">
-                    <Star className="w-5 h-5 text-purple-300 mr-2" />
-                    <span className="text-purple-200 font-mono text-sm pixel-text">
-                      次のレベルまで
-                    </span>
-                  </div>
-                  <div className="text-center mb-3">
-                    <span className="text-purple-100 font-mono text-lg pixel-text font-bold">
-                      あと{userData.commitsToNextLevel}コミット！
-                    </span>
-                  </div>
-                  <div className="w-full bg-purple-800 rounded-full h-3 border border-purple-400">
-                    <div
-                      className="bg-gradient-to-r from-purple-400 to-purple-300 h-full rounded-full"
-                      style={{
-                        width: `${
-                          ((userData.totalCommits ?? 0 % 50) / 50) * 100
-                        }%`,
-                      }}></div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <UserStatus
+              currentLevel={currentLevel}
+              totalCommits={userStatus?.status?.commit ?? 0}
+              coins={userStatus?.status?.commit ?? 0}
+              remainingCommits={remainingCommits}
+              progressPercentage={progressPercentage}
+            />
           </div>
 
           {/* Avatar Display - Takes 1 column */}

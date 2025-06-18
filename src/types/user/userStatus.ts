@@ -1,4 +1,4 @@
-export type UserStatus = {
+export type UserStatuses = {
   id: string;
   name: string;
   image: string;
