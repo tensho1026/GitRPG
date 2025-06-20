@@ -101,7 +101,7 @@ export default function AuthButton() {
                   <div className="flex items-center justify-center mb-3">
                     {session.user?.image && (
                       <Image
-                        src={session.user.image || "/placeholder.svg"}
+                        src={session.user.image}
                         alt="User Avatar"
                         className="w-12 h-12 rounded-full border-2 border-yellow-400 mr-3 pixelated"
                         width={48}

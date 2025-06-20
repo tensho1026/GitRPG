@@ -9,8 +9,8 @@ import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
 import { getUserItems } from "@/actions/item/getUserItems";
 import { purchaseItem } from "@/actions/item/purchaseItem";
 import { equipItem } from "@/actions/item/equipItem";
-import { type Items as UserItem } from "@/generated/prisma";
-import { Equipment } from "@/types/equipment";
+import type { Items as UserItem } from "@/generated/prisma";
+import type { Equipment } from "@/types/equipment";
 
 type DisplayEquipment = Equipment & {
   dbId?: string;
@@ -183,6 +183,20 @@ export default function EquipmentShop() {
                 <span className="pixel-text">{coins.toLocaleString()}</span>
               </div>
             </div>
+            <div className="mt-4">
+              <button
+                onClick={() => (window.location.href = "/")}
+                className="px-6 py-3 border-4 font-bold pixel-text text-lg"
+                style={{
+                  backgroundColor: "#8b5cf6",
+                  borderColor: "#7c3aed",
+                  color: "white",
+                  boxShadow: "4px 4px 0px #6d28d9, 8px 8px 0px rgba(0,0,0,0.4)",
+                  cursor: "pointer",
+                }}>
+                ホームに戻る
+              </button>
+            </div>
           </div>
         </div>
 
@@ -322,7 +336,7 @@ export default function EquipmentShop() {
                 {/* Header */}
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
-                    {typeIcons[item.type]}
+                    {typeIcons[item.type as keyof typeof typeIcons]}
                     <h3 className="text-xl font-bold text-white pixel-text">
                       {item.name}
                     </h3>

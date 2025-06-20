@@ -17,7 +17,7 @@ interface UserBasicInfoProps {
 
 function UserBasicInfo({ userData }: UserBasicInfoProps) {
   return (
-    <div>
+    <div className="lg:col-span-1">
       <Card className="bg-gradient-to-b from-emerald-800/95 to-emerald-900/95 border-4 border-yellow-500 shadow-2xl pixel-border h-full">
         <CardContent className="p-4">
           <div className="flex items-center mb-3">

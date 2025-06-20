@@ -18,7 +18,7 @@ function UserStatus({
   progressPercentage,
 }: UserStatusProps) {
   return (
-    <div>
+    <div className="lg:col-span-2">
       <Card className="bg-gradient-to-b from-blue-800/95 to-blue-900/95 border-4 border-cyan-400 shadow-2xl pixel-border h-full">
         <CardContent className="p-6">
           <div className="flex items-center mb-4">

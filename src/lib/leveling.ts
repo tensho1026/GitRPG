@@ -15,8 +15,21 @@ export const getNextLevelCommitGoal = (currentLevel: number): number => {
   return levelThresholds[currentLevel]; // 次のレベルに必要な累積コミット数
 };
 
-export const getRemainingCommitsToNextLevel = (commitCount: number): number => {
+export const getRemainingCommitsToNextLevel = (
+  commitCount: number
+): { remainingCommits: number; percentage: number } => {
   const level = getLevelFromCommits(commitCount);
+  const currentLevelTotalCommits = levelThresholds[level - 1];
   const nextGoal = getNextLevelCommitGoal(level);
-  return nextGoal - commitCount;
+
+  if (nextGoal === Infinity) {
+    return { remainingCommits: 0, percentage: 100 };
+  }
+
+  const remainingCommits = nextGoal - commitCount;
+  const commitsForThisLevel = nextGoal - currentLevelTotalCommits;
+  const progressInLevel = commitCount - currentLevelTotalCommits;
+  const percentage = (progressInLevel / commitsForThisLevel) * 100;
+
+  return { remainingCommits, percentage };
 };
