@@ -3326,33 +3326,42 @@ export namespace Prisma {
 
   export type ItemsMinAggregateOutputType = {
     id: string | null
+    equipmentId: string | null
     name: string | null
+    image: string | null
+    description: string | null
+    type: string | null
     attack: number | null
     defense: number | null
     price: number | null
-    owned: boolean | null
     equipped: boolean | null
     userId: string | null
   }
 
   export type ItemsMaxAggregateOutputType = {
     id: string | null
+    equipmentId: string | null
     name: string | null
+    image: string | null
+    description: string | null
+    type: string | null
     attack: number | null
     defense: number | null
     price: number | null
-    owned: boolean | null
     equipped: boolean | null
     userId: string | null
   }
 
   export type ItemsCountAggregateOutputType = {
     id: number
+    equipmentId: number
     name: number
+    image: number
+    description: number
+    type: number
     attack: number
     defense: number
     price: number
-    owned: number
     equipped: number
     userId: number
     _all: number
@@ -3373,33 +3382,42 @@ export namespace Prisma {
 
   export type ItemsMinAggregateInputType = {
     id?: true
+    equipmentId?: true
     name?: true
+    image?: true
+    description?: true
+    type?: true
     attack?: true
     defense?: true
     price?: true
-    owned?: true
     equipped?: true
     userId?: true
   }
 
   export type ItemsMaxAggregateInputType = {
     id?: true
+    equipmentId?: true
     name?: true
+    image?: true
+    description?: true
+    type?: true
     attack?: true
     defense?: true
     price?: true
-    owned?: true
     equipped?: true
     userId?: true
   }
 
   export type ItemsCountAggregateInputType = {
     id?: true
+    equipmentId?: true
     name?: true
+    image?: true
+    description?: true
+    type?: true
     attack?: true
     defense?: true
     price?: true
-    owned?: true
     equipped?: true
     userId?: true
     _all?: true
@@ -3493,11 +3511,14 @@ export namespace Prisma {
 
   export type ItemsGroupByOutputType = {
     id: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack: number | null
     defense: number | null
     price: number
-    owned: boolean
     equipped: boolean
     userId: string
     _count: ItemsCountAggregateOutputType | null
@@ -3523,11 +3544,14 @@ export namespace Prisma {
 
   export type ItemsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    equipmentId?: boolean
     name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
     attack?: boolean
     defense?: boolean
     price?: boolean
-    owned?: boolean
     equipped?: boolean
     userId?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -3535,11 +3559,14 @@ export namespace Prisma {
 
   export type ItemsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    equipmentId?: boolean
     name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
     attack?: boolean
     defense?: boolean
     price?: boolean
-    owned?: boolean
     equipped?: boolean
     userId?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -3547,11 +3574,14 @@ export namespace Prisma {
 
   export type ItemsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    equipmentId?: boolean
     name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
     attack?: boolean
     defense?: boolean
     price?: boolean
-    owned?: boolean
     equipped?: boolean
     userId?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -3559,16 +3589,19 @@ export namespace Prisma {
 
   export type ItemsSelectScalar = {
     id?: boolean
+    equipmentId?: boolean
     name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
     attack?: boolean
     defense?: boolean
     price?: boolean
-    owned?: boolean
     equipped?: boolean
     userId?: boolean
   }
 
-  export type ItemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "attack" | "defense" | "price" | "owned" | "equipped" | "userId", ExtArgs["result"]["items"]>
+  export type ItemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "equipmentId" | "name" | "image" | "description" | "type" | "attack" | "defense" | "price" | "equipped" | "userId", ExtArgs["result"]["items"]>
   export type ItemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -3586,11 +3619,14 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      equipmentId: string
       name: string
+      image: string
+      description: string
+      type: string
       attack: number | null
       defense: number | null
       price: number
-      owned: boolean
       equipped: boolean
       userId: string
     }, ExtArgs["result"]["items"]>
@@ -4018,11 +4054,14 @@ export namespace Prisma {
    */
   interface ItemsFieldRefs {
     readonly id: FieldRef<"Items", 'String'>
+    readonly equipmentId: FieldRef<"Items", 'String'>
     readonly name: FieldRef<"Items", 'String'>
+    readonly image: FieldRef<"Items", 'String'>
+    readonly description: FieldRef<"Items", 'String'>
+    readonly type: FieldRef<"Items", 'String'>
     readonly attack: FieldRef<"Items", 'Int'>
     readonly defense: FieldRef<"Items", 'Int'>
     readonly price: FieldRef<"Items", 'Int'>
-    readonly owned: FieldRef<"Items", 'Boolean'>
     readonly equipped: FieldRef<"Items", 'Boolean'>
     readonly userId: FieldRef<"Items", 'String'>
   }
@@ -4479,11 +4518,14 @@ export namespace Prisma {
 
   export const ItemsScalarFieldEnum: {
     id: 'id',
+    equipmentId: 'equipmentId',
     name: 'name',
+    image: 'image',
+    description: 'description',
+    type: 'type',
     attack: 'attack',
     defense: 'defense',
     price: 'price',
-    owned: 'owned',
     equipped: 'equipped',
     userId: 'userId'
   };
@@ -4716,11 +4758,14 @@ export namespace Prisma {
     OR?: ItemsWhereInput[]
     NOT?: ItemsWhereInput | ItemsWhereInput[]
     id?: StringFilter<"Items"> | string
+    equipmentId?: StringFilter<"Items"> | string
     name?: StringFilter<"Items"> | string
+    image?: StringFilter<"Items"> | string
+    description?: StringFilter<"Items"> | string
+    type?: StringFilter<"Items"> | string
     attack?: IntNullableFilter<"Items"> | number | null
     defense?: IntNullableFilter<"Items"> | number | null
     price?: IntFilter<"Items"> | number
-    owned?: BoolFilter<"Items"> | boolean
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4728,11 +4773,14 @@ export namespace Prisma {
 
   export type ItemsOrderByWithRelationInput = {
     id?: SortOrder
+    equipmentId?: SortOrder
     name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
     attack?: SortOrderInput | SortOrder
     defense?: SortOrderInput | SortOrder
     price?: SortOrder
-    owned?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
     user?: UsersOrderByWithRelationInput
@@ -4740,26 +4788,33 @@ export namespace Prisma {
 
   export type ItemsWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId_equipmentId?: ItemsUserIdEquipmentIdCompoundUniqueInput
     AND?: ItemsWhereInput | ItemsWhereInput[]
     OR?: ItemsWhereInput[]
     NOT?: ItemsWhereInput | ItemsWhereInput[]
+    equipmentId?: StringFilter<"Items"> | string
     name?: StringFilter<"Items"> | string
+    image?: StringFilter<"Items"> | string
+    description?: StringFilter<"Items"> | string
+    type?: StringFilter<"Items"> | string
     attack?: IntNullableFilter<"Items"> | number | null
     defense?: IntNullableFilter<"Items"> | number | null
     price?: IntFilter<"Items"> | number
-    owned?: BoolFilter<"Items"> | boolean
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
-  }, "id">
+  }, "id" | "userId_equipmentId">
 
   export type ItemsOrderByWithAggregationInput = {
     id?: SortOrder
+    equipmentId?: SortOrder
     name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
     attack?: SortOrderInput | SortOrder
     defense?: SortOrderInput | SortOrder
     price?: SortOrder
-    owned?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
     _count?: ItemsCountOrderByAggregateInput
@@ -4774,11 +4829,14 @@ export namespace Prisma {
     OR?: ItemsScalarWhereWithAggregatesInput[]
     NOT?: ItemsScalarWhereWithAggregatesInput | ItemsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Items"> | string
+    equipmentId?: StringWithAggregatesFilter<"Items"> | string
     name?: StringWithAggregatesFilter<"Items"> | string
+    image?: StringWithAggregatesFilter<"Items"> | string
+    description?: StringWithAggregatesFilter<"Items"> | string
+    type?: StringWithAggregatesFilter<"Items"> | string
     attack?: IntNullableWithAggregatesFilter<"Items"> | number | null
     defense?: IntNullableWithAggregatesFilter<"Items"> | number | null
     price?: IntWithAggregatesFilter<"Items"> | number
-    owned?: BoolWithAggregatesFilter<"Items"> | boolean
     equipped?: BoolWithAggregatesFilter<"Items"> | boolean
     userId?: StringWithAggregatesFilter<"Items"> | string
   }
@@ -4918,76 +4976,97 @@ export namespace Prisma {
 
   export type ItemsCreateInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
     user: UsersCreateNestedOneWithoutItemsInput
   }
 
   export type ItemsUncheckedCreateInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
     userId: string
   }
 
   export type ItemsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
     user?: UsersUpdateOneRequiredWithoutItemsNestedInput
   }
 
   export type ItemsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ItemsCreateManyInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
     userId: string
   }
 
   export type ItemsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ItemsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -5184,13 +5263,21 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
+  export type ItemsUserIdEquipmentIdCompoundUniqueInput = {
+    userId: string
+    equipmentId: string
+  }
+
   export type ItemsCountOrderByAggregateInput = {
     id?: SortOrder
+    equipmentId?: SortOrder
     name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
     price?: SortOrder
-    owned?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
   }
@@ -5203,22 +5290,28 @@ export namespace Prisma {
 
   export type ItemsMaxOrderByAggregateInput = {
     id?: SortOrder
+    equipmentId?: SortOrder
     name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
     price?: SortOrder
-    owned?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
   }
 
   export type ItemsMinOrderByAggregateInput = {
     id?: SortOrder
+    equipmentId?: SortOrder
     name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
     price?: SortOrder
-    owned?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
   }
@@ -5553,21 +5646,27 @@ export namespace Prisma {
 
   export type ItemsCreateWithoutUserInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
   }
 
   export type ItemsUncheckedCreateWithoutUserInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
   }
 
@@ -5631,11 +5730,14 @@ export namespace Prisma {
     OR?: ItemsScalarWhereInput[]
     NOT?: ItemsScalarWhereInput | ItemsScalarWhereInput[]
     id?: StringFilter<"Items"> | string
+    equipmentId?: StringFilter<"Items"> | string
     name?: StringFilter<"Items"> | string
+    image?: StringFilter<"Items"> | string
+    description?: StringFilter<"Items"> | string
+    type?: StringFilter<"Items"> | string
     attack?: IntNullableFilter<"Items"> | number | null
     defense?: IntNullableFilter<"Items"> | number | null
     price?: IntFilter<"Items"> | number
-    owned?: BoolFilter<"Items"> | boolean
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
   }
@@ -5746,41 +5848,53 @@ export namespace Prisma {
 
   export type ItemsCreateManyUserInput = {
     id?: string
+    equipmentId: string
     name: string
+    image: string
+    description: string
+    type: string
     attack?: number | null
     defense?: number | null
     price: number
-    owned?: boolean
     equipped?: boolean
   }
 
   export type ItemsUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ItemsUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ItemsUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    equipmentId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     attack?: NullableIntFieldUpdateOperationsInput | number | null
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
-    owned?: BoolFieldUpdateOperationsInput | boolean
     equipped?: BoolFieldUpdateOperationsInput | boolean
   }
 

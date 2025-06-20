@@ -42,13 +42,18 @@ model UserStatus {
 }
 
 model Items {
-  id        String   @id @default(cuid())
-  name      String
-  attack    Int?
-  defense   Int?
-  price     Int
-  owned     Boolean  @default(false)
-  equipped  Boolean  @default(false)
-  userId    String
-  user      Users    @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  equipmentId String
+  name        String
+  image       String
+  description String
+  type        String
+  attack      Int?
+  defense     Int?
+  price       Int
+  equipped    Boolean  @default(false)
+  userId      String
+  user        Users    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, equipmentId])
 }

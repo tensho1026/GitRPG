@@ -140,11 +140,14 @@ exports.Prisma.UserStatusScalarFieldEnum = {
 
 exports.Prisma.ItemsScalarFieldEnum = {
   id: 'id',
+  equipmentId: 'equipmentId',
   name: 'name',
+  image: 'image',
+  description: 'description',
+  type: 'type',
   attack: 'attack',
   defense: 'defense',
   price: 'price',
-  owned: 'owned',
   equipped: 'equipped',
   userId: 'userId'
 };
