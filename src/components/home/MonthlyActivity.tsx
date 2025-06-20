@@ -37,10 +37,10 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold text-green-100 font-mono pixel-text">
-              📈 月間アクティビティ
+              📈 今月の草
             </h2>
             <span className="bg-green-700 text-green-100 py-1 px-2 rounded font-mono text-sm pixel-text">
-              今月: {thisMonthTotal}件
+              今月: {thisMonthTotal}コミット
             </span>
           </div>
 

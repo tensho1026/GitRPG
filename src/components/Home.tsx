@@ -12,6 +12,8 @@ import MyAvatar from "./home/MyAvatar";
 import EquipmentStatus from "./home/EquipmentStatus";
 import MonthlyActivity from "./home/MonthlyActivity";
 import { fetchMonthlyContributions } from "@/actions/github/getCommitThisMonth";
+import CombatStatus from "./home/CombatStatus";
+import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 
 type DailyCommit = {
   date: string;
@@ -22,7 +24,14 @@ export default function HomeScreen() {
   const { data: session, status } = useSession();
   const [userStatus, setUserStatus] = useState<
     | (Users & {
-        status: { commit: number; level: number; coin: number } | null;
+        status: {
+          commit: number;
+          level: number;
+          coin: number;
+          hp: number;
+          attack: number;
+          defense: number;
+        } | null;
       })
     | null
   >(null);
@@ -30,6 +39,11 @@ export default function HomeScreen() {
   const [userData, setUserData] = useState({
     monthlyCommits: [] as DailyCommit[],
     thisMonthTotal: 0,
+  });
+  const [battleStatus, setBattleStatus] = useState({
+    hp: 0,
+    attack: 0,
+    defense: 0,
   });
 
   useEffect(() => {
@@ -44,12 +58,13 @@ export default function HomeScreen() {
           if (statusResult) {
             setUserStatus(statusResult);
 
-            const [items, contributionData] = await Promise.all([
+            const [items, contributionData, battleStats] = await Promise.all([
               getUserCurrentItems(session.user.email),
               fetchMonthlyContributions(
                 session.accessToken,
                 statusResult.createdAt
               ),
+              getCurrentUserBattleStatus(session.user.email),
             ]);
 
             if (items) {
@@ -60,6 +75,9 @@ export default function HomeScreen() {
                 monthlyCommits: contributionData.dailyCommits,
                 thisMonthTotal: contributionData.totalCommits,
               });
+            }
+            if (battleStats) {
+              setBattleStatus(battleStats);
             }
           }
         } catch (error) {
@@ -123,8 +141,13 @@ export default function HomeScreen() {
         </div>
 
         {/* Bottom Row - Equipment (medium) + Activity (large) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <EquipmentStatus userItems={userItems} />
+          <CombatStatus
+            hp={battleStatus.hp + (currentLevel ?? 0) * 10}
+            attack={battleStatus.attack}
+            defense={battleStatus.defense}
+          />
 
           <MonthlyActivity
             monthlyCommits={userData.monthlyCommits}
