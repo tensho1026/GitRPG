@@ -30,18 +30,20 @@ model Users {
 }
 
 model UserStatus {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  level     Int      @default(1)
-  commit    Int      @default(0)
-  coin      Int      @default(0)
-  hp        Int      @default(100)
-  attack    Int      @default(10)
-  defense   Int      @default(10)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  level            Int      @default(1)
+  commit           Int      @default(0)
+  coin             Int      @default(100)
+  hp               Int      @default(100)
+  attack           Int      @default(10)
+  defense          Int      @default(5)
+  selectedAvatar   String   @default("warrior")
+  unlockedAvatars  String[] @default(["warrior"])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  user      Users    @relation(fields: [userId], references: [id])
+  user Users @relation(fields: [userId], references: [id])
 }
 
 model Items {

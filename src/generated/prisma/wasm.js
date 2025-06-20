@@ -137,6 +137,8 @@ exports.Prisma.UserStatusScalarFieldEnum = {
   hp: 'hp',
   attack: 'attack',
   defense: 'defense',
+  selectedAvatar: 'selectedAvatar',
+  unlockedAvatars: 'unlockedAvatars',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -2213,6 +2213,7 @@ export namespace Prisma {
     hp: number | null
     attack: number | null
     defense: number | null
+    selectedAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2226,6 +2227,7 @@ export namespace Prisma {
     hp: number | null
     attack: number | null
     defense: number | null
+    selectedAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2239,6 +2241,8 @@ export namespace Prisma {
     hp: number
     attack: number
     defense: number
+    selectedAvatar: number
+    unlockedAvatars: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2272,6 +2276,7 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
+    selectedAvatar?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2285,6 +2290,7 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
+    selectedAvatar?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2298,6 +2304,8 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
+    selectedAvatar?: true
+    unlockedAvatars?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2398,6 +2406,8 @@ export namespace Prisma {
     hp: number
     attack: number
     defense: number
+    selectedAvatar: string
+    unlockedAvatars: string[]
     createdAt: Date
     updatedAt: Date
     _count: UserStatusCountAggregateOutputType | null
@@ -2430,6 +2440,8 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
+    selectedAvatar?: boolean
+    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2444,6 +2456,8 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
+    selectedAvatar?: boolean
+    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2458,6 +2472,8 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
+    selectedAvatar?: boolean
+    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2472,11 +2488,13 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
+    selectedAvatar?: boolean
+    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "hp" | "attack" | "defense" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
+  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "hp" | "attack" | "defense" | "selectedAvatar" | "unlockedAvatars" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
   export type UserStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -2501,6 +2519,8 @@ export namespace Prisma {
       hp: number
       attack: number
       defense: number
+      selectedAvatar: string
+      unlockedAvatars: string[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userStatus"]>
@@ -2935,6 +2955,8 @@ export namespace Prisma {
     readonly hp: FieldRef<"UserStatus", 'Int'>
     readonly attack: FieldRef<"UserStatus", 'Int'>
     readonly defense: FieldRef<"UserStatus", 'Int'>
+    readonly selectedAvatar: FieldRef<"UserStatus", 'String'>
+    readonly unlockedAvatars: FieldRef<"UserStatus", 'String[]'>
     readonly createdAt: FieldRef<"UserStatus", 'DateTime'>
     readonly updatedAt: FieldRef<"UserStatus", 'DateTime'>
   }
@@ -4563,6 +4585,8 @@ export namespace Prisma {
     hp: 'hp',
     attack: 'attack',
     defense: 'defense',
+    selectedAvatar: 'selectedAvatar',
+    unlockedAvatars: 'unlockedAvatars',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4752,6 +4776,8 @@ export namespace Prisma {
     hp?: IntFilter<"UserStatus"> | number
     attack?: IntFilter<"UserStatus"> | number
     defense?: IntFilter<"UserStatus"> | number
+    selectedAvatar?: StringFilter<"UserStatus"> | string
+    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4766,6 +4792,8 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
+    selectedAvatar?: SortOrder
+    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UsersOrderByWithRelationInput
@@ -4783,6 +4811,8 @@ export namespace Prisma {
     hp?: IntFilter<"UserStatus"> | number
     attack?: IntFilter<"UserStatus"> | number
     defense?: IntFilter<"UserStatus"> | number
+    selectedAvatar?: StringFilter<"UserStatus"> | string
+    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4797,6 +4827,8 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
+    selectedAvatar?: SortOrder
+    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserStatusCountOrderByAggregateInput
@@ -4818,6 +4850,8 @@ export namespace Prisma {
     hp?: IntWithAggregatesFilter<"UserStatus"> | number
     attack?: IntWithAggregatesFilter<"UserStatus"> | number
     defense?: IntWithAggregatesFilter<"UserStatus"> | number
+    selectedAvatar?: StringWithAggregatesFilter<"UserStatus"> | string
+    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
   }
@@ -4982,6 +5016,8 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
+    selectedAvatar?: string
+    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UsersCreateNestedOneWithoutStatusInput
@@ -4996,6 +5032,8 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
+    selectedAvatar?: string
+    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5008,6 +5046,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutStatusNestedInput
@@ -5022,6 +5062,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5035,6 +5077,8 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
+    selectedAvatar?: string
+    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5047,6 +5091,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5060,6 +5106,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5269,6 +5317,14 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type UsersScalarRelationFilter = {
     is?: UsersWhereInput
     isNot?: UsersWhereInput
@@ -5283,6 +5339,8 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
+    selectedAvatar?: SortOrder
+    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5305,6 +5363,7 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
+    selectedAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5318,6 +5377,7 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
+    selectedAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5533,6 +5593,10 @@ export namespace Prisma {
     deleteMany?: ItemsScalarWhereInput | ItemsScalarWhereInput[]
   }
 
+  export type UserStatusCreateunlockedAvatarsInput = {
+    set: string[]
+  }
+
   export type UsersCreateNestedOneWithoutStatusInput = {
     create?: XOR<UsersCreateWithoutStatusInput, UsersUncheckedCreateWithoutStatusInput>
     connectOrCreate?: UsersCreateOrConnectWithoutStatusInput
@@ -5545,6 +5609,11 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserStatusUpdateunlockedAvatarsInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type UsersUpdateOneRequiredWithoutStatusNestedInput = {
@@ -5734,6 +5803,8 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
+    selectedAvatar?: string
+    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5746,6 +5817,8 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
+    selectedAvatar?: string
+    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5810,6 +5883,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5822,6 +5897,8 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
+    selectedAvatar?: StringFieldUpdateOperationsInput | string
+    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
