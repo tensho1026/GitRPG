@@ -35,6 +35,9 @@ model UserStatus {
   level     Int      @default(1)
   commit    Int      @default(0)
   coin      Int      @default(0)
+  hp        Int      @default(100)
+  attack    Int      @default(10)
+  defense   Int      @default(10)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -134,6 +134,9 @@ exports.Prisma.UserStatusScalarFieldEnum = {
   level: 'level',
   commit: 'commit',
   coin: 'coin',
+  hp: 'hp',
+  attack: 'attack',
+  defense: 'defense',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

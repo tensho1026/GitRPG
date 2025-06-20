@@ -2190,12 +2190,18 @@ export namespace Prisma {
     level: number | null
     commit: number | null
     coin: number | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
   }
 
   export type UserStatusSumAggregateOutputType = {
     level: number | null
     commit: number | null
     coin: number | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
   }
 
   export type UserStatusMinAggregateOutputType = {
@@ -2204,6 +2210,9 @@ export namespace Prisma {
     level: number | null
     commit: number | null
     coin: number | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2214,6 +2223,9 @@ export namespace Prisma {
     level: number | null
     commit: number | null
     coin: number | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2224,6 +2236,9 @@ export namespace Prisma {
     level: number
     commit: number
     coin: number
+    hp: number
+    attack: number
+    defense: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2234,12 +2249,18 @@ export namespace Prisma {
     level?: true
     commit?: true
     coin?: true
+    hp?: true
+    attack?: true
+    defense?: true
   }
 
   export type UserStatusSumAggregateInputType = {
     level?: true
     commit?: true
     coin?: true
+    hp?: true
+    attack?: true
+    defense?: true
   }
 
   export type UserStatusMinAggregateInputType = {
@@ -2248,6 +2269,9 @@ export namespace Prisma {
     level?: true
     commit?: true
     coin?: true
+    hp?: true
+    attack?: true
+    defense?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2258,6 +2282,9 @@ export namespace Prisma {
     level?: true
     commit?: true
     coin?: true
+    hp?: true
+    attack?: true
+    defense?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2268,6 +2295,9 @@ export namespace Prisma {
     level?: true
     commit?: true
     coin?: true
+    hp?: true
+    attack?: true
+    defense?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2365,6 +2395,9 @@ export namespace Prisma {
     level: number
     commit: number
     coin: number
+    hp: number
+    attack: number
+    defense: number
     createdAt: Date
     updatedAt: Date
     _count: UserStatusCountAggregateOutputType | null
@@ -2394,6 +2427,9 @@ export namespace Prisma {
     level?: boolean
     commit?: boolean
     coin?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2405,6 +2441,9 @@ export namespace Prisma {
     level?: boolean
     commit?: boolean
     coin?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2416,6 +2455,9 @@ export namespace Prisma {
     level?: boolean
     commit?: boolean
     coin?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2427,11 +2469,14 @@ export namespace Prisma {
     level?: boolean
     commit?: boolean
     coin?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
+  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "hp" | "attack" | "defense" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
   export type UserStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -2453,6 +2498,9 @@ export namespace Prisma {
       level: number
       commit: number
       coin: number
+      hp: number
+      attack: number
+      defense: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userStatus"]>
@@ -2884,6 +2932,9 @@ export namespace Prisma {
     readonly level: FieldRef<"UserStatus", 'Int'>
     readonly commit: FieldRef<"UserStatus", 'Int'>
     readonly coin: FieldRef<"UserStatus", 'Int'>
+    readonly hp: FieldRef<"UserStatus", 'Int'>
+    readonly attack: FieldRef<"UserStatus", 'Int'>
+    readonly defense: FieldRef<"UserStatus", 'Int'>
     readonly createdAt: FieldRef<"UserStatus", 'DateTime'>
     readonly updatedAt: FieldRef<"UserStatus", 'DateTime'>
   }
@@ -4509,6 +4560,9 @@ export namespace Prisma {
     level: 'level',
     commit: 'commit',
     coin: 'coin',
+    hp: 'hp',
+    attack: 'attack',
+    defense: 'defense',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4695,6 +4749,9 @@ export namespace Prisma {
     level?: IntFilter<"UserStatus"> | number
     commit?: IntFilter<"UserStatus"> | number
     coin?: IntFilter<"UserStatus"> | number
+    hp?: IntFilter<"UserStatus"> | number
+    attack?: IntFilter<"UserStatus"> | number
+    defense?: IntFilter<"UserStatus"> | number
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4706,6 +4763,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UsersOrderByWithRelationInput
@@ -4720,6 +4780,9 @@ export namespace Prisma {
     level?: IntFilter<"UserStatus"> | number
     commit?: IntFilter<"UserStatus"> | number
     coin?: IntFilter<"UserStatus"> | number
+    hp?: IntFilter<"UserStatus"> | number
+    attack?: IntFilter<"UserStatus"> | number
+    defense?: IntFilter<"UserStatus"> | number
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4731,6 +4794,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserStatusCountOrderByAggregateInput
@@ -4749,6 +4815,9 @@ export namespace Prisma {
     level?: IntWithAggregatesFilter<"UserStatus"> | number
     commit?: IntWithAggregatesFilter<"UserStatus"> | number
     coin?: IntWithAggregatesFilter<"UserStatus"> | number
+    hp?: IntWithAggregatesFilter<"UserStatus"> | number
+    attack?: IntWithAggregatesFilter<"UserStatus"> | number
+    defense?: IntWithAggregatesFilter<"UserStatus"> | number
     createdAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
   }
@@ -4910,6 +4979,9 @@ export namespace Prisma {
     level?: number
     commit?: number
     coin?: number
+    hp?: number
+    attack?: number
+    defense?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UsersCreateNestedOneWithoutStatusInput
@@ -4921,6 +4993,9 @@ export namespace Prisma {
     level?: number
     commit?: number
     coin?: number
+    hp?: number
+    attack?: number
+    defense?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4930,6 +5005,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutStatusNestedInput
@@ -4941,6 +5019,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4951,6 +5032,9 @@ export namespace Prisma {
     level?: number
     commit?: number
     coin?: number
+    hp?: number
+    attack?: number
+    defense?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4960,6 +5044,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4970,6 +5057,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5190,6 +5280,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5198,6 +5291,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
   }
 
   export type UserStatusMaxOrderByAggregateInput = {
@@ -5206,6 +5302,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5216,6 +5315,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5224,6 +5326,9 @@ export namespace Prisma {
     level?: SortOrder
     commit?: SortOrder
     coin?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5626,6 +5731,9 @@ export namespace Prisma {
     level?: number
     commit?: number
     coin?: number
+    hp?: number
+    attack?: number
+    defense?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5635,6 +5743,9 @@ export namespace Prisma {
     level?: number
     commit?: number
     coin?: number
+    hp?: number
+    attack?: number
+    defense?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5696,6 +5807,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5705,6 +5819,9 @@ export namespace Prisma {
     level?: IntFieldUpdateOperationsInput | number
     commit?: IntFieldUpdateOperationsInput | number
     coin?: IntFieldUpdateOperationsInput | number
+    hp?: IntFieldUpdateOperationsInput | number
+    attack?: IntFieldUpdateOperationsInput | number
+    defense?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

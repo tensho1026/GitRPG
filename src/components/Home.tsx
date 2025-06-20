@@ -8,15 +8,17 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { UserStatuses } from "@/types/user/userStatus";
-
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import UserBasicInfo from "./home/UserBasicInfo";
 import UserStatus from "./home/UserStatus";
 import Link from "next/link";
+import { Equipment } from "@/types/equipment";
+import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
 
 export default function HomeScreen() {
   const { data: session, status } = useSession();
   const [userStatus, setUserStatus] = useState<UserStatuses | null>(null);
+  const [userItems, setUserItems] = useState<Equipment[]>([]);
   const days = ["月", "火", "水", "木", "金", "土", "日"];
 
   const currentLevel = userStatus?.status?.level ?? 1;
@@ -59,6 +61,19 @@ export default function HomeScreen() {
         })
         .catch((err) => {
           console.error("ユーザー情報取得失敗:", err);
+        });
+      getUserCurrentItems(session?.user?.email ?? "")
+        .then((items) => {
+          console.log("取得したアイテム:", items);
+          setUserItems(
+            items.map((item) => ({
+              ...item,
+              owned: true,
+            }))
+          );
+        })
+        .catch((err) => {
+          console.error("アイテム取得失敗:", err);
         });
     }
   }, [status, session?.user?.email]);
@@ -180,7 +195,8 @@ export default function HomeScreen() {
                       </span>
                     </div>
                     <span className="text-orange-100 font-mono text-sm pixel-text font-bold">
-                      {userData.equippedItems.weapon}
+                      {userItems.find((item) => item.type === "weapon")?.name ||
+                        "未装備"}
                     </span>
                   </div>
 
@@ -192,7 +208,7 @@ export default function HomeScreen() {
                       </span>
                     </div>
                     <span className="text-orange-100 font-mono text-sm pixel-text font-bold">
-                      {userData.equippedItems.armor}
+                      {userItems.find((item) => item.type === "armor")?.name}
                     </span>
                   </div>
 
@@ -204,7 +220,10 @@ export default function HomeScreen() {
                       </span>
                     </div>
                     <span className="text-orange-100 font-mono text-sm pixel-text font-bold">
-                      {userData.equippedItems.accessory}
+                      {
+                        userItems.find((item) => item.type === "accessory")
+                          ?.name
+                      }
                     </span>
                   </div>
                 </div>
