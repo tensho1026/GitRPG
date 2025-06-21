@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Sword, Shield, Star, Coins, ShoppingCart, Lock } from "lucide-react";
+import { Sword, Shield, Star, Coins, Lock } from "lucide-react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { equipmentData } from "@/data/equipment";
@@ -26,8 +26,11 @@ const typeIcons = {
 };
 
 /* ---------- メインコンポーネント ---------- */
-export default function EquipmentShop() {
-  const [selectedTab, setSelectedTab] = useState("all");
+export default function EquipmentShop({
+  selectedTab,
+}: {
+  selectedTab: string;
+}) {
   const [coins, setCoins] = useState<number>(0);
   const [userItems, setUserItems] = useState<UserItem[]>([]);
   const { data: session } = useSession();
@@ -110,15 +113,11 @@ export default function EquipmentShop() {
 
   return (
     <div
-      className="min-h-screen p-4 font-mono relative"
+      className="font-mono relative"
       style={{
         fontFamily: '"Courier New", monospace',
         fontSize: "14px",
         imageRendering: "pixelated",
-        background:
-          "linear-gradient(45deg, #1e40af 0%, #7c3aed 25%, #059669 50%, #dc2626 75%, #ea580c 100%)",
-        backgroundSize: "400% 400%",
-        animation: "gradientShift 8s ease infinite",
       }}>
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -129,17 +128,6 @@ export default function EquipmentShop() {
       )}
       {/* ------- keyframes (JSX style) ------- */}
       <style jsx>{`
-        @keyframes gradientShift {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
         .pixel-border {
           border-style: solid;
           image-rendering: pixelated;
@@ -152,111 +140,12 @@ export default function EquipmentShop() {
       `}</style>
 
       <div className="max-w-7xl mx-auto">
-        {/* -------- Header -------- */}
-        <div className="mb-6">
-          <div
-            className="border-4 p-6 pixel-border"
-            style={{
-              backgroundColor: "#dc2626",
-              borderColor: "#fbbf24",
-              boxShadow: "6px 6px 0px #991b1b, 12px 12px 0px rgba(0,0,0,0.6)",
-            }}>
-            <div className="flex items-center justify-between">
-              <h1 className="text-4xl font-bold text-white flex items-center gap-3 pixel-text">
-                <ShoppingCart
-                  className="w-10 h-10"
-                  style={{ imageRendering: "pixelated" }}
-                />
-                装備ショップ
-              </h1>
-              <div
-                className="flex items-center gap-3 px-6 py-3 border-3 text-orange-900 font-bold text-xl"
-                style={{
-                  backgroundColor: "#fbbf24",
-                  borderColor: "#f59e0b",
-                  boxShadow: "3px 3px 0px #d97706, 6px 6px 0px rgba(0,0,0,0.4)",
-                }}>
-                <Coins
-                  className="w-7 h-7"
-                  style={{ imageRendering: "pixelated" }}
-                />
-                <span className="pixel-text">{coins.toLocaleString()}</span>
-              </div>
-            </div>
-            <div className="mt-4">
-              <button
-                onClick={() => (window.location.href = "/home")}
-                className="px-6 py-3 border-4 font-bold pixel-text text-lg"
-                style={{
-                  backgroundColor: "#8b5cf6",
-                  borderColor: "#7c3aed",
-                  color: "white",
-                  boxShadow: "4px 4px 0px #6d28d9, 8px 8px 0px rgba(0,0,0,0.4)",
-                  cursor: "pointer",
-                }}>
-                ホームに戻る
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* -------- Tabs -------- */}
-        <div className="mb-6">
-          <div className="grid grid-cols-4 gap-4">
-            {[
-              {
-                value: "all",
-                label: "すべて",
-                color: "#8b5cf6",
-                shadow: "#7c3aed",
-              },
-              {
-                value: "weapon",
-                label: "武器",
-                color: "#ef4444",
-                shadow: "#dc2626",
-              },
-              {
-                value: "armor",
-                label: "防具",
-                color: "#3b82f6",
-                shadow: "#1d4ed8",
-              },
-              {
-                value: "accessory",
-                label: "アクセサリー",
-                color: "#22c55e",
-                shadow: "#16a34a",
-              },
-            ].map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setSelectedTab(tab.value)}
-                className="p-4 border-4 font-bold text-white pixel-text text-lg"
-                style={{
-                  backgroundColor:
-                    selectedTab === tab.value ? tab.color : "#4b5563",
-                  borderColor:
-                    selectedTab === tab.value ? "#ffffff" : "#6b7280",
-                  boxShadow:
-                    selectedTab === tab.value
-                      ? `4px 4px 0px ${tab.shadow}, 8px 8px 0px rgba(0,0,0,0.4)`
-                      : "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)",
-                  cursor: "pointer",
-                  transition: "all 0.1s ease",
-                }}>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* -------- Equipment Grid -------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {filteredEquipment.map((item) => (
             <div
               key={item.id}
-              className="relative pixel-border flex flex-col"
+              className="relative pixel-border flex flex-col h-full"
               style={{
                 backgroundColor: "#1f2937",
                 borderWidth: "5px",

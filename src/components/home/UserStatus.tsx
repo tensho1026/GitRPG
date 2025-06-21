@@ -21,14 +21,14 @@ function UserStatus({
     <div className="lg:col-span-2">
       <Card className="bg-gradient-to-b from-blue-800/95 to-blue-900/95 border-4 border-cyan-400 shadow-2xl pixel-border h-full">
         <CardContent className="p-6">
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-10">
             <TrendingUp className="w-6 h-6 text-cyan-300 mr-2" />
             <h2 className="text-cyan-200 font-mono text-lg pixel-text font-bold">
               📊 現在のステータス
             </h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-3 gap-4 mb-20">
             <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
               <div className="text-cyan-300 font-mono text-2xl pixel-text font-bold">
                 Lv.{currentLevel}

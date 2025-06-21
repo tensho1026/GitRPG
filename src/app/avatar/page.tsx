@@ -183,10 +183,13 @@ export default function AvatarSelection() {
     <div
       className="min-h-screen p-4 font-mono"
       style={{
-        background:
-          "linear-gradient(45deg, #1e40af 0%, #7c3aed 25%, #059669 50%, #dc2626 75%, #ea580c 100%)",
-        backgroundSize: "400% 400%",
-        animation: "gradientShift 8s ease infinite",
+        backgroundColor: "#7c3aed",
+        backgroundImage: `
+          radial-gradient(circle at 25% 25%, rgba(167, 139, 250, 0.3) 2px, transparent 2px),
+          radial-gradient(circle at 75% 75%, rgba(167, 139, 250, 0.3) 2px, transparent 2px)
+        `,
+        backgroundSize: "20px 20px",
+        backgroundPosition: "0 0, 10px 10px",
       }}>
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -196,17 +199,6 @@ export default function AvatarSelection() {
         </div>
       )}
       <style jsx>{`
-        @keyframes gradientShift {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
         .pixel-border {
           border-style: solid;
           image-rendering: pixelated;

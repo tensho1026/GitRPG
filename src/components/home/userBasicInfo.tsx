@@ -21,7 +21,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
     <div className="lg:col-span-1">
       <Card className="bg-gradient-to-b from-emerald-800/95 to-emerald-900/95 border-4 border-yellow-500 shadow-2xl pixel-border h-full">
         <CardContent className="p-4">
-          <div className="flex items-center mb-3">
+          <div className="flex items-center mb-8">
             <Crown className="w-5 h-5 text-yellow-400 mr-2" />
             <h2 className="text-yellow-200 font-mono text-sm pixel-text font-bold">
               🔑 冒険者情報
@@ -41,7 +41,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <h3 className="text-yellow-100 font-mono text-lg pixel-text font-bold mt-2">
+            <h3 className="text-yellow-100 font-mono text-lg pixel-text font-bold mt-2 mb-5">
               {userData.name}
             </h3>
             <p className="text-emerald-200 font-mono text-xs pixel-text">
@@ -49,7 +49,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             </p>
           </div>
 
-          <div className="space-y-2 mb-3">
+          <div className="space-y-2 mb-3 mt-10">
             <div className="flex items-center text-emerald-300 font-mono text-xs pixel-text">
               <Calendar className="w-3 h-3 mr-1" />
               <span>{userData.registrationDate}</span>
@@ -60,7 +60,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             <Button
               variant="outline"
               size="sm"
-              className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs mb-2">
+              className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs mb-8 mt-5">
               <Github className="w-3 h-3 mr-1" />
               GitHub
             </Button>
