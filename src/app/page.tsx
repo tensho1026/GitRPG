@@ -1,9 +1,38 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function page() {
+export default function Page() {
+  const { status } = useSession();
+  const router = useRouter();
+
+  // Redirect to home if user is authenticated
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/home");
+    }
+  }, [status, router]);
+
+  // Show loading while checking authentication
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-green-900 relative overflow-hidden flex items-center justify-center">
+        <div className="text-white text-2xl font-bold">読み込み中...</div>
+      </div>
+    );
+  }
+
+  // Don't render the landing page if user is authenticated (will redirect)
+  if (status === "authenticated") {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-green-900 relative overflow-hidden">
       {/* Background pattern overlay */}

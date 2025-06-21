@@ -137,8 +137,6 @@ exports.Prisma.UserStatusScalarFieldEnum = {
   hp: 'hp',
   attack: 'attack',
   defense: 'defense',
-  selectedAvatar: 'selectedAvatar',
-  unlockedAvatars: 'unlockedAvatars',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -154,7 +152,25 @@ exports.Prisma.ItemsScalarFieldEnum = {
   defense: 'defense',
   price: 'price',
   equipped: 'equipped',
-  userId: 'userId'
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AvatarScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  image: 'image',
+  description: 'description',
+  type: 'type',
+  hp: 'hp',
+  attack: 'attack',
+  defense: 'defense',
+  price: 'price',
+  equipped: 'equipped',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -176,7 +192,8 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Users: 'Users',
   UserStatus: 'UserStatus',
-  Items: 'Items'
+  Items: 'Items',
+  Avatar: 'Avatar'
 };
 
 /**

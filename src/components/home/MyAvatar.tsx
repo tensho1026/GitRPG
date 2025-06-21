@@ -1,17 +1,50 @@
 "use client";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Shirt } from "lucide-react";
+import { User, Shirt, Heart, Sword, Shield } from "lucide-react";
 import type { Items } from "@/generated/prisma";
+import type { Avatar as UserAvatar } from "@/generated/prisma";
 import Image from "next/image";
 import Link from "next/link";
+import { getEquippedAvatar } from "@/actions/user/avatar/getUserAvatars";
 
 interface MyAvatarProps {
-  level: number;
   userItems: Items[];
 }
 
-export default function MyAvatar({ level, userItems }: MyAvatarProps) {
+export default function MyAvatar({ userItems }: MyAvatarProps) {
+  const { data: session } = useSession();
+  const [equippedAvatar, setEquippedAvatar] = useState<UserAvatar | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEquippedAvatar = async () => {
+      if (!session?.user?.email) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const equipped = await getEquippedAvatar(session.user.email);
+        setEquippedAvatar(equipped);
+      } catch (error) {
+        console.error("Failed to fetch equipped avatar:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEquippedAvatar();
+  }, [session]);
+
+  const statIcons = {
+    hp: <Heart className="w-4 h-4 text-green-400" />,
+    attack: <Sword className="w-4 h-4 text-red-400" />,
+    defense: <Shield className="w-4 h-4 text-blue-400" />,
+  };
+
   return (
     <div className="lg:col-span-1">
       <div className="relative">
@@ -47,22 +80,51 @@ export default function MyAvatar({ level, userItems }: MyAvatarProps) {
                     boxShadow:
                       "inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.4)",
                   }}>
-                  <Image
-                    src="/masic.png"
-                    alt="Character"
-                    width={120}
-                    height={150}
-                    className="object-contain"
-                    style={{ imageRendering: "pixelated" }}
-                  />
+                  {isLoading ? (
+                    <div className="text-pink-200 font-mono text-sm pixel-text">
+                      読み込み中...
+                    </div>
+                  ) : equippedAvatar ? (
+                    <Image
+                      src={equippedAvatar.image}
+                      alt={equippedAvatar.name}
+                      width={120}
+                      height={150}
+                      className="object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                    />
+                  ) : (
+                    <div className="text-pink-200 font-mono text-sm pixel-text">
+                      アバター未選択
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Character Info */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p className="text-pink-100 font-mono text-lg pixel-text font-bold">
-                  Lv.{level} 戦士
+                  {equippedAvatar ? equippedAvatar.name : "戦士"}
                 </p>
+
+                {/* Avatar Stats */}
+                {equippedAvatar && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-center gap-2 text-green-200 text-sm pixel-text">
+                      {statIcons.hp}
+                      <span>HP +{equippedAvatar.hp || 0}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-red-200 text-sm pixel-text">
+                      {statIcons.attack}
+                      <span>攻撃 +{equippedAvatar.attack || 0}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-blue-200 text-sm pixel-text">
+                      {statIcons.defense}
+                      <span>防御 +{equippedAvatar.defense || 0}</span>
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-purple-200 font-mono text-sm pixel-text">
                   装備中:{" "}
                   <span className="text-pink-300 font-bold">

@@ -6,14 +6,16 @@ import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
 import { Items, Users } from "@/generated/prisma";
-import UserBasicInfo from "./home/UserBasicInfo";
-import UserStatus from "./home/UserStatus";
-import MyAvatar from "./home/MyAvatar";
-import EquipmentStatus from "./home/EquipmentStatus";
-import MonthlyActivity from "./home/MonthlyActivity";
+
 import { fetchMonthlyContributions } from "@/actions/github/getCommitThisMonth";
-import CombatStatus from "./home/CombatStatus";
+
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
+import UserBasicInfo from "./UserBasicInfo";
+import UserStatus from "./UserStatus";
+import CombatStatus from "./CombatStatus";
+import EquipmentStatus from "./EquipmentStatus";
+import MyAvatar from "./MyAvatar";
+import MonthlyActivity from "./MonthlyActivity";
 
 type DailyCommit = {
   date: string;
@@ -137,14 +139,14 @@ export default function HomeScreen() {
           />
 
           {/* Avatar Display - Takes 1 column */}
-          <MyAvatar level={currentLevel} userItems={userItems} />
+          <MyAvatar userItems={userItems} />
         </div>
 
         {/* Bottom Row - Equipment (medium) + Activity (large) */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <EquipmentStatus userItems={userItems} />
           <CombatStatus
-            hp={battleStatus.hp + (currentLevel ?? 0) * 10}
+            hp={battleStatus.hp + (currentLevel ?? 0) * 10 }
             attack={battleStatus.attack}
             defense={battleStatus.defense}
           />

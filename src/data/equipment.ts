@@ -1,4 +1,4 @@
-import { Equipment } from "@/types/equipment";
+import { Equipment } from "@/types/equipment/equipment";
 
 export const equipmentData: Equipment[] = [
   {

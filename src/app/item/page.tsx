@@ -1,4 +1,4 @@
-import EquipmentShop from "@/components/Item";
+import EquipmentShop from "@/components/item/Item";
 import React from "react";
 
 function page() {

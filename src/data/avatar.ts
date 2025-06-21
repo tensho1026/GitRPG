@@ -1,0 +1,40 @@
+import { AvatarCharacter } from "@/types/avatar/avatar";
+
+export const avatarCharacters: AvatarCharacter[] = [
+  {
+    id: "warrior",
+    name: "戦士",
+    type: "warrior",
+    image: "/sword.png?height=120&width=120",
+    level: 1,
+    unlocked: true,
+    unlockLevel: 1,
+    price: 0,
+    statBonus: { hp: 5, attack: 15, defense: 5 },
+    description: "剣と盾を操る勇敢な戦士。高い攻撃力で敵を圧倒する。",
+  },
+  {
+    id: "guardian",
+    name: "守護者",
+    type: "guardian",
+    image: "/armor.png?height=120&width=120",
+    level: 5,
+    unlocked: false,
+    unlockLevel: 4,
+    price: 100,
+    statBonus: { hp: 12, attack: 3, defense: 18 },
+    description: "仲間を守る聖なる守護者。圧倒的な防御力を誇る。",
+  },
+  {
+    id: "mage",
+    name: "魔法使い",
+    type: "mage",
+    image: "/masic.png?height=120&width=120",
+    level: 8,
+    unlocked: false,
+    unlockLevel: 8,
+    price: 200,
+    statBonus: { hp: 8, attack: 2, defense: 3 },
+    description: "古代の魔法を操る賢者。バランスの取れた能力を持つ。",
+  },
+];

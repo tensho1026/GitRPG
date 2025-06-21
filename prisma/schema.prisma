@@ -27,6 +27,7 @@ model Users {
   updatedAt DateTime @default(now()) @updatedAt
   status    UserStatus?
   items     Items[]
+  avatar    Avatar[]
 }
 
 model UserStatus {
@@ -38,10 +39,8 @@ model UserStatus {
   hp               Int      @default(100)
   attack           Int      @default(10)
   defense          Int      @default(5)
-  selectedAvatar   String   @default("warrior")
-  unlockedAvatars  String[] @default(["warrior"])
   createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  updatedAt        DateTime @default(now()) @updatedAt
 
   user Users @relation(fields: [userId], references: [id])
 }
@@ -59,6 +58,25 @@ model Items {
   equipped    Boolean  @default(false)
   userId      String
   user        Users    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   @@unique([userId, equipmentId])
+}
+
+model Avatar {
+  id        String   @id @default(cuid())
+  name      String
+  image     String
+  description String
+  type        String
+  hp          Int?
+  attack      Int?
+  defense     Int?
+  price       Int
+  equipped    Boolean  @default(false)
+  userId      String
+  user        Users    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }

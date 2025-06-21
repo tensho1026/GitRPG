@@ -4,15 +4,15 @@ import { useSession } from "next-auth/react";
 
 import { updateCommits } from "@/actions/github/updateCommits";
 import { useEffect, useTransition } from "react";
-import HomeScreen from "@/components/Home";
+
 import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 import AuthButton from "../../components/auth/Auth-Button";
+import HomeScreen from "@/components/home/Home";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
 
-  // console.log(session);
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {

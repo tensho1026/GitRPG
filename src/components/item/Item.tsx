@@ -10,7 +10,7 @@ import { getUserItems } from "@/actions/item/getUserItems";
 import { purchaseItem } from "@/actions/item/purchaseItem";
 import { equipItem } from "@/actions/item/equipItem";
 import type { Items as UserItem } from "@/generated/prisma";
-import type { Equipment } from "@/types/equipment";
+import type { Equipment } from "@/types/equipment/equipment";
 
 type DisplayEquipment = Equipment & {
   dbId?: string;

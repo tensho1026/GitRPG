@@ -28,6 +28,11 @@ export type UserStatus = $Result.DefaultSelection<Prisma.$UserStatusPayload>
  * 
  */
 export type Items = $Result.DefaultSelection<Prisma.$ItemsPayload>
+/**
+ * Model Avatar
+ * 
+ */
+export type Avatar = $Result.DefaultSelection<Prisma.$AvatarPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -183,6 +188,16 @@ export class PrismaClient<
     * ```
     */
   get items(): Prisma.ItemsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.avatar`: Exposes CRUD operations for the **Avatar** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Avatars
+    * const avatars = await prisma.avatar.findMany()
+    * ```
+    */
+  get avatar(): Prisma.AvatarDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -625,7 +640,8 @@ export namespace Prisma {
   export const ModelName: {
     Users: 'Users',
     UserStatus: 'UserStatus',
-    Items: 'Items'
+    Items: 'Items',
+    Avatar: 'Avatar'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -644,7 +660,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "userStatus" | "items"
+      modelProps: "users" | "userStatus" | "items" | "avatar"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -870,6 +886,80 @@ export namespace Prisma {
           }
         }
       }
+      Avatar: {
+        payload: Prisma.$AvatarPayload<ExtArgs>
+        fields: Prisma.AvatarFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AvatarFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AvatarFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          findFirst: {
+            args: Prisma.AvatarFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AvatarFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          findMany: {
+            args: Prisma.AvatarFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>[]
+          }
+          create: {
+            args: Prisma.AvatarCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          createMany: {
+            args: Prisma.AvatarCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AvatarCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>[]
+          }
+          delete: {
+            args: Prisma.AvatarDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          update: {
+            args: Prisma.AvatarUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          deleteMany: {
+            args: Prisma.AvatarDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AvatarUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AvatarUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>[]
+          }
+          upsert: {
+            args: Prisma.AvatarUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AvatarPayload>
+          }
+          aggregate: {
+            args: Prisma.AvatarAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAvatar>
+          }
+          groupBy: {
+            args: Prisma.AvatarGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AvatarGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AvatarCountArgs<ExtArgs>
+            result: $Utils.Optional<AvatarCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -957,6 +1047,7 @@ export namespace Prisma {
     users?: UsersOmit
     userStatus?: UserStatusOmit
     items?: ItemsOmit
+    avatar?: AvatarOmit
   }
 
   /* Types for Logging */
@@ -1052,10 +1143,12 @@ export namespace Prisma {
 
   export type UsersCountOutputType = {
     items: number
+    avatar: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | UsersCountOutputTypeCountItemsArgs
+    avatar?: boolean | UsersCountOutputTypeCountAvatarArgs
   }
 
   // Custom InputTypes
@@ -1074,6 +1167,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ItemsWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountAvatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvatarWhereInput
   }
 
 
@@ -1247,6 +1347,7 @@ export namespace Prisma {
     updatedAt?: boolean
     status?: boolean | Users$statusArgs<ExtArgs>
     items?: boolean | Users$itemsArgs<ExtArgs>
+    avatar?: boolean | Users$avatarArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -1278,6 +1379,7 @@ export namespace Prisma {
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     status?: boolean | Users$statusArgs<ExtArgs>
     items?: boolean | Users$itemsArgs<ExtArgs>
+    avatar?: boolean | Users$avatarArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1288,6 +1390,7 @@ export namespace Prisma {
     objects: {
       status: Prisma.$UserStatusPayload<ExtArgs> | null
       items: Prisma.$ItemsPayload<ExtArgs>[]
+      avatar: Prisma.$AvatarPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1691,6 +1794,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     status<T extends Users$statusArgs<ExtArgs> = {}>(args?: Subset<T, Users$statusArgs<ExtArgs>>): Prisma__UserStatusClient<$Result.GetResult<Prisma.$UserStatusPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends Users$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Users$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ItemsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    avatar<T extends Users$avatarArgs<ExtArgs> = {}>(args?: Subset<T, Users$avatarArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2156,6 +2260,30 @@ export namespace Prisma {
   }
 
   /**
+   * Users.avatar
+   */
+  export type Users$avatarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    where?: AvatarWhereInput
+    orderBy?: AvatarOrderByWithRelationInput | AvatarOrderByWithRelationInput[]
+    cursor?: AvatarWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AvatarScalarFieldEnum | AvatarScalarFieldEnum[]
+  }
+
+  /**
    * Users without action
    */
   export type UsersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2213,7 +2341,6 @@ export namespace Prisma {
     hp: number | null
     attack: number | null
     defense: number | null
-    selectedAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2227,7 +2354,6 @@ export namespace Prisma {
     hp: number | null
     attack: number | null
     defense: number | null
-    selectedAvatar: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2241,8 +2367,6 @@ export namespace Prisma {
     hp: number
     attack: number
     defense: number
-    selectedAvatar: number
-    unlockedAvatars: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2276,7 +2400,6 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
-    selectedAvatar?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2290,7 +2413,6 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
-    selectedAvatar?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2304,8 +2426,6 @@ export namespace Prisma {
     hp?: true
     attack?: true
     defense?: true
-    selectedAvatar?: true
-    unlockedAvatars?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2406,8 +2526,6 @@ export namespace Prisma {
     hp: number
     attack: number
     defense: number
-    selectedAvatar: string
-    unlockedAvatars: string[]
     createdAt: Date
     updatedAt: Date
     _count: UserStatusCountAggregateOutputType | null
@@ -2440,8 +2558,6 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
-    selectedAvatar?: boolean
-    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2456,8 +2572,6 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
-    selectedAvatar?: boolean
-    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2472,8 +2586,6 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
-    selectedAvatar?: boolean
-    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
@@ -2488,13 +2600,11 @@ export namespace Prisma {
     hp?: boolean
     attack?: boolean
     defense?: boolean
-    selectedAvatar?: boolean
-    unlockedAvatars?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "hp" | "attack" | "defense" | "selectedAvatar" | "unlockedAvatars" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
+  export type UserStatusOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "level" | "commit" | "coin" | "hp" | "attack" | "defense" | "createdAt" | "updatedAt", ExtArgs["result"]["userStatus"]>
   export type UserStatusInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -2519,8 +2629,6 @@ export namespace Prisma {
       hp: number
       attack: number
       defense: number
-      selectedAvatar: string
-      unlockedAvatars: string[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userStatus"]>
@@ -2955,8 +3063,6 @@ export namespace Prisma {
     readonly hp: FieldRef<"UserStatus", 'Int'>
     readonly attack: FieldRef<"UserStatus", 'Int'>
     readonly defense: FieldRef<"UserStatus", 'Int'>
-    readonly selectedAvatar: FieldRef<"UserStatus", 'String'>
-    readonly unlockedAvatars: FieldRef<"UserStatus", 'String[]'>
     readonly createdAt: FieldRef<"UserStatus", 'DateTime'>
     readonly updatedAt: FieldRef<"UserStatus", 'DateTime'>
   }
@@ -3409,6 +3515,8 @@ export namespace Prisma {
     price: number | null
     equipped: boolean | null
     userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ItemsMaxAggregateOutputType = {
@@ -3423,6 +3531,8 @@ export namespace Prisma {
     price: number | null
     equipped: boolean | null
     userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ItemsCountAggregateOutputType = {
@@ -3437,6 +3547,8 @@ export namespace Prisma {
     price: number
     equipped: number
     userId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -3465,6 +3577,8 @@ export namespace Prisma {
     price?: true
     equipped?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ItemsMaxAggregateInputType = {
@@ -3479,6 +3593,8 @@ export namespace Prisma {
     price?: true
     equipped?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ItemsCountAggregateInputType = {
@@ -3493,6 +3609,8 @@ export namespace Prisma {
     price?: true
     equipped?: true
     userId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3594,6 +3712,8 @@ export namespace Prisma {
     price: number
     equipped: boolean
     userId: string
+    createdAt: Date
+    updatedAt: Date
     _count: ItemsCountAggregateOutputType | null
     _avg: ItemsAvgAggregateOutputType | null
     _sum: ItemsSumAggregateOutputType | null
@@ -3627,6 +3747,8 @@ export namespace Prisma {
     price?: boolean
     equipped?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["items"]>
 
@@ -3642,6 +3764,8 @@ export namespace Prisma {
     price?: boolean
     equipped?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["items"]>
 
@@ -3657,6 +3781,8 @@ export namespace Prisma {
     price?: boolean
     equipped?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["items"]>
 
@@ -3672,9 +3798,11 @@ export namespace Prisma {
     price?: boolean
     equipped?: boolean
     userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ItemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "equipmentId" | "name" | "image" | "description" | "type" | "attack" | "defense" | "price" | "equipped" | "userId", ExtArgs["result"]["items"]>
+  export type ItemsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "equipmentId" | "name" | "image" | "description" | "type" | "attack" | "defense" | "price" | "equipped" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["items"]>
   export type ItemsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -3702,6 +3830,8 @@ export namespace Prisma {
       price: number
       equipped: boolean
       userId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["items"]>
     composites: {}
   }
@@ -4137,6 +4267,8 @@ export namespace Prisma {
     readonly price: FieldRef<"Items", 'Int'>
     readonly equipped: FieldRef<"Items", 'Boolean'>
     readonly userId: FieldRef<"Items", 'String'>
+    readonly createdAt: FieldRef<"Items", 'DateTime'>
+    readonly updatedAt: FieldRef<"Items", 'DateTime'>
   }
     
 
@@ -4552,6 +4684,1214 @@ export namespace Prisma {
 
 
   /**
+   * Model Avatar
+   */
+
+  export type AggregateAvatar = {
+    _count: AvatarCountAggregateOutputType | null
+    _avg: AvatarAvgAggregateOutputType | null
+    _sum: AvatarSumAggregateOutputType | null
+    _min: AvatarMinAggregateOutputType | null
+    _max: AvatarMaxAggregateOutputType | null
+  }
+
+  export type AvatarAvgAggregateOutputType = {
+    hp: number | null
+    attack: number | null
+    defense: number | null
+    price: number | null
+  }
+
+  export type AvatarSumAggregateOutputType = {
+    hp: number | null
+    attack: number | null
+    defense: number | null
+    price: number | null
+  }
+
+  export type AvatarMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    image: string | null
+    description: string | null
+    type: string | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
+    price: number | null
+    equipped: boolean | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AvatarMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    image: string | null
+    description: string | null
+    type: string | null
+    hp: number | null
+    attack: number | null
+    defense: number | null
+    price: number | null
+    equipped: boolean | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AvatarCountAggregateOutputType = {
+    id: number
+    name: number
+    image: number
+    description: number
+    type: number
+    hp: number
+    attack: number
+    defense: number
+    price: number
+    equipped: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AvatarAvgAggregateInputType = {
+    hp?: true
+    attack?: true
+    defense?: true
+    price?: true
+  }
+
+  export type AvatarSumAggregateInputType = {
+    hp?: true
+    attack?: true
+    defense?: true
+    price?: true
+  }
+
+  export type AvatarMinAggregateInputType = {
+    id?: true
+    name?: true
+    image?: true
+    description?: true
+    type?: true
+    hp?: true
+    attack?: true
+    defense?: true
+    price?: true
+    equipped?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AvatarMaxAggregateInputType = {
+    id?: true
+    name?: true
+    image?: true
+    description?: true
+    type?: true
+    hp?: true
+    attack?: true
+    defense?: true
+    price?: true
+    equipped?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AvatarCountAggregateInputType = {
+    id?: true
+    name?: true
+    image?: true
+    description?: true
+    type?: true
+    hp?: true
+    attack?: true
+    defense?: true
+    price?: true
+    equipped?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AvatarAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Avatar to aggregate.
+     */
+    where?: AvatarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Avatars to fetch.
+     */
+    orderBy?: AvatarOrderByWithRelationInput | AvatarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AvatarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Avatars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Avatars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Avatars
+    **/
+    _count?: true | AvatarCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AvatarAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AvatarSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AvatarMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AvatarMaxAggregateInputType
+  }
+
+  export type GetAvatarAggregateType<T extends AvatarAggregateArgs> = {
+        [P in keyof T & keyof AggregateAvatar]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAvatar[P]>
+      : GetScalarType<T[P], AggregateAvatar[P]>
+  }
+
+
+
+
+  export type AvatarGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AvatarWhereInput
+    orderBy?: AvatarOrderByWithAggregationInput | AvatarOrderByWithAggregationInput[]
+    by: AvatarScalarFieldEnum[] | AvatarScalarFieldEnum
+    having?: AvatarScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AvatarCountAggregateInputType | true
+    _avg?: AvatarAvgAggregateInputType
+    _sum?: AvatarSumAggregateInputType
+    _min?: AvatarMinAggregateInputType
+    _max?: AvatarMaxAggregateInputType
+  }
+
+  export type AvatarGroupByOutputType = {
+    id: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp: number | null
+    attack: number | null
+    defense: number | null
+    price: number
+    equipped: boolean
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: AvatarCountAggregateOutputType | null
+    _avg: AvatarAvgAggregateOutputType | null
+    _sum: AvatarSumAggregateOutputType | null
+    _min: AvatarMinAggregateOutputType | null
+    _max: AvatarMaxAggregateOutputType | null
+  }
+
+  type GetAvatarGroupByPayload<T extends AvatarGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AvatarGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AvatarGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AvatarGroupByOutputType[P]>
+            : GetScalarType<T[P], AvatarGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AvatarSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
+    price?: boolean
+    equipped?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avatar"]>
+
+  export type AvatarSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
+    price?: boolean
+    equipped?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avatar"]>
+
+  export type AvatarSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
+    price?: boolean
+    equipped?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["avatar"]>
+
+  export type AvatarSelectScalar = {
+    id?: boolean
+    name?: boolean
+    image?: boolean
+    description?: boolean
+    type?: boolean
+    hp?: boolean
+    attack?: boolean
+    defense?: boolean
+    price?: boolean
+    equipped?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AvatarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "description" | "type" | "hp" | "attack" | "defense" | "price" | "equipped" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["avatar"]>
+  export type AvatarInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type AvatarIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type AvatarIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $AvatarPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Avatar"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      image: string
+      description: string
+      type: string
+      hp: number | null
+      attack: number | null
+      defense: number | null
+      price: number
+      equipped: boolean
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["avatar"]>
+    composites: {}
+  }
+
+  type AvatarGetPayload<S extends boolean | null | undefined | AvatarDefaultArgs> = $Result.GetResult<Prisma.$AvatarPayload, S>
+
+  type AvatarCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AvatarFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AvatarCountAggregateInputType | true
+    }
+
+  export interface AvatarDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Avatar'], meta: { name: 'Avatar' } }
+    /**
+     * Find zero or one Avatar that matches the filter.
+     * @param {AvatarFindUniqueArgs} args - Arguments to find a Avatar
+     * @example
+     * // Get one Avatar
+     * const avatar = await prisma.avatar.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AvatarFindUniqueArgs>(args: SelectSubset<T, AvatarFindUniqueArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Avatar that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AvatarFindUniqueOrThrowArgs} args - Arguments to find a Avatar
+     * @example
+     * // Get one Avatar
+     * const avatar = await prisma.avatar.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AvatarFindUniqueOrThrowArgs>(args: SelectSubset<T, AvatarFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Avatar that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarFindFirstArgs} args - Arguments to find a Avatar
+     * @example
+     * // Get one Avatar
+     * const avatar = await prisma.avatar.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AvatarFindFirstArgs>(args?: SelectSubset<T, AvatarFindFirstArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Avatar that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarFindFirstOrThrowArgs} args - Arguments to find a Avatar
+     * @example
+     * // Get one Avatar
+     * const avatar = await prisma.avatar.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AvatarFindFirstOrThrowArgs>(args?: SelectSubset<T, AvatarFindFirstOrThrowArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Avatars that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Avatars
+     * const avatars = await prisma.avatar.findMany()
+     * 
+     * // Get first 10 Avatars
+     * const avatars = await prisma.avatar.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const avatarWithIdOnly = await prisma.avatar.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AvatarFindManyArgs>(args?: SelectSubset<T, AvatarFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Avatar.
+     * @param {AvatarCreateArgs} args - Arguments to create a Avatar.
+     * @example
+     * // Create one Avatar
+     * const Avatar = await prisma.avatar.create({
+     *   data: {
+     *     // ... data to create a Avatar
+     *   }
+     * })
+     * 
+     */
+    create<T extends AvatarCreateArgs>(args: SelectSubset<T, AvatarCreateArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Avatars.
+     * @param {AvatarCreateManyArgs} args - Arguments to create many Avatars.
+     * @example
+     * // Create many Avatars
+     * const avatar = await prisma.avatar.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AvatarCreateManyArgs>(args?: SelectSubset<T, AvatarCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Avatars and returns the data saved in the database.
+     * @param {AvatarCreateManyAndReturnArgs} args - Arguments to create many Avatars.
+     * @example
+     * // Create many Avatars
+     * const avatar = await prisma.avatar.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Avatars and only return the `id`
+     * const avatarWithIdOnly = await prisma.avatar.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AvatarCreateManyAndReturnArgs>(args?: SelectSubset<T, AvatarCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Avatar.
+     * @param {AvatarDeleteArgs} args - Arguments to delete one Avatar.
+     * @example
+     * // Delete one Avatar
+     * const Avatar = await prisma.avatar.delete({
+     *   where: {
+     *     // ... filter to delete one Avatar
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AvatarDeleteArgs>(args: SelectSubset<T, AvatarDeleteArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Avatar.
+     * @param {AvatarUpdateArgs} args - Arguments to update one Avatar.
+     * @example
+     * // Update one Avatar
+     * const avatar = await prisma.avatar.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AvatarUpdateArgs>(args: SelectSubset<T, AvatarUpdateArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Avatars.
+     * @param {AvatarDeleteManyArgs} args - Arguments to filter Avatars to delete.
+     * @example
+     * // Delete a few Avatars
+     * const { count } = await prisma.avatar.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AvatarDeleteManyArgs>(args?: SelectSubset<T, AvatarDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Avatars.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Avatars
+     * const avatar = await prisma.avatar.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AvatarUpdateManyArgs>(args: SelectSubset<T, AvatarUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Avatars and returns the data updated in the database.
+     * @param {AvatarUpdateManyAndReturnArgs} args - Arguments to update many Avatars.
+     * @example
+     * // Update many Avatars
+     * const avatar = await prisma.avatar.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Avatars and only return the `id`
+     * const avatarWithIdOnly = await prisma.avatar.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AvatarUpdateManyAndReturnArgs>(args: SelectSubset<T, AvatarUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Avatar.
+     * @param {AvatarUpsertArgs} args - Arguments to update or create a Avatar.
+     * @example
+     * // Update or create a Avatar
+     * const avatar = await prisma.avatar.upsert({
+     *   create: {
+     *     // ... data to create a Avatar
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Avatar we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AvatarUpsertArgs>(args: SelectSubset<T, AvatarUpsertArgs<ExtArgs>>): Prisma__AvatarClient<$Result.GetResult<Prisma.$AvatarPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Avatars.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarCountArgs} args - Arguments to filter Avatars to count.
+     * @example
+     * // Count the number of Avatars
+     * const count = await prisma.avatar.count({
+     *   where: {
+     *     // ... the filter for the Avatars we want to count
+     *   }
+     * })
+    **/
+    count<T extends AvatarCountArgs>(
+      args?: Subset<T, AvatarCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AvatarCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Avatar.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AvatarAggregateArgs>(args: Subset<T, AvatarAggregateArgs>): Prisma.PrismaPromise<GetAvatarAggregateType<T>>
+
+    /**
+     * Group by Avatar.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AvatarGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AvatarGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AvatarGroupByArgs['orderBy'] }
+        : { orderBy?: AvatarGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AvatarGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAvatarGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Avatar model
+   */
+  readonly fields: AvatarFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Avatar.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AvatarClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Avatar model
+   */
+  interface AvatarFieldRefs {
+    readonly id: FieldRef<"Avatar", 'String'>
+    readonly name: FieldRef<"Avatar", 'String'>
+    readonly image: FieldRef<"Avatar", 'String'>
+    readonly description: FieldRef<"Avatar", 'String'>
+    readonly type: FieldRef<"Avatar", 'String'>
+    readonly hp: FieldRef<"Avatar", 'Int'>
+    readonly attack: FieldRef<"Avatar", 'Int'>
+    readonly defense: FieldRef<"Avatar", 'Int'>
+    readonly price: FieldRef<"Avatar", 'Int'>
+    readonly equipped: FieldRef<"Avatar", 'Boolean'>
+    readonly userId: FieldRef<"Avatar", 'String'>
+    readonly createdAt: FieldRef<"Avatar", 'DateTime'>
+    readonly updatedAt: FieldRef<"Avatar", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Avatar findUnique
+   */
+  export type AvatarFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter, which Avatar to fetch.
+     */
+    where: AvatarWhereUniqueInput
+  }
+
+  /**
+   * Avatar findUniqueOrThrow
+   */
+  export type AvatarFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter, which Avatar to fetch.
+     */
+    where: AvatarWhereUniqueInput
+  }
+
+  /**
+   * Avatar findFirst
+   */
+  export type AvatarFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter, which Avatar to fetch.
+     */
+    where?: AvatarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Avatars to fetch.
+     */
+    orderBy?: AvatarOrderByWithRelationInput | AvatarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Avatars.
+     */
+    cursor?: AvatarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Avatars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Avatars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Avatars.
+     */
+    distinct?: AvatarScalarFieldEnum | AvatarScalarFieldEnum[]
+  }
+
+  /**
+   * Avatar findFirstOrThrow
+   */
+  export type AvatarFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter, which Avatar to fetch.
+     */
+    where?: AvatarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Avatars to fetch.
+     */
+    orderBy?: AvatarOrderByWithRelationInput | AvatarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Avatars.
+     */
+    cursor?: AvatarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Avatars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Avatars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Avatars.
+     */
+    distinct?: AvatarScalarFieldEnum | AvatarScalarFieldEnum[]
+  }
+
+  /**
+   * Avatar findMany
+   */
+  export type AvatarFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter, which Avatars to fetch.
+     */
+    where?: AvatarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Avatars to fetch.
+     */
+    orderBy?: AvatarOrderByWithRelationInput | AvatarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Avatars.
+     */
+    cursor?: AvatarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Avatars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Avatars.
+     */
+    skip?: number
+    distinct?: AvatarScalarFieldEnum | AvatarScalarFieldEnum[]
+  }
+
+  /**
+   * Avatar create
+   */
+  export type AvatarCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Avatar.
+     */
+    data: XOR<AvatarCreateInput, AvatarUncheckedCreateInput>
+  }
+
+  /**
+   * Avatar createMany
+   */
+  export type AvatarCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Avatars.
+     */
+    data: AvatarCreateManyInput | AvatarCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Avatar createManyAndReturn
+   */
+  export type AvatarCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * The data used to create many Avatars.
+     */
+    data: AvatarCreateManyInput | AvatarCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Avatar update
+   */
+  export type AvatarUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Avatar.
+     */
+    data: XOR<AvatarUpdateInput, AvatarUncheckedUpdateInput>
+    /**
+     * Choose, which Avatar to update.
+     */
+    where: AvatarWhereUniqueInput
+  }
+
+  /**
+   * Avatar updateMany
+   */
+  export type AvatarUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Avatars.
+     */
+    data: XOR<AvatarUpdateManyMutationInput, AvatarUncheckedUpdateManyInput>
+    /**
+     * Filter which Avatars to update
+     */
+    where?: AvatarWhereInput
+    /**
+     * Limit how many Avatars to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Avatar updateManyAndReturn
+   */
+  export type AvatarUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * The data used to update Avatars.
+     */
+    data: XOR<AvatarUpdateManyMutationInput, AvatarUncheckedUpdateManyInput>
+    /**
+     * Filter which Avatars to update
+     */
+    where?: AvatarWhereInput
+    /**
+     * Limit how many Avatars to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Avatar upsert
+   */
+  export type AvatarUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Avatar to update in case it exists.
+     */
+    where: AvatarWhereUniqueInput
+    /**
+     * In case the Avatar found by the `where` argument doesn't exist, create a new Avatar with this data.
+     */
+    create: XOR<AvatarCreateInput, AvatarUncheckedCreateInput>
+    /**
+     * In case the Avatar was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AvatarUpdateInput, AvatarUncheckedUpdateInput>
+  }
+
+  /**
+   * Avatar delete
+   */
+  export type AvatarDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+    /**
+     * Filter which Avatar to delete.
+     */
+    where: AvatarWhereUniqueInput
+  }
+
+  /**
+   * Avatar deleteMany
+   */
+  export type AvatarDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Avatars to delete
+     */
+    where?: AvatarWhereInput
+    /**
+     * Limit how many Avatars to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Avatar without action
+   */
+  export type AvatarDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Avatar
+     */
+    select?: AvatarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Avatar
+     */
+    omit?: AvatarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AvatarInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -4585,8 +5925,6 @@ export namespace Prisma {
     hp: 'hp',
     attack: 'attack',
     defense: 'defense',
-    selectedAvatar: 'selectedAvatar',
-    unlockedAvatars: 'unlockedAvatars',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4605,10 +5943,31 @@ export namespace Prisma {
     defense: 'defense',
     price: 'price',
     equipped: 'equipped',
-    userId: 'userId'
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ItemsScalarFieldEnum = (typeof ItemsScalarFieldEnum)[keyof typeof ItemsScalarFieldEnum]
+
+
+  export const AvatarScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    image: 'image',
+    description: 'description',
+    type: 'type',
+    hp: 'hp',
+    attack: 'attack',
+    defense: 'defense',
+    price: 'price',
+    equipped: 'equipped',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AvatarScalarFieldEnum = (typeof AvatarScalarFieldEnum)[keyof typeof AvatarScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4717,6 +6076,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Users"> | Date | string
     status?: XOR<UserStatusNullableScalarRelationFilter, UserStatusWhereInput> | null
     items?: ItemsListRelationFilter
+    avatar?: AvatarListRelationFilter
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -4727,6 +6087,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     status?: UserStatusOrderByWithRelationInput
     items?: ItemsOrderByRelationAggregateInput
+    avatar?: AvatarOrderByRelationAggregateInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -4740,6 +6101,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Users"> | Date | string
     status?: XOR<UserStatusNullableScalarRelationFilter, UserStatusWhereInput> | null
     items?: ItemsListRelationFilter
+    avatar?: AvatarListRelationFilter
   }, "id">
 
   export type UsersOrderByWithAggregationInput = {
@@ -4776,8 +6138,6 @@ export namespace Prisma {
     hp?: IntFilter<"UserStatus"> | number
     attack?: IntFilter<"UserStatus"> | number
     defense?: IntFilter<"UserStatus"> | number
-    selectedAvatar?: StringFilter<"UserStatus"> | string
-    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4792,8 +6152,6 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
-    selectedAvatar?: SortOrder
-    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UsersOrderByWithRelationInput
@@ -4811,8 +6169,6 @@ export namespace Prisma {
     hp?: IntFilter<"UserStatus"> | number
     attack?: IntFilter<"UserStatus"> | number
     defense?: IntFilter<"UserStatus"> | number
-    selectedAvatar?: StringFilter<"UserStatus"> | string
-    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeFilter<"UserStatus"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
@@ -4827,8 +6183,6 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
-    selectedAvatar?: SortOrder
-    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserStatusCountOrderByAggregateInput
@@ -4850,8 +6204,6 @@ export namespace Prisma {
     hp?: IntWithAggregatesFilter<"UserStatus"> | number
     attack?: IntWithAggregatesFilter<"UserStatus"> | number
     defense?: IntWithAggregatesFilter<"UserStatus"> | number
-    selectedAvatar?: StringWithAggregatesFilter<"UserStatus"> | string
-    unlockedAvatars?: StringNullableListFilter<"UserStatus">
     createdAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserStatus"> | Date | string
   }
@@ -4871,6 +6223,8 @@ export namespace Prisma {
     price?: IntFilter<"Items"> | number
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
+    createdAt?: DateTimeFilter<"Items"> | Date | string
+    updatedAt?: DateTimeFilter<"Items"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }
 
@@ -4886,6 +6240,8 @@ export namespace Prisma {
     price?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     user?: UsersOrderByWithRelationInput
   }
 
@@ -4905,6 +6261,8 @@ export namespace Prisma {
     price?: IntFilter<"Items"> | number
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
+    createdAt?: DateTimeFilter<"Items"> | Date | string
+    updatedAt?: DateTimeFilter<"Items"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }, "id" | "userId_equipmentId">
 
@@ -4920,6 +6278,8 @@ export namespace Prisma {
     price?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ItemsCountOrderByAggregateInput
     _avg?: ItemsAvgOrderByAggregateInput
     _max?: ItemsMaxOrderByAggregateInput
@@ -4942,6 +6302,105 @@ export namespace Prisma {
     price?: IntWithAggregatesFilter<"Items"> | number
     equipped?: BoolWithAggregatesFilter<"Items"> | boolean
     userId?: StringWithAggregatesFilter<"Items"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Items"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Items"> | Date | string
+  }
+
+  export type AvatarWhereInput = {
+    AND?: AvatarWhereInput | AvatarWhereInput[]
+    OR?: AvatarWhereInput[]
+    NOT?: AvatarWhereInput | AvatarWhereInput[]
+    id?: StringFilter<"Avatar"> | string
+    name?: StringFilter<"Avatar"> | string
+    image?: StringFilter<"Avatar"> | string
+    description?: StringFilter<"Avatar"> | string
+    type?: StringFilter<"Avatar"> | string
+    hp?: IntNullableFilter<"Avatar"> | number | null
+    attack?: IntNullableFilter<"Avatar"> | number | null
+    defense?: IntNullableFilter<"Avatar"> | number | null
+    price?: IntFilter<"Avatar"> | number
+    equipped?: BoolFilter<"Avatar"> | boolean
+    userId?: StringFilter<"Avatar"> | string
+    createdAt?: DateTimeFilter<"Avatar"> | Date | string
+    updatedAt?: DateTimeFilter<"Avatar"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type AvatarOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    hp?: SortOrderInput | SortOrder
+    attack?: SortOrderInput | SortOrder
+    defense?: SortOrderInput | SortOrder
+    price?: SortOrder
+    equipped?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type AvatarWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AvatarWhereInput | AvatarWhereInput[]
+    OR?: AvatarWhereInput[]
+    NOT?: AvatarWhereInput | AvatarWhereInput[]
+    name?: StringFilter<"Avatar"> | string
+    image?: StringFilter<"Avatar"> | string
+    description?: StringFilter<"Avatar"> | string
+    type?: StringFilter<"Avatar"> | string
+    hp?: IntNullableFilter<"Avatar"> | number | null
+    attack?: IntNullableFilter<"Avatar"> | number | null
+    defense?: IntNullableFilter<"Avatar"> | number | null
+    price?: IntFilter<"Avatar"> | number
+    equipped?: BoolFilter<"Avatar"> | boolean
+    userId?: StringFilter<"Avatar"> | string
+    createdAt?: DateTimeFilter<"Avatar"> | Date | string
+    updatedAt?: DateTimeFilter<"Avatar"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id">
+
+  export type AvatarOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    hp?: SortOrderInput | SortOrder
+    attack?: SortOrderInput | SortOrder
+    defense?: SortOrderInput | SortOrder
+    price?: SortOrder
+    equipped?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AvatarCountOrderByAggregateInput
+    _avg?: AvatarAvgOrderByAggregateInput
+    _max?: AvatarMaxOrderByAggregateInput
+    _min?: AvatarMinOrderByAggregateInput
+    _sum?: AvatarSumOrderByAggregateInput
+  }
+
+  export type AvatarScalarWhereWithAggregatesInput = {
+    AND?: AvatarScalarWhereWithAggregatesInput | AvatarScalarWhereWithAggregatesInput[]
+    OR?: AvatarScalarWhereWithAggregatesInput[]
+    NOT?: AvatarScalarWhereWithAggregatesInput | AvatarScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Avatar"> | string
+    name?: StringWithAggregatesFilter<"Avatar"> | string
+    image?: StringWithAggregatesFilter<"Avatar"> | string
+    description?: StringWithAggregatesFilter<"Avatar"> | string
+    type?: StringWithAggregatesFilter<"Avatar"> | string
+    hp?: IntNullableWithAggregatesFilter<"Avatar"> | number | null
+    attack?: IntNullableWithAggregatesFilter<"Avatar"> | number | null
+    defense?: IntNullableWithAggregatesFilter<"Avatar"> | number | null
+    price?: IntWithAggregatesFilter<"Avatar"> | number
+    equipped?: BoolWithAggregatesFilter<"Avatar"> | boolean
+    userId?: StringWithAggregatesFilter<"Avatar"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Avatar"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Avatar"> | Date | string
   }
 
   export type UsersCreateInput = {
@@ -4952,6 +6411,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     status?: UserStatusCreateNestedOneWithoutUserInput
     items?: ItemsCreateNestedManyWithoutUserInput
+    avatar?: AvatarCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -4962,6 +6422,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     status?: UserStatusUncheckedCreateNestedOneWithoutUserInput
     items?: ItemsUncheckedCreateNestedManyWithoutUserInput
+    avatar?: AvatarUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -4972,6 +6433,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: UserStatusUpdateOneWithoutUserNestedInput
     items?: ItemsUpdateManyWithoutUserNestedInput
+    avatar?: AvatarUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -4982,6 +6444,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: UserStatusUncheckedUpdateOneWithoutUserNestedInput
     items?: ItemsUncheckedUpdateManyWithoutUserNestedInput
+    avatar?: AvatarUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -5016,8 +6479,6 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
-    selectedAvatar?: string
-    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UsersCreateNestedOneWithoutStatusInput
@@ -5032,8 +6493,6 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
-    selectedAvatar?: string
-    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5046,8 +6505,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutStatusNestedInput
@@ -5062,8 +6519,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5077,8 +6532,6 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
-    selectedAvatar?: string
-    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5091,8 +6544,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5106,8 +6557,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5123,6 +6572,8 @@ export namespace Prisma {
     defense?: number | null
     price: number
     equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
     user: UsersCreateNestedOneWithoutItemsInput
   }
 
@@ -5138,6 +6589,8 @@ export namespace Prisma {
     price: number
     equipped?: boolean
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ItemsUpdateInput = {
@@ -5151,6 +6604,8 @@ export namespace Prisma {
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutItemsNestedInput
   }
 
@@ -5166,6 +6621,8 @@ export namespace Prisma {
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ItemsCreateManyInput = {
@@ -5180,6 +6637,8 @@ export namespace Prisma {
     price: number
     equipped?: boolean
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ItemsUpdateManyMutationInput = {
@@ -5193,6 +6652,8 @@ export namespace Prisma {
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ItemsUncheckedUpdateManyInput = {
@@ -5207,6 +6668,119 @@ export namespace Prisma {
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarCreateInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UsersCreateNestedOneWithoutAvatarInput
+  }
+
+  export type AvatarUncheckedCreateInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AvatarUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutAvatarNestedInput
+  }
+
+  export type AvatarUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarCreateManyInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AvatarUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -5246,7 +6820,17 @@ export namespace Prisma {
     none?: ItemsWhereInput
   }
 
+  export type AvatarListRelationFilter = {
+    every?: AvatarWhereInput
+    some?: AvatarWhereInput
+    none?: AvatarWhereInput
+  }
+
   export type ItemsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AvatarOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -5317,14 +6901,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
   export type UsersScalarRelationFilter = {
     is?: UsersWhereInput
     isNot?: UsersWhereInput
@@ -5339,8 +6915,6 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
-    selectedAvatar?: SortOrder
-    unlockedAvatars?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5363,7 +6937,6 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
-    selectedAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5377,7 +6950,6 @@ export namespace Prisma {
     hp?: SortOrder
     attack?: SortOrder
     defense?: SortOrder
-    selectedAvatar?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5445,6 +7017,8 @@ export namespace Prisma {
     price?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ItemsAvgOrderByAggregateInput = {
@@ -5465,6 +7039,8 @@ export namespace Prisma {
     price?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ItemsMinOrderByAggregateInput = {
@@ -5479,6 +7055,8 @@ export namespace Prisma {
     price?: SortOrder
     equipped?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ItemsSumOrderByAggregateInput = {
@@ -5511,6 +7089,68 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type AvatarCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
+    price?: SortOrder
+    equipped?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AvatarAvgOrderByAggregateInput = {
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
+    price?: SortOrder
+  }
+
+  export type AvatarMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
+    price?: SortOrder
+    equipped?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AvatarMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    image?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
+    price?: SortOrder
+    equipped?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AvatarSumOrderByAggregateInput = {
+    hp?: SortOrder
+    attack?: SortOrder
+    defense?: SortOrder
+    price?: SortOrder
+  }
+
   export type UserStatusCreateNestedOneWithoutUserInput = {
     create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
@@ -5524,6 +7164,13 @@ export namespace Prisma {
     connect?: ItemsWhereUniqueInput | ItemsWhereUniqueInput[]
   }
 
+  export type AvatarCreateNestedManyWithoutUserInput = {
+    create?: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput> | AvatarCreateWithoutUserInput[] | AvatarUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AvatarCreateOrConnectWithoutUserInput | AvatarCreateOrConnectWithoutUserInput[]
+    createMany?: AvatarCreateManyUserInputEnvelope
+    connect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+  }
+
   export type UserStatusUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
@@ -5535,6 +7182,13 @@ export namespace Prisma {
     connectOrCreate?: ItemsCreateOrConnectWithoutUserInput | ItemsCreateOrConnectWithoutUserInput[]
     createMany?: ItemsCreateManyUserInputEnvelope
     connect?: ItemsWhereUniqueInput | ItemsWhereUniqueInput[]
+  }
+
+  export type AvatarUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput> | AvatarCreateWithoutUserInput[] | AvatarUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AvatarCreateOrConnectWithoutUserInput | AvatarCreateOrConnectWithoutUserInput[]
+    createMany?: AvatarCreateManyUserInputEnvelope
+    connect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -5569,6 +7223,20 @@ export namespace Prisma {
     deleteMany?: ItemsScalarWhereInput | ItemsScalarWhereInput[]
   }
 
+  export type AvatarUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput> | AvatarCreateWithoutUserInput[] | AvatarUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AvatarCreateOrConnectWithoutUserInput | AvatarCreateOrConnectWithoutUserInput[]
+    upsert?: AvatarUpsertWithWhereUniqueWithoutUserInput | AvatarUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AvatarCreateManyUserInputEnvelope
+    set?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    disconnect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    delete?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    connect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    update?: AvatarUpdateWithWhereUniqueWithoutUserInput | AvatarUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AvatarUpdateManyWithWhereWithoutUserInput | AvatarUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AvatarScalarWhereInput | AvatarScalarWhereInput[]
+  }
+
   export type UserStatusUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<UserStatusCreateWithoutUserInput, UserStatusUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserStatusCreateOrConnectWithoutUserInput
@@ -5593,8 +7261,18 @@ export namespace Prisma {
     deleteMany?: ItemsScalarWhereInput | ItemsScalarWhereInput[]
   }
 
-  export type UserStatusCreateunlockedAvatarsInput = {
-    set: string[]
+  export type AvatarUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput> | AvatarCreateWithoutUserInput[] | AvatarUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AvatarCreateOrConnectWithoutUserInput | AvatarCreateOrConnectWithoutUserInput[]
+    upsert?: AvatarUpsertWithWhereUniqueWithoutUserInput | AvatarUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AvatarCreateManyUserInputEnvelope
+    set?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    disconnect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    delete?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    connect?: AvatarWhereUniqueInput | AvatarWhereUniqueInput[]
+    update?: AvatarUpdateWithWhereUniqueWithoutUserInput | AvatarUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AvatarUpdateManyWithWhereWithoutUserInput | AvatarUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AvatarScalarWhereInput | AvatarScalarWhereInput[]
   }
 
   export type UsersCreateNestedOneWithoutStatusInput = {
@@ -5609,11 +7287,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type UserStatusUpdateunlockedAvatarsInput = {
-    set?: string[]
-    push?: string | string[]
   }
 
   export type UsersUpdateOneRequiredWithoutStatusNestedInput = {
@@ -5648,6 +7321,20 @@ export namespace Prisma {
     upsert?: UsersUpsertWithoutItemsInput
     connect?: UsersWhereUniqueInput
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutItemsInput, UsersUpdateWithoutItemsInput>, UsersUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutAvatarInput = {
+    create?: XOR<UsersCreateWithoutAvatarInput, UsersUncheckedCreateWithoutAvatarInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutAvatarInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutAvatarNestedInput = {
+    create?: XOR<UsersCreateWithoutAvatarInput, UsersUncheckedCreateWithoutAvatarInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutAvatarInput
+    upsert?: UsersUpsertWithoutAvatarInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutAvatarInput, UsersUpdateWithoutAvatarInput>, UsersUncheckedUpdateWithoutAvatarInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5803,8 +7490,6 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
-    selectedAvatar?: string
-    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5817,8 +7502,6 @@ export namespace Prisma {
     hp?: number
     attack?: number
     defense?: number
-    selectedAvatar?: string
-    unlockedAvatars?: UserStatusCreateunlockedAvatarsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5839,6 +7522,8 @@ export namespace Prisma {
     defense?: number | null
     price: number
     equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ItemsUncheckedCreateWithoutUserInput = {
@@ -5852,6 +7537,8 @@ export namespace Prisma {
     defense?: number | null
     price: number
     equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ItemsCreateOrConnectWithoutUserInput = {
@@ -5861,6 +7548,46 @@ export namespace Prisma {
 
   export type ItemsCreateManyUserInputEnvelope = {
     data: ItemsCreateManyUserInput | ItemsCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AvatarCreateWithoutUserInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AvatarUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AvatarCreateOrConnectWithoutUserInput = {
+    where: AvatarWhereUniqueInput
+    create: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput>
+  }
+
+  export type AvatarCreateManyUserInputEnvelope = {
+    data: AvatarCreateManyUserInput | AvatarCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -5883,8 +7610,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5897,8 +7622,6 @@ export namespace Prisma {
     hp?: IntFieldUpdateOperationsInput | number
     attack?: IntFieldUpdateOperationsInput | number
     defense?: IntFieldUpdateOperationsInput | number
-    selectedAvatar?: StringFieldUpdateOperationsInput | string
-    unlockedAvatars?: UserStatusUpdateunlockedAvatarsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5934,6 +7657,43 @@ export namespace Prisma {
     price?: IntFilter<"Items"> | number
     equipped?: BoolFilter<"Items"> | boolean
     userId?: StringFilter<"Items"> | string
+    createdAt?: DateTimeFilter<"Items"> | Date | string
+    updatedAt?: DateTimeFilter<"Items"> | Date | string
+  }
+
+  export type AvatarUpsertWithWhereUniqueWithoutUserInput = {
+    where: AvatarWhereUniqueInput
+    update: XOR<AvatarUpdateWithoutUserInput, AvatarUncheckedUpdateWithoutUserInput>
+    create: XOR<AvatarCreateWithoutUserInput, AvatarUncheckedCreateWithoutUserInput>
+  }
+
+  export type AvatarUpdateWithWhereUniqueWithoutUserInput = {
+    where: AvatarWhereUniqueInput
+    data: XOR<AvatarUpdateWithoutUserInput, AvatarUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AvatarUpdateManyWithWhereWithoutUserInput = {
+    where: AvatarScalarWhereInput
+    data: XOR<AvatarUpdateManyMutationInput, AvatarUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AvatarScalarWhereInput = {
+    AND?: AvatarScalarWhereInput | AvatarScalarWhereInput[]
+    OR?: AvatarScalarWhereInput[]
+    NOT?: AvatarScalarWhereInput | AvatarScalarWhereInput[]
+    id?: StringFilter<"Avatar"> | string
+    name?: StringFilter<"Avatar"> | string
+    image?: StringFilter<"Avatar"> | string
+    description?: StringFilter<"Avatar"> | string
+    type?: StringFilter<"Avatar"> | string
+    hp?: IntNullableFilter<"Avatar"> | number | null
+    attack?: IntNullableFilter<"Avatar"> | number | null
+    defense?: IntNullableFilter<"Avatar"> | number | null
+    price?: IntFilter<"Avatar"> | number
+    equipped?: BoolFilter<"Avatar"> | boolean
+    userId?: StringFilter<"Avatar"> | string
+    createdAt?: DateTimeFilter<"Avatar"> | Date | string
+    updatedAt?: DateTimeFilter<"Avatar"> | Date | string
   }
 
   export type UsersCreateWithoutStatusInput = {
@@ -5943,6 +7703,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: ItemsCreateNestedManyWithoutUserInput
+    avatar?: AvatarCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutStatusInput = {
@@ -5952,6 +7713,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: ItemsUncheckedCreateNestedManyWithoutUserInput
+    avatar?: AvatarUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutStatusInput = {
@@ -5977,6 +7739,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: ItemsUpdateManyWithoutUserNestedInput
+    avatar?: AvatarUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutStatusInput = {
@@ -5986,6 +7749,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: ItemsUncheckedUpdateManyWithoutUserNestedInput
+    avatar?: AvatarUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutItemsInput = {
@@ -5995,6 +7759,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: UserStatusCreateNestedOneWithoutUserInput
+    avatar?: AvatarCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutItemsInput = {
@@ -6004,6 +7769,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     status?: UserStatusUncheckedCreateNestedOneWithoutUserInput
+    avatar?: AvatarUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutItemsInput = {
@@ -6029,6 +7795,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: UserStatusUpdateOneWithoutUserNestedInput
+    avatar?: AvatarUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutItemsInput = {
@@ -6038,6 +7805,63 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: UserStatusUncheckedUpdateOneWithoutUserNestedInput
+    avatar?: AvatarUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersCreateWithoutAvatarInput = {
+    id: string
+    name: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    status?: UserStatusCreateNestedOneWithoutUserInput
+    items?: ItemsCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutAvatarInput = {
+    id: string
+    name: string
+    image: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    status?: UserStatusUncheckedCreateNestedOneWithoutUserInput
+    items?: ItemsUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutAvatarInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutAvatarInput, UsersUncheckedCreateWithoutAvatarInput>
+  }
+
+  export type UsersUpsertWithoutAvatarInput = {
+    update: XOR<UsersUpdateWithoutAvatarInput, UsersUncheckedUpdateWithoutAvatarInput>
+    create: XOR<UsersCreateWithoutAvatarInput, UsersUncheckedCreateWithoutAvatarInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutAvatarInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutAvatarInput, UsersUncheckedUpdateWithoutAvatarInput>
+  }
+
+  export type UsersUpdateWithoutAvatarInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: UserStatusUpdateOneWithoutUserNestedInput
+    items?: ItemsUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutAvatarInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: UserStatusUncheckedUpdateOneWithoutUserNestedInput
+    items?: ItemsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ItemsCreateManyUserInput = {
@@ -6051,6 +7875,23 @@ export namespace Prisma {
     defense?: number | null
     price: number
     equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AvatarCreateManyUserInput = {
+    id?: string
+    name: string
+    image: string
+    description: string
+    type: string
+    hp?: number | null
+    attack?: number | null
+    defense?: number | null
+    price: number
+    equipped?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ItemsUpdateWithoutUserInput = {
@@ -6064,6 +7905,8 @@ export namespace Prisma {
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ItemsUncheckedUpdateWithoutUserInput = {
@@ -6077,6 +7920,8 @@ export namespace Prisma {
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ItemsUncheckedUpdateManyWithoutUserInput = {
@@ -6090,6 +7935,53 @@ export namespace Prisma {
     defense?: NullableIntFieldUpdateOperationsInput | number | null
     price?: IntFieldUpdateOperationsInput | number
     equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AvatarUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    hp?: NullableIntFieldUpdateOperationsInput | number | null
+    attack?: NullableIntFieldUpdateOperationsInput | number | null
+    defense?: NullableIntFieldUpdateOperationsInput | number | null
+    price?: IntFieldUpdateOperationsInput | number
+    equipped?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

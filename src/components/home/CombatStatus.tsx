@@ -8,10 +8,14 @@ interface CombatStatusProps {
   defense: number;
 }
 
-const CombatStatus: React.FC<CombatStatusProps> = ({ hp, attack, defense }) => {
+export default function CombatStatus({
+  hp,
+  attack,
+  defense,
+}: CombatStatusProps) {
   return (
     <div className="lg:col-span-1">
-      <Card className="bg-gradient-to-b from-gray-800/95 to-gray-900/95 border-4 border-gray-400 shadow-2xl pixel-border pb-13">  
+      <Card className="bg-gradient-to-b from-gray-800/95 to-gray-900/95 border-4 border-gray-400 shadow-2xl pixel-border pb-13">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
@@ -63,6 +67,4 @@ const CombatStatus: React.FC<CombatStatusProps> = ({ hp, attack, defense }) => {
       </Card>
     </div>
   );
-};
-
-export default CombatStatus;
+}

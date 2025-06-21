@@ -14,65 +14,15 @@ import {
   Lock,
 } from "lucide-react";
 import Image from "next/image";
-import { getAvatarData } from "@/actions/user/avatar/getAvatarData";
-import { unlockAvatar } from "@/actions/user/avatar/unlockAvatar";
-import { selectAvatar } from "@/actions/user/avatar/selectAvatar";
-
-interface AvatarCharacter {
-  id: string;
-  name: string;
-  type: "warrior" | "guardian" | "mage";
-  image: string;
-  level: number;
-  unlocked: boolean;
-  unlockLevel: number;
-  price: number;
-  statBonus: {
-    hp: number;
-    attack: number;
-    defense: number;
-  };
-  description: string;
-}
-
-const avatarCharacters: AvatarCharacter[] = [
-  {
-    id: "warrior",
-    name: "戦士",
-    type: "warrior",
-    image: "/sword.png?height=120&width=120",
-    level: 1,
-    unlocked: true,
-    unlockLevel: 1,
-    price: 0,
-    statBonus: { hp: 5, attack: 15, defense: 5 },
-    description: "剣と盾を操る勇敢な戦士。高い攻撃力で敵を圧倒する。",
-  },
-  {
-    id: "guardian",
-    name: "守護者",
-    type: "guardian",
-    image: "/armor.png?height=120&width=120",
-    level: 5,
-    unlocked: false,
-    unlockLevel: 5,
-    price: 500,
-    statBonus: { hp: 12, attack: 3, defense: 18 },
-    description: "仲間を守る聖なる守護者。圧倒的な防御力を誇る。",
-  },
-  {
-    id: "mage",
-    name: "魔法使い",
-    type: "mage",
-    image: "/masic.png?height=120&width=120",
-    level: 8,
-    unlocked: false,
-    unlockLevel: 8,
-    price: 800,
-    statBonus: { hp: 8, attack: 2, defense: 3 },
-    description: "古代の魔法を操る賢者。バランスの取れた能力を持つ。",
-  },
-];
+import {
+  unlockAvatar,
+  autoUnlockAvatars,
+} from "@/actions/user/avatar/unlockAvatar";
+import { getUserAvatars } from "@/actions/user/avatar/getUserAvatars";
+import { equipAvatar } from "@/actions/user/avatar/equipAvatar";
+import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
+import { avatarCharacters } from "@/data/avatar";
+import type { Avatar as UserAvatar } from "@/generated/prisma";
 
 const typeColors = {
   warrior: { bg: "#dc2626", border: "#fbbf24", shadow: "#991b1b" },
@@ -93,6 +43,20 @@ interface PlayerAvatarData {
   unlockedAvatars: string[];
 }
 
+type DisplayAvatar = {
+  id: string;
+  name: string;
+  type: string;
+  image: string;
+  description: string;
+  unlockLevel: number;
+  price: number;
+  statBonus: { hp: number; attack: number; defense: number };
+  owned: boolean;
+  equipped: boolean;
+  dbId?: string;
+};
+
 export default function AvatarSelection() {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -102,20 +66,67 @@ export default function AvatarSelection() {
     selectedAvatar: "warrior",
     unlockedAvatars: ["warrior"],
   });
+  const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
+  const [coins, setCoins] = useState<number>(0);
 
   const fetchData = async () => {
     if (session?.user?.email) {
       setIsProcessing(true);
       try {
-        const data = await getAvatarData(session.user.email);
+        console.log("🔄 Starting avatar data fetch...");
+        console.log("User email:", session.user.email);
+
+        // First, try to auto-unlock any avatars that the user is now eligible for
+        console.log("🔓 Attempting auto-unlock...");
+        const autoUnlockResult = await autoUnlockAvatars(session.user.email);
+        console.log("Auto-unlock result:", autoUnlockResult);
+
+        // If new avatars were unlocked, show a notification
+        if (autoUnlockResult.newlyUnlockedAvatars.length > 0) {
+          const unlockedNames = autoUnlockResult.newlyUnlockedAvatars
+            .map(
+              (id) => avatarCharacters.find((avatar) => avatar.id === id)?.name
+            )
+            .filter(Boolean)
+            .join(", ");
+
+          console.log("🎉 Showing unlock notification for:", unlockedNames);
+          alert(
+            `🎉 新しいアバターが解放されました！\n${unlockedNames}\n\nコスト: ${autoUnlockResult.totalCost}コイン`
+          );
+        } else {
+          console.log("ℹ️ No new avatars were unlocked");
+        }
+
+        // Fetch user avatars and coins
+        const [avatars, currentCoins] = await Promise.all([
+          getUserAvatars(session.user.email),
+          getCurrentCoin(session.user.email),
+        ]);
+
+        setUserAvatars(avatars || []);
+        setCoins(currentCoins || 0);
+
+        // Use the updated user data from autoUnlockAvatars
+        console.log("📊 Using updated user data from auto-unlock result");
+        const userData = autoUnlockResult.userData;
+        console.log("User data received:", userData);
+
         setPlayerData({
-          level: data.level,
-          coins: data.coin,
-          selectedAvatar: data.selectedAvatar,
-          unlockedAvatars: data.unlockedAvatars,
+          level: userData.level,
+          coins: userData.coin,
+          selectedAvatar: userData.selectedAvatar,
+          unlockedAvatars: userData.unlockedAvatars,
+        });
+
+        console.log("✅ Player data updated:", {
+          level: userData.level,
+          coins: userData.coin,
+          selectedAvatar: userData.selectedAvatar,
+          unlockedAvatars: userData.unlockedAvatars,
         });
       } catch (error) {
-        console.error("Failed to fetch avatar data:", error);
+        console.error("❌ Failed to fetch avatar data:", error);
         alert((error as Error).message);
       } finally {
         setIsProcessing(false);
@@ -126,6 +137,20 @@ export default function AvatarSelection() {
   useEffect(() => {
     fetchData();
   }, [session]);
+
+  const handleEquip = async (dbId: string) => {
+    if (!session?.user?.email) return;
+    setIsProcessing(true);
+    try {
+      await equipAvatar(session.user.email, dbId);
+      await fetchData(); // Refresh data after equipping
+    } catch (error) {
+      console.error("Equip failed:", error);
+      alert((error as Error).message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleUnlockAvatar = async (avatarId: string) => {
     if (!session?.user?.email) return;
@@ -141,19 +166,18 @@ export default function AvatarSelection() {
     }
   };
 
-  const handleSelectAvatar = async (avatarId: string) => {
-    if (!session?.user?.email) return;
-    setIsProcessing(true);
-    try {
-      await selectAvatar(session.user.email, avatarId);
-      await fetchData(); // Refresh data after selecting
-    } catch (error) {
-      console.error("Select failed:", error);
-      alert((error as Error).message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  // Create display avatars with ownership and equipment status
+  const displayAvatars: DisplayAvatar[] = avatarCharacters.map((character) => {
+    const userAvatar = userAvatars.find(
+      (avatar) => avatar.name === character.name
+    );
+    return {
+      ...character,
+      owned: !!userAvatar,
+      equipped: userAvatar?.equipped || false,
+      dbId: userAvatar?.id,
+    };
+  });
 
   return (
     <div
@@ -236,7 +260,7 @@ export default function AvatarSelection() {
                     boxShadow: "3px 3px 0px #d97706",
                   }}>
                   <Coins className="w-5 h-5" />
-                  <span className="pixel-text">{playerData.coins}</span>
+                  <span className="pixel-text">{coins.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -245,15 +269,29 @@ export default function AvatarSelection() {
 
         {/* Avatar Selection Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {avatarCharacters.map((character) => {
-            const colors = typeColors[character.type];
-            const isUnlocked = playerData.unlockedAvatars.includes(
-              character.id
-            );
-            const isSelected = playerData.selectedAvatar === character.id;
+          {displayAvatars.map((character) => {
+            const colors =
+              typeColors[character.type as keyof typeof typeColors];
             const canUnlock =
               playerData.level >= character.unlockLevel &&
-              playerData.coins >= character.price;
+              coins >= character.price;
+
+            // Debug logging
+            console.log(`🔍 Avatar: ${character.name}`);
+            console.log(`  - User level: ${playerData.level}`);
+            console.log(`  - Required level: ${character.unlockLevel}`);
+            console.log(`  - User coins: ${coins}`);
+            console.log(`  - Required coins: ${character.price}`);
+            console.log(
+              `  - Level requirement met: ${
+                playerData.level >= character.unlockLevel
+              }`
+            );
+            console.log(
+              `  - Coin requirement met: ${coins >= character.price}`
+            );
+            console.log(`  - Can unlock: ${canUnlock}`);
+            console.log(`  - Already owned: ${character.owned}`);
 
             return (
               <div
@@ -262,20 +300,14 @@ export default function AvatarSelection() {
                 style={{
                   backgroundColor: "#1f2937",
                   borderWidth: "6px",
-                  borderColor: isSelected
-                    ? colors.border
-                    : isUnlocked
-                    ? "#10b981"
-                    : "#6b7280",
-                  boxShadow: isSelected
-                    ? `0 0 20px ${colors.border}80, 8px 8px 0px ${colors.shadow}, 16px 16px 0px rgba(0,0,0,0.6)`
-                    : isUnlocked
+                  borderColor: character.owned ? "#10b981" : "#6b7280",
+                  boxShadow: character.owned
                     ? "6px 6px 0px #059669, 12px 12px 0px rgba(0,0,0,0.5)"
                     : "4px 4px 0px #374151, 8px 8px 0px rgba(0,0,0,0.4)",
-                  opacity: !isUnlocked ? 0.8 : 1,
+                  opacity: !character.owned ? 0.8 : 1,
                 }}>
                 {/* Selection Indicator */}
-                {isSelected && (
+                {character.equipped && (
                   <div
                     className="absolute -top-4 -right-4 w-12 h-12 border-4 border-white flex items-center justify-center pixel-border z-10"
                     style={{
@@ -287,7 +319,7 @@ export default function AvatarSelection() {
                 )}
 
                 {/* Lock Overlay */}
-                {!isUnlocked && (
+                {!character.owned && (
                   <div
                     className="absolute inset-0 flex flex-col items-center justify-center z-10"
                     style={{ backgroundColor: "rgba(0,0,0,0.85)" }}>
@@ -303,6 +335,12 @@ export default function AvatarSelection() {
                       <p className="text-red-300 pixel-text text-sm mt-2">
                         Lv.{character.unlockLevel} で解放
                       </p>
+                      {/* Debug info display */}
+                      <div className="text-xs text-gray-400 mt-2">
+                        <p>Your Level: {playerData.level}</p>
+                        <p>Your Coins: {coins}</p>
+                        <p>Can Unlock: {canUnlock ? "Yes" : "No"}</p>
+                      </div>
                     </div>
                     {canUnlock && (
                       <button
@@ -336,14 +374,14 @@ export default function AvatarSelection() {
                       <Image
                         src={character.image || "/placeholder.svg"}
                         alt={character.name}
-                        width={120}
-                        height={120}
                         className="pixel-border"
                         style={{
                           imageRendering: "pixelated",
                           borderWidth: "2px",
                           borderColor: "#ffffff",
                         }}
+                        width={120}
+                        height={120}
                       />
                     </div>
                   </div>
@@ -389,7 +427,7 @@ export default function AvatarSelection() {
                   <div
                     className="border-t-3 pt-4 mt-auto"
                     style={{ borderColor: "rgba(255,255,255,0.3)" }}>
-                    {character.price > 0 && !isUnlocked && (
+                    {character.price > 0 && !character.owned && (
                       <div className="flex items-center justify-center gap-2 mb-4">
                         <Coins className="w-6 h-6 text-yellow-300" />
                         <span className="font-bold text-white text-xl pixel-text">
@@ -398,20 +436,26 @@ export default function AvatarSelection() {
                       </div>
                     )}
 
-                    {isUnlocked ? (
+                    {character.owned ? (
                       <button
-                        onClick={() => handleSelectAvatar(character.id)}
+                        onClick={() =>
+                          character.dbId && handleEquip(character.dbId)
+                        }
                         disabled={isProcessing}
                         className="w-full p-4 border-4 font-bold pixel-text text-lg"
                         style={{
-                          backgroundColor: isSelected ? "#6b7280" : colors.bg,
-                          borderColor: isSelected ? "#4b5563" : colors.border,
+                          backgroundColor: character.equipped
+                            ? "#10b981"
+                            : "#3b82f6",
+                          borderColor: character.equipped
+                            ? "#059669"
+                            : "#2563eb",
                           color: "white",
-                          boxShadow: isSelected
-                            ? "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)"
-                            : `4px 4px 0px ${colors.shadow}, 8px 8px 0px rgba(0,0,0,0.4)`,
+                          boxShadow: character.equipped
+                            ? "4px 4px 0px #047857, 8px 8px 0px rgba(0,0,0,0.4)"
+                            : "4px 4px 0px #1d4ed8, 8px 8px 0px rgba(0,0,0,0.4)",
                         }}>
-                        {isSelected ? "選択中" : "選択する"}
+                        {character.equipped ? "選択中" : "選択する"}
                       </button>
                     ) : (
                       <button

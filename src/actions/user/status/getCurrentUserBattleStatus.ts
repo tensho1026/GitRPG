@@ -9,6 +9,7 @@ export const getCurrentUserBattleStatus = async (email: string) => {
   }
 
   try {
+    // Get user status
     const userStatus = await prisma.userStatus.findUnique({
       where: { userId: email },
       select: {
@@ -22,8 +23,20 @@ export const getCurrentUserBattleStatus = async (email: string) => {
       return { hp: 0, attack: 0, defense: 0 };
     }
 
+    // Get equipped avatar
+    const equippedAvatar = await prisma.avatar.findFirst({
+      where: { userId: email, equipped: true },
+      select: {
+        hp: true,
+        attack: true,
+        defense: true,
+      },
+    });
+
+    // Get equipped items
     const equippedItems = await getUserCurrentItems(email);
 
+    // Calculate item bonuses
     const itemAttack = equippedItems.reduce(
       (acc, item) => acc + (item.attack ?? 0),
       0
@@ -33,11 +46,18 @@ export const getCurrentUserBattleStatus = async (email: string) => {
       0
     );
 
-    const totalAttack = userStatus.attack + itemAttack;
-    const totalDefense = userStatus.defense + itemDefense;
+    // Calculate avatar bonuses
+    const avatarHp = equippedAvatar?.hp ?? 0;
+    const avatarAttack = equippedAvatar?.attack ?? 0;
+    const avatarDefense = equippedAvatar?.defense ?? 0;
+
+    // Calculate total stats
+    const totalHp = userStatus.hp + avatarHp;
+    const totalAttack = userStatus.attack + itemAttack + avatarAttack;
+    const totalDefense = userStatus.defense + itemDefense + avatarDefense;
 
     return {
-      hp: userStatus.hp,
+      hp: totalHp,
       attack: totalAttack,
       defense: totalDefense,
     };
