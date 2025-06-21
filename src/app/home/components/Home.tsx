@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Session } from "next-auth";
 import MenuButton from "./MenuButton";
 import MyAvatar from "@/app/home/components/MyAvatar";
@@ -10,8 +10,8 @@ import { UserWithStatus } from "@/types/user/userStatus";
 import { menuItems } from "@/data/menu";
 import BackGround from "../../../components/BackGround";
 import { useSessionStore } from "@/lib/sessionStore";
-import { useHomeData } from "./hooks/useHomeData";
-import { useUserStats } from "./hooks/useUserStats";
+import { useHomeData } from "../hooks/useHomeData";
+import { useUserStats } from "../hooks/useUserStats";
 import { useHomeAuthEffect } from "../hooks/useHomeAuthEffect";
 import Loading from "@/components/ Loading";
 
@@ -32,14 +32,38 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   // 認証効果を実行
   useHomeAuthEffect(session, status);
 
-  const { userStatus, userItems, isLoading } = useHomeData(session, status);
+  const { userStatus, isLoading } = useHomeData(session, status);
   const {
     currentLevel,
     totalCommits,
     remainingCommits,
     progressPercentage,
     coins,
+    items,
   } = useUserStats(userStatus);
+
+  // メモ化されたユーザーデータ
+  const userData = useMemo(
+    () => ({
+      name: userStatus?.name || "",
+      username: session?.user?.email || "",
+      avatar: userStatus?.image || "",
+      githubUrl: `https://github.com/${userStatus?.name}`,
+      registrationDate: userStatus?.createdAt?.toLocaleDateString() || "",
+    }),
+    [
+      userStatus?.name,
+      userStatus?.image,
+      userStatus?.createdAt,
+      session?.user?.email,
+    ]
+  );
+
+  // メモ化されたメニューアイテム
+  const menuButtons = useMemo(
+    () => menuItems.map((item) => <MenuButton key={item.href} {...item} />),
+    []
+  );
 
   if (isLoading) {
     return <Loading backgroundImage={"/newhomepage.JPG"} />;
@@ -60,16 +84,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         {/* Main Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
           {/* User Basic Information */}
-          <UserBasicInfo
-            userData={{
-              name: userStatus?.name || "",
-              username: session?.user?.email || "",
-              avatar: userStatus?.image || "",
-              githubUrl: `https://github.com/${userStatus?.name}`,
-              registrationDate:
-                userStatus?.createdAt?.toLocaleDateString() || "",
-            }}
-          />
+          <UserBasicInfo userData={userData} />
 
           {/* User Status */}
           <UserStatus
@@ -81,14 +96,12 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
           />
 
           {/* Avatar Display */}
-          <MyAvatar userItems={userItems} />
+          <MyAvatar userItems={items} />
         </div>
 
         {/* Navigation Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ml-8">
-          {menuItems.map((item) => (
-            <MenuButton key={item.href} {...item} />
-          ))}
+          {menuButtons}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { prisma } from "../../../../prisma/prisma";
 
@@ -7,6 +7,18 @@ export const getUserStatus = async (id: string) => {
     where: { id: id },
     include: {
       status: true,
+      items: {
+        where: {
+          equipped: true,
+        },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          type: true,
+          equipped: true,
+        },
+      },
     },
   });
   return userStatus;

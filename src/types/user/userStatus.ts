@@ -1,4 +1,4 @@
-import type { Users } from "@/generated/prisma";
+import type { Users, Items } from "@/generated/prisma";
 
 export type UserWithStatus = Users & {
   status: {
@@ -9,4 +9,5 @@ export type UserWithStatus = Users & {
     attack: number;
     defense: number;
   } | null;
+  items: Pick<Items, "id" | "name" | "image" | "type" | "equipped">[];
 };

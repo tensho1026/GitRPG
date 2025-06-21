@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
 import { UserWithStatus } from "@/types/user/userStatus";
-import { Items } from "@/generated/prisma";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
-  const [userItems, setUserItems] = useState<Items[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -22,11 +19,6 @@ export const useHomeData = (session: Session | null, status: string) => {
           const statusResult = await getUserStatus(session.user.email);
           if (statusResult) {
             setUserStatus(statusResult);
-
-            const items = await getUserCurrentItems(session.user.email);
-            if (items) {
-              setUserItems(items);
-            }
           }
         } catch (error) {
           console.error("Failed to fetch user data on home screen:", error);
@@ -41,5 +33,5 @@ export const useHomeData = (session: Session | null, status: string) => {
     fetchData();
   }, [status, session]);
 
-  return { userStatus, userItems, isLoading };
+  return { userStatus, isLoading };
 };

@@ -19,15 +19,6 @@ export default function Page() {
     }
   }, [status, router]);
 
-  // Show loading while checking authentication
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-green-900 relative overflow-hidden flex items-center justify-center">
-        <div className="text-white text-2xl font-bold">読み込み中...</div>
-      </div>
-    );
-  }
-
   // Don't render the landing page if user is authenticated (will redirect)
   if (status === "authenticated") {
     return null;

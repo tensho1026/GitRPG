@@ -11,7 +11,7 @@ import Link from "next/link";
 import { getEquippedAvatar } from "@/actions/user/avatar/getUserAvatars";
 
 interface MyAvatarProps {
-  userItems: Items[];
+  userItems: Pick<Items, "id" | "name" | "image" | "type" | "equipped">[];
 }
 
 export default function MyAvatar({ userItems }: MyAvatarProps) {
@@ -128,8 +128,8 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                 <p className="text-purple-200 text-sm pixel-text">
                   装備中:{" "}
                   <span className="text-pink-300 font-bold">
-                    {userItems.find((item: Items) => item.type === "weapon")
-                      ?.name || "未装備"}
+                    {userItems.find((item) => item.type === "weapon")?.name ||
+                      "未装備"}
                   </span>
                 </p>
               </div>
