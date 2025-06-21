@@ -29,24 +29,24 @@ export default function CombatStatus({
           <div className="space-y-3 flex-grow flex flex-col justify-around">
             <div className="flex items-center justify-between bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
               <div className="flex items-center">
-                <Heart className="w-5 h-5 text-red-400 mr-2" />
+                <Heart className="w-5 h-5 text-yellow-400 mr-2" />
                 <span className="text-gray-200 font-mono text-sm pixel-text">
                   HP
                 </span>
               </div>
-              <span className="text-red-300 font-mono text-lg pixel-text font-bold">
+              <span className="text-yellow-300 font-mono text-lg pixel-text font-bold">
                 {hp}
               </span>
             </div>
 
             <div className="flex items-center justify-between bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
               <div className="flex items-center">
-                <Sword className="w-5 h-5 text-yellow-400 mr-2" />
+                <Sword className="w-5 h-5 text-red-400 mr-2" />
                 <span className="text-gray-200 font-mono text-sm pixel-text">
                   攻撃力
                 </span>
               </div>
-              <span className="text-yellow-300 font-mono text-lg pixel-text font-bold">
+              <span className="text-red-300 font-mono text-lg pixel-text font-bold">
                 {attack}
               </span>
             </div>

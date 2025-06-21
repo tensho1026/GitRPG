@@ -106,7 +106,7 @@ export default function GrassPage() {
                 }}>
                 <TrendingUp className="w-5 h-5" />
                 <span className="pixel-text">
-                  今月: {userData.thisMonthTotal}回
+                  今月: {userData.thisMonthTotal}コミット
                 </span>
               </div>
             </div>

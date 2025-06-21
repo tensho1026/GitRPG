@@ -72,7 +72,7 @@ export default function HomeScreen() {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url(/overworld-bg.png)",
+          backgroundImage: "url(/newhomepage.JPG)",
           zIndex: -1,
         }}
       />

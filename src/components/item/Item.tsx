@@ -28,8 +28,10 @@ const typeIcons = {
 /* ---------- メインコンポーネント ---------- */
 export default function EquipmentShop({
   selectedTab,
+  onDataUpdate,
 }: {
   selectedTab: string;
+  onDataUpdate?: () => Promise<void>;
 }) {
   const [coins, setCoins] = useState<number>(0);
   const [userItems, setUserItems] = useState<UserItem[]>([]);
@@ -83,6 +85,11 @@ export default function EquipmentShop({
       ]);
       setCoins(currentCoin || 0);
       setUserItems(items);
+
+      // Call parent's update function to refresh equipment status and combat status
+      if (onDataUpdate) {
+        await onDataUpdate();
+      }
     } catch (error) {
       console.error("Purchase failed:", error);
       alert((error as Error).message);
@@ -98,6 +105,11 @@ export default function EquipmentShop({
       await equipItem(session.user.email, dbId);
       const items = await getUserItems(session.user.email);
       setUserItems(items);
+
+      // Call parent's update function to refresh equipment status and combat status
+      if (onDataUpdate) {
+        await onDataUpdate();
+      }
     } catch (error) {
       console.error("Equip failed:", error);
       alert((error as Error).message);

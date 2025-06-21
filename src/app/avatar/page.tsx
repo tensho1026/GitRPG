@@ -183,13 +183,8 @@ export default function AvatarSelection() {
     <div
       className="min-h-screen p-4 font-mono"
       style={{
-        backgroundColor: "#7c3aed",
-        backgroundImage: `
-          radial-gradient(circle at 25% 25%, rgba(167, 139, 250, 0.3) 2px, transparent 2px),
-          radial-gradient(circle at 75% 75%, rgba(167, 139, 250, 0.3) 2px, transparent 2px)
-        `,
-        backgroundSize: "20px 20px",
-        backgroundPosition: "0 0, 10px 10px",
+        backgroundImage: "url(/newavatar.JPG)",
+        zIndex: -1,
       }}>
       {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
