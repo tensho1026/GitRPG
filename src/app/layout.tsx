@@ -4,7 +4,7 @@ import "./globals.css";
 
 import CustomSessionProvider from "./auth/components/SessionProvider";
 import SessionManager from "./auth/components/SessionManager";
-import PixelStyles from "@/components/common/PixelStyles";
+import PixelStyles from "@/components/PixelStyles";
 
 const pressStart2P = Press_Start_2P({
   weight: "400",

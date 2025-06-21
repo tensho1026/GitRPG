@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState, useCallback } from "react";
 import { ArrowLeft, Sword, Coins } from "lucide-react";
-import EquipmentShop from "@/components/item/Item";
+import EquipmentShop from "@/app/item/components/Item";
 import EquipmentStatus from "@/app/item/components/EquipmentStatus";
 import CombatStatus from "@/app/item/components/CombatStatus";
 import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
