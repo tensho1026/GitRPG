@@ -207,7 +207,7 @@ export default function AvatarSelection() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => (window.location.href = "/")}
+                  onClick={() => (window.location.href = "/home")}
                   className="p-3 border-3 bg-purple-600 border-purple-400 text-white pixel-border hover:bg-purple-500"
                   style={{ boxShadow: "3px 3px 0px #4c1d95" }}>
                   <ArrowLeft className="w-5 h-5" />

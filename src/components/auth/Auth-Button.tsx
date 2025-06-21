@@ -5,9 +5,66 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Crown, LogOut, Github, Map, Compass } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getUserStatus } from "@/actions/user/status/getUserStatus";
+import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
+import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
+import { Users } from "@/generated/prisma";
+
 export default function AuthButton() {
   const { data: session, status } = useSession();
+  const [userStatus, setUserStatus] = useState<
+    | (Users & {
+        status: {
+          commit: number;
+          level: number;
+          coin: number;
+          hp: number;
+          attack: number;
+          defense: number;
+        } | null;
+      })
+    | null
+  >(null);
+  const [battleStatus, setBattleStatus] = useState({
+    hp: 0,
+    attack: 0,
+    defense: 0,
+  });
+  const [expInfo, setExpInfo] = useState({
+    remainingCommits: 0,
+    percentage: 0,
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (status === "authenticated" && session?.user?.email) {
+        try {
+          const [statusResult, battleStats] = await Promise.all([
+            getUserStatus(session.user.email),
+            getCurrentUserBattleStatus(session.user.email),
+          ]);
+
+          if (statusResult) {
+            setUserStatus(statusResult);
+
+            // Calculate EXP info
+            const totalCommits = statusResult.status?.commit ?? 0;
+            const expData = getRemainingCommitsToNextLevel(totalCommits);
+            setExpInfo(expData);
+          }
+
+          if (battleStats) {
+            setBattleStatus(battleStats);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [status, session]);
 
   if (status === "authenticated") {
     console.log("Session Status:", status);
@@ -125,10 +182,10 @@ export default function AuthButton() {
 
                 {/* Adventure Stats */}
                 <div className="bg-emerald-600/60 p-4 rounded pixel-border border-2 border-yellow-400 mb-6">
-                  <div className="grid grid-cols-3 gap-4 text-center">
+                  <div className="grid grid-cols-4 gap-4 text-center">
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        Lv.1
+                        Lv.{userStatus?.status?.level ?? 1}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
                         レベル
@@ -136,7 +193,8 @@ export default function AuthButton() {
                     </div>
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        100
+                        {battleStatus.hp +
+                          (userStatus?.status?.level ?? 1) * 10}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
                         HP
@@ -144,10 +202,18 @@ export default function AuthButton() {
                     </div>
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        50
+                        {battleStatus.attack}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
-                        MP
+                        攻撃力
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
+                        {battleStatus.defense}
+                      </div>
+                      <div className="text-emerald-200 font-mono text-xs pixel-text">
+                        防御力
                       </div>
                     </div>
                   </div>
@@ -155,19 +221,18 @@ export default function AuthButton() {
                   {/* Experience Bar */}
                   <div className="mt-4">
                     <div className="flex justify-between text-emerald-200 font-mono text-xs pixel-text mb-1">
-                      <span>EXP</span>
-                      <span>75/100</span>
+                      <span>次のレベルまで</span>
+                      <span>あと{expInfo.remainingCommits}コミット</span>
                     </div>
                     <div className="w-full bg-emerald-800 rounded-full h-2 border border-yellow-500">
                       <div
                         className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-full rounded-full"
-                        style={{ width: "75%" }}></div>
+                        style={{ width: `${expInfo.percentage}%` }}></div>
                     </div>
                   </div>
                 </div>
 
                 {/* Return to Town Button */}
-                {/* <Link href="home"> */}
                 <Button
                   onClick={async () => {
                     await signOut();
@@ -177,7 +242,6 @@ export default function AuthButton() {
                   <LogOut className="w-5 h-5 mr-2" />
                   町に戻る
                 </Button>
-                {/* </Link> */}
               </div>
             ) : (
               <div className="space-y-6 text-center">

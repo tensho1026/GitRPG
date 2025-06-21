@@ -185,7 +185,7 @@ export default function EquipmentShop() {
             </div>
             <div className="mt-4">
               <button
-                onClick={() => (window.location.href = "/")}
+                onClick={() => (window.location.href = "/home")}
                 className="px-6 py-3 border-4 font-bold pixel-text text-lg"
                 style={{
                   backgroundColor: "#8b5cf6",
