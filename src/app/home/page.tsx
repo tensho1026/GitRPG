@@ -7,12 +7,11 @@ import { useEffect, useTransition } from "react";
 
 import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 import AuthButton from "../../components/auth/Auth-Button";
-import HomeScreen from "@/components/home/Home";
+import HomeScreen from "@/app/home/components/Home";
 
 export default function Home() {
   const { data: session, status } = useSession();
   const [isPending, startTransition] = useTransition();
-
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {

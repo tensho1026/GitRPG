@@ -4,8 +4,8 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState, useCallback } from "react";
 import { ArrowLeft, Sword, Coins } from "lucide-react";
 import EquipmentShop from "@/components/item/Item";
-import EquipmentStatus from "@/components/home/EquipmentStatus";
-import CombatStatus from "@/components/home/CombatStatus";
+import EquipmentStatus from "@/app/item/components/EquipmentStatus";
+import CombatStatus from "@/app/item/components/CombatStatus";
 import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
@@ -58,18 +58,6 @@ export default function ItemPage() {
       }}>
       <div className="absolute inset-0 bg-black/30" />
       <div className="relative z-10">
-        <style jsx>{`
-          .pixel-border {
-            border-style: solid;
-            image-rendering: pixelated;
-          }
-          .pixel-text {
-            font-family: "Courier New", monospace;
-            font-weight: bold;
-            text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
-          }
-        `}</style>
-
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-6">

@@ -1,15 +1,12 @@
-export type UserStatuses = {
-  id: string;
-  name: string;
-  image: string;
-  createdAt: Date;
-  updatedAt: Date;
+import type { Users } from "@/generated/prisma";
+
+export type UserWithStatus = Users & {
   status: {
-    userId: string;
     commit: number;
     level: number;
     coin: number;
-    createdAt: Date;
-    updatedAt: Date;
-  };
+    hp: number;
+    attack: number;
+    defense: number;
+  } | null;
 };

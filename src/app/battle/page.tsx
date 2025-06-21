@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Sword, Shield, Heart, Zap, Target } from "lucide-react";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import CombatStatus from "@/components/home/CombatStatus";
+import CombatStatus from "@/app/item/components/CombatStatus";
 
 export default function BattlePage() {
   const { data: session, status } = useSession();

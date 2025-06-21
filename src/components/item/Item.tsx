@@ -131,25 +131,13 @@ export default function EquipmentShop({
         fontSize: "14px",
         imageRendering: "pixelated",
       }}>
-      {isProcessing && (
+      {/* {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <p className="text-white text-3xl font-bold pixel-text animate-pulse">
             ... PROCESSING ...
           </p>
         </div>
-      )}
-      {/* ------- keyframes (JSX style) ------- */}
-      <style jsx>{`
-        .pixel-border {
-          border-style: solid;
-          image-rendering: pixelated;
-        }
-        .pixel-text {
-          font-family: "Courier New", monospace;
-          font-weight: bold;
-          text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
-        }
-      `}</style>
+      )} */}
 
       <div className="max-w-7xl mx-auto">
         {/* -------- Equipment Grid -------- */}

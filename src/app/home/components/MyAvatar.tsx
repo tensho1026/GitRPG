@@ -65,7 +65,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
           <CardContent className="p-6 flex flex-col h-full relative z-10">
             <div className="flex items-center mb-4">
               <User className="w-5 h-5 text-pink-300 mr-2" />
-              <h2 className="text-pink-200 font-mono text-lg pixel-text font-bold">
+              <h2 className="text-pink-200 text-lg pixel-text font-bold">
                 👤 マイアバター
               </h2>
             </div>
@@ -81,7 +81,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                       "inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.4)",
                   }}>
                   {isLoading ? (
-                    <div className="text-pink-200 font-mono text-sm pixel-text">
+                    <div className="text-pink-200 text-sm pixel-text">
                       読み込み中...
                     </div>
                   ) : equippedAvatar ? (
@@ -94,7 +94,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                       style={{ imageRendering: "pixelated" }}
                     />
                   ) : (
-                    <div className="text-pink-200 font-mono text-sm pixel-text">
+                    <div className="text-pink-200 text-sm pixel-text">
                       アバター未選択
                     </div>
                   )}
@@ -103,7 +103,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
 
               {/* Character Info */}
               <div className="space-y-3">
-                <p className="text-pink-100 font-mono text-lg pixel-text font-bold">
+                <p className="text-pink-100 text-lg pixel-text font-bold">
                   {equippedAvatar ? equippedAvatar.name : "戦士"}
                 </p>
 
@@ -125,7 +125,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                   </div>
                 )}
 
-                <p className="text-purple-200 font-mono text-sm pixel-text">
+                <p className="text-purple-200 text-sm pixel-text">
                   装備中:{" "}
                   <span className="text-pink-300 font-bold">
                     {userItems.find((item: Items) => item.type === "weapon")
@@ -138,7 +138,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
             {/* Dress Up Button */}
             <Link href="/avatar">
               <Button
-                className="w-full bg-gradient-to-b from-pink-500 to-pink-600 hover:from-pink-400 hover:to-pink-500 border-3 border-pink-400 text-white font-mono font-bold pixel-text text-base py-4 rounded-lg transition-all duration-200 transform hover:scale-105"
+                className="w-full bg-gradient-to-b from-pink-500 to-pink-600 hover:from-pink-400 hover:to-pink-500 border-3 border-pink-400 text-white font-bold pixel-text text-base py-4 rounded-lg transition-all duration-200 transform hover:scale-105"
                 style={{
                   boxShadow: "0 4px 0 #be185d, 0 6px 12px rgba(0,0,0,0.4)",
                   textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
@@ -163,15 +163,6 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
           100% {
             background-position: 0% 50%;
           }
-        }
-        .pixel-border {
-          border-style: solid;
-          image-rendering: pixelated;
-        }
-        .pixel-text {
-          font-family: "Courier New", monospace;
-          font-weight: bold;
-          text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
         }
       `}</style>
     </div>

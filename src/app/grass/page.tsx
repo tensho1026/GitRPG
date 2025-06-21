@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Calendar, TrendingUp } from "lucide-react";
 import { fetchMonthlyContributions } from "@/actions/github/getCommitThisMonth";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import MonthlyActivity from "@/components/home/MonthlyActivity";
+import MonthlyActivity from "@/app/grass/components/MonthlyActivity";
 
 type DailyCommit = {
   date: string;

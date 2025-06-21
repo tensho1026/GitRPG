@@ -1,9 +1,9 @@
 import React from "react";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Crown, Github, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
 interface UserBasicInfoProps {
