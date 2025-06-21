@@ -1,9 +1,10 @@
 import React from "react";
 import { Card, CardContent } from "../ui/card";
-import { Calendar, Crown, Github } from "lucide-react";
+import { Calendar, Crown, Github, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { signOut } from "next-auth/react";
 
 interface UserBasicInfoProps {
   userData: {
@@ -59,11 +60,20 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             <Button
               variant="outline"
               size="sm"
-              className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs">
+              className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs mb-2">
               <Github className="w-3 h-3 mr-1" />
               GitHub
             </Button>
           </Link>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="w-full bg-red-800/80 border-2 border-red-600 text-red-200 hover:bg-red-700/80 pixel-border text-xs">
+            <LogOut className="w-3 h-3 mr-1" />
+            ログアウト
+          </Button>
         </CardContent>
       </Card>
     </div>
