@@ -66,14 +66,6 @@ export default function AuthButton() {
     fetchUserData();
   }, [status, session]);
 
-  if (status === "authenticated") {
-    console.log("Session Status:", status);
-    console.log("Full Session:", session);
-    console.log("User Name:", session?.user?.name);
-    console.log("User Email:", session?.user?.email);
-    console.log("User Image:", session?.user?.image);
-  }
-
   if (status === "loading") {
     return (
       <div className="min-h-screen w-full relative overflow-hidden">

@@ -13,7 +13,6 @@ export const getUserAvatars = async (email: string) => {
       orderBy: { createdAt: "asc" },
     });
 
-    console.log("🔍 Fetched avatars:", avatars);
     return avatars;
   } catch (error) {
     console.error("Error fetching user avatars:", error);
@@ -31,7 +30,6 @@ export const getEquippedAvatar = async (email: string) => {
       where: { userId: email, equipped: true },
     });
 
-    console.log("🔍 Fetched equipped avatar:", equippedAvatar);
     return equippedAvatar;
   } catch (error) {
     console.error("Error fetching equipped avatar:", error);

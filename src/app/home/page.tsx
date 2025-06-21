@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import AuthButton from "../../components/auth/Auth-Button";
+import AuthButton from "../auth/components/Auth-Button";
 import HomeScreen from "@/app/home/components/Home";
 
 export default async function Home() {

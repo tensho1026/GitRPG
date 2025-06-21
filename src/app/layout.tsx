@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
-import CustomSessionProvider from "../components/auth/SessionProvider";
-import SessionManager from "../components/auth/SessionManager";
+import CustomSessionProvider from "./auth/components/SessionProvider";
+import SessionManager from "./auth/components/SessionManager";
 import PixelStyles from "@/components/common/PixelStyles";
 
 const pressStart2P = Press_Start_2P({

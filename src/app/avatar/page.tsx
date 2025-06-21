@@ -73,30 +73,11 @@ export default function AvatarSelection() {
     if (session?.user?.email) {
       setIsProcessing(true);
       try {
-        console.log("🔄 Starting avatar data fetch...");
-        console.log("User email:", session.user.email);
-
         // First, try to auto-unlock any avatars that the user is now eligible for
-        console.log("🔓 Attempting auto-unlock...");
+
         const autoUnlockResult = await autoUnlockAvatars(session.user.email);
-        console.log("Auto-unlock result:", autoUnlockResult);
 
-        // If new avatars were unlocked, show a notification
-        if (autoUnlockResult.newlyUnlockedAvatars.length > 0) {
-          const unlockedNames = autoUnlockResult.newlyUnlockedAvatars
-            .map(
-              (id) => avatarCharacters.find((avatar) => avatar.id === id)?.name
-            )
-            .filter(Boolean)
-            .join(", ");
-
-          console.log("🎉 Showing unlock notification for:", unlockedNames);
-          alert(
-            `🎉 新しいアバターが解放されました！\n${unlockedNames}\n\nコスト: ${autoUnlockResult.totalCost}コイン`
-          );
-        } else {
-          console.log("ℹ️ No new avatars were unlocked");
-        }
+        
 
         // Fetch user avatars and coins
         const [avatars, currentCoins] = await Promise.all([
@@ -108,18 +89,10 @@ export default function AvatarSelection() {
         setCoins(currentCoins || 0);
 
         // Use the updated user data from autoUnlockAvatars
-        console.log("📊 Using updated user data from auto-unlock result");
+
         const userData = autoUnlockResult.userData;
-        console.log("User data received:", userData);
 
         setPlayerData({
-          level: userData.level,
-          coins: userData.coin,
-          selectedAvatar: userData.selectedAvatar,
-          unlockedAvatars: userData.unlockedAvatars,
-        });
-
-        console.log("✅ Player data updated:", {
           level: userData.level,
           coins: userData.coin,
           selectedAvatar: userData.selectedAvatar,
@@ -262,23 +235,6 @@ export default function AvatarSelection() {
             const canUnlock =
               playerData.level >= character.unlockLevel &&
               coins >= character.price;
-
-            // Debug logging
-            console.log(`🔍 Avatar: ${character.name}`);
-            console.log(`  - User level: ${playerData.level}`);
-            console.log(`  - Required level: ${character.unlockLevel}`);
-            console.log(`  - User coins: ${coins}`);
-            console.log(`  - Required coins: ${character.price}`);
-            console.log(
-              `  - Level requirement met: ${
-                playerData.level >= character.unlockLevel
-              }`
-            );
-            console.log(
-              `  - Coin requirement met: ${coins >= character.price}`
-            );
-            console.log(`  - Can unlock: ${canUnlock}`);
-            console.log(`  - Already owned: ${character.owned}`);
 
             return (
               <div

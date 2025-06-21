@@ -1,5 +1,5 @@
 import React from "react";
-import AuthButton from "../../components/auth/Auth-Button";
+import AuthButton from "./components/Auth-Button";
 
 function page() {
   return (

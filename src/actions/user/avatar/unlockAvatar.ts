@@ -92,47 +92,24 @@ export const autoUnlockAvatars = async (email: string) => {
 
   const ownedAvatarNames = userAvatars.map((avatar) => avatar.name);
 
-  console.log("🔍 Auto-unlock debug info:");
-  console.log("User level:", userStatus.level);
-  console.log("User coins:", userStatus.coin);
-  console.log("Currently owned avatars:", ownedAvatarNames);
-
   const newlyUnlockedAvatars: string[] = [];
 
   // Check each avatar to see if it should be auto-unlocked
   for (const avatar of avatarCharacters) {
-    console.log(`\nChecking avatar: ${avatar.name} (${avatar.id})`);
-    console.log(`- Unlock level required: ${avatar.unlockLevel}`);
-    console.log(`- Price: ${avatar.price}`);
-    console.log(`- Already owned: ${ownedAvatarNames.includes(avatar.name)}`);
-    console.log(
-      `- Level requirement met: ${userStatus.level >= avatar.unlockLevel}`
-    );
-    console.log(
-      `- Coin requirement met: ${
-        avatar.price === 0 || userStatus.coin >= avatar.price
-      }`
-    );
-
     // Skip if already owned or if level requirement not met
     if (
       ownedAvatarNames.includes(avatar.name) ||
       userStatus.level < avatar.unlockLevel
     ) {
-      console.log(`❌ Skipping ${avatar.name}: already owned or level not met`);
       continue;
     }
 
     // Auto-unlock if user has enough coins or if it's free
     if (avatar.price === 0 || userStatus.coin >= avatar.price) {
-      console.log(`✅ Auto-unlocking ${avatar.name}!`);
       newlyUnlockedAvatars.push(avatar.id);
     } else {
-      console.log(`❌ Skipping ${avatar.name}: not enough coins`);
     }
   }
-
-  console.log(`\n🎯 Newly unlocked avatars: ${newlyUnlockedAvatars}`);
 
   let updatedUserStatus = userStatus;
 
@@ -142,8 +119,6 @@ export const autoUnlockAvatars = async (email: string) => {
       const avatar = avatarCharacters.find((a) => a.id === avatarId);
       return total + (avatar?.price || 0);
     }, 0);
-
-    console.log(`💰 Total cost: ${totalCost} coins`);
 
     // Create new avatars and update user coins
     await prisma.$transaction(async (tx) => {
@@ -183,11 +158,6 @@ export const autoUnlockAvatars = async (email: string) => {
       (await prisma.userStatus.findUnique({
         where: { userId: email },
       })) || userStatus;
-
-    console.log("✅ Database updated successfully");
-    console.log("Updated user status:", updatedUserStatus);
-  } else {
-    console.log("ℹ️ No new avatars to unlock");
   }
 
   return {
