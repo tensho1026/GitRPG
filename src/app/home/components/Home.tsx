@@ -1,10 +1,6 @@
 "use client";
-import { useSession } from "next-auth/react";
-import { useEffect, useState, useMemo } from "react";
-import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
-import { getUserCurrentItems } from "@/actions/item/getUserCurrentitems";
-import { Items } from "@/generated/prisma";
+import { useEffect } from "react";
+import { Session } from "next-auth";
 import MenuButton from "./MenuButton";
 import MyAvatar from "@/app/home/components/MyAvatar";
 import UserBasicInfo from "./UserBasicInfo";
@@ -13,49 +9,41 @@ import Header from "./Header";
 import { UserWithStatus } from "@/types/user/userStatus";
 import { menuItems } from "@/data/menu";
 import BackGround from "../../../components/BackGround";
+import { useSessionStore } from "@/lib/sessionStore";
+import { useHomeData } from "./hooks/useHomeData";
+import { useUserStats } from "./hooks/useUserStats";
+import { useHomeAuthEffect } from "../hooks/useHomeAuthEffect";
+import Loading from "@/components/ Loading";
 
-export default function HomeScreen() {
-  const { data: session, status } = useSession();
-  const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
-  const [userItems, setUserItems] = useState<Items[]>([]);
+interface HomeScreenProps {
+  session: Session | null;
+  status: string;
+}
 
+export default function HomeScreen({ session, status }: HomeScreenProps) {
+  const { setSession, setStatus } = useSessionStore();
+
+  // zustand storeにsessionとstatusをセット
   useEffect(() => {
-    const fetchData = async () => {
-      if (
-        status === "authenticated" &&
-        session?.user?.email &&
-        session.accessToken
-      ) {
-        try {
-          const statusResult = await getUserStatus(session.user.email);
-          if (statusResult) {
-            setUserStatus(statusResult);
+    setSession(session);
+    setStatus(status as "loading" | "authenticated" | "unauthenticated");
+  }, [session, status, setSession, setStatus]);
 
-            const items = await getUserCurrentItems(session.user.email);
+  // 認証効果を実行
+  useHomeAuthEffect(session, status);
 
-            if (items) {
-              setUserItems(items);
-            }
-          }
-        } catch (error) {
-          console.error("Failed to fetch user data on home screen:", error);
-        }
-      }
-    };
+  const { userStatus, userItems, isLoading } = useHomeData(session, status);
+  const {
+    currentLevel,
+    totalCommits,
+    remainingCommits,
+    progressPercentage,
+    coins,
+  } = useUserStats(userStatus);
 
-    fetchData();
-  }, [status, session]);
-
-  const { currentLevel, remainingCommits, progressPercentage } = useMemo(() => {
-    const totalCommits = userStatus?.status?.commit ?? 0;
-    const { remainingCommits, percentage } =
-      getRemainingCommitsToNextLevel(totalCommits);
-    return {
-      currentLevel: userStatus?.status?.level ?? 1,
-      remainingCommits: remainingCommits,
-      progressPercentage: percentage,
-    };
-  }, [userStatus]);
+  if (isLoading) {
+    return <Loading backgroundImage={"/newhomepage.JPG"} />;
+  }
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
@@ -86,8 +74,8 @@ export default function HomeScreen() {
           {/* User Status */}
           <UserStatus
             currentLevel={currentLevel}
-            totalCommits={userStatus?.status?.commit ?? 0}
-            coins={userStatus?.status?.coin ?? 0}
+            totalCommits={totalCommits}
+            coins={coins}
             remainingCommits={remainingCommits}
             progressPercentage={progressPercentage}
           />

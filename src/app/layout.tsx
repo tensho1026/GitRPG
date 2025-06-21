@@ -3,6 +3,7 @@ import { Press_Start_2P } from "next/font/google";
 import "./globals.css";
 
 import CustomSessionProvider from "../components/auth/SessionProvider";
+import SessionManager from "../components/auth/SessionManager";
 import PixelStyles from "@/components/common/PixelStyles";
 
 const pressStart2P = Press_Start_2P({
@@ -26,7 +27,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${pressStart2P.variable} antialiased`}>
         <PixelStyles />
-        <CustomSessionProvider>{children}</CustomSessionProvider>
+        <CustomSessionProvider>
+          <SessionManager />
+          {children}
+        </CustomSessionProvider>
       </body>
     </html>
   );
