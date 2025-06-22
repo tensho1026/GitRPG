@@ -17,21 +17,23 @@ export default function AvatarSelection() {
   } = useAvatarData();
 
   return (
-    <div>
+    <div className="relative min-h-screen">
       <BackGround backgroundImage="newavatar.JPG" />
       <LoadingOverlay isProcessing={isProcessing} />
 
-      <div className="min-h-screen p-4 font-mono max-w-6xl mx-auto relative z-10">
-        <AvatarHeader level={playerData.level} coins={coins} />
+      <div className="relative z-10 p-4 font-mono">
+        <div className="max-w-6xl mx-auto">
+          <AvatarHeader level={playerData.level} coins={coins} />
 
-        <AvatarGrid
-          displayAvatars={displayAvatars}
-          playerLevel={playerData.level}
-          playerCoins={coins}
-          isProcessing={isProcessing}
-          onEquip={handleEquip}
-          onUnlock={handleUnlockAvatar}
-        />
+          <AvatarGrid
+            displayAvatars={displayAvatars}
+            playerLevel={playerData.level}
+            playerCoins={coins}
+            isProcessing={isProcessing}
+            onEquip={handleEquip}
+            onUnlock={handleUnlockAvatar}
+          />
+        </div>
       </div>
     </div>
   );
