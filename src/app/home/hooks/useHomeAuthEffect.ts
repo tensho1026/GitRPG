@@ -13,13 +13,7 @@ export const useHomeAuthEffect = (session: Session | null, status: string) => {
       });
 
       if (session?.user?.email && session?.accessToken) {
-        updateCommits(session.user.email, session.accessToken)
-          .then((count) => {
-            console.log(`コミット数: ${count}`);
-          })
-          .catch((err) => {
-            console.error("コミット取得失敗:", err);
-          });
+        updateCommits(session.user.email, session.accessToken);
       }
     }
   }, [session, status]);
