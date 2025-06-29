@@ -15,6 +15,7 @@ export default function BattlePage() {
     defense: 0,
   });
   const [userLevel, setUserLevel] = useState(1);
+  console.log("aaaaa");
 
   useEffect(() => {
     const fetchData = async () => {
