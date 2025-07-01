@@ -4,6 +4,8 @@ import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import { NextAuthOptions } from "next-auth";
 
+export const runtime = "nodejs";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
@@ -32,4 +34,6 @@ export const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+
+export const GET = handler;
+export const POST = handler;
