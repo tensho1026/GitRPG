@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getCurrentUserBattleStatus } from "../../../../actions/user/status/getCurrentUserBattleStatus";
 import { prisma } from "../../../../../prisma/prisma";
 
 export const runtime = "nodejs";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { name: string } }
-): Promise<NextResponse> {
+  request: Request,
+  { params }: { params: Promise<{ name: string }> }
+) {
+  const { name } = await params; // ✅ Promise を await する
+
   try {
     // Find user by name
     const user = await prisma.users.findFirst({
-      where: { name: params.name },
+      where: { name },
       select: {
         id: true,
         name: true,
