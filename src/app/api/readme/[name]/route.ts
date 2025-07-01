@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../prisma/prisma";
 import { getCurrentUserBattleStatus } from "../../../../actions/user/status/getCurrentUserBattleStatus";
 
@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export async function GET(
   _req: NextRequest,
   { params }: { params: { name: string } }
-) {
+): Promise<NextResponse> {
   // ユーザー名でユーザーを検索
   const user = await prisma.users.findFirst({
     where: { name: params.name },
@@ -23,7 +23,7 @@ export async function GET(
   });
 
   if (!user) {
-    return new Response("User Not Found", { status: 404 });
+    return new NextResponse("User Not Found", { status: 404 });
   }
 
   // ユーザーIDを使用してバトルステータスを取得
@@ -50,7 +50,7 @@ export async function GET(
     </svg>
   `;
 
-  return new Response(svg, {
+  return new NextResponse(svg, {
     headers: {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "no-cache",
