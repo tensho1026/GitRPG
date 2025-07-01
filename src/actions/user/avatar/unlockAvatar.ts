@@ -87,7 +87,6 @@ export const autoUnlockAvatars = async (email: string) => {
   // Get user's owned avatars from the Avatar model
   const userAvatars = await prisma.avatar.findMany({
     where: { userId: email },
-    select: { name: true },
   });
 
   const ownedAvatarNames = userAvatars.map((avatar) => avatar.name);
@@ -107,11 +106,12 @@ export const autoUnlockAvatars = async (email: string) => {
     // Auto-unlock if user has enough coins or if it's free
     if (avatar.price === 0 || userStatus.coin >= avatar.price) {
       newlyUnlockedAvatars.push(avatar.id);
-    } else {
     }
   }
 
   let updatedUserStatus = userStatus;
+  let equippedAvatar = null;
+  let allUserAvatars = userAvatars;
 
   // Update the database with newly unlocked avatars
   if (newlyUnlockedAvatars.length > 0) {
@@ -158,7 +158,26 @@ export const autoUnlockAvatars = async (email: string) => {
       (await prisma.userStatus.findUnique({
         where: { userId: email },
       })) || userStatus;
+
+    // Get updated avatar list with complete information
+    allUserAvatars = await prisma.avatar.findMany({
+      where: { userId: email },
+    });
   }
+
+  // Get equipped avatar
+  equippedAvatar = await prisma.avatar.findFirst({
+    where: {
+      userId: email,
+      equipped: true,
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      type: true,
+    },
+  });
 
   return {
     success: true,
@@ -167,12 +186,11 @@ export const autoUnlockAvatars = async (email: string) => {
       const avatar = avatarCharacters.find((a) => a.id === avatarId);
       return total + (avatar?.price || 0);
     }, 0),
-    // Return updated user data directly
     userData: {
       level: updatedUserStatus.level,
       coin: updatedUserStatus.coin,
-      selectedAvatar: "warrior", // Default value since we're not using this field anymore
-      unlockedAvatars: [], // Empty array since we're using Avatar model now
+      selectedAvatar: equippedAvatar,
+      unlockedAvatars: allUserAvatars,
     },
   };
 };

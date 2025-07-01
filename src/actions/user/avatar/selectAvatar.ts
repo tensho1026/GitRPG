@@ -7,25 +7,40 @@ export const selectAvatar = async (email: string, avatarId: string) => {
     throw new Error("User not found.");
   }
 
-  const userStatus = await prisma.userStatus.findUnique({
-    where: { userId: email },
-    select: { unlockedAvatars: true },
-  });
-
-  if (!userStatus) {
-    throw new Error("User status not found.");
-  }
-
-  if (!userStatus.unlockedAvatars.includes(avatarId)) {
-    throw new Error("You have not unlocked this avatar.");
-  }
-
-  await prisma.userStatus.update({
-    where: { userId: email },
-    data: {
-      selectedAvatar: avatarId,
+  // Check if user owns the avatar
+  const userAvatar = await prisma.avatar.findFirst({
+    where: {
+      id: avatarId,
+      userId: email,
     },
   });
 
-  return { success: true };
+  if (!userAvatar) {
+    throw new Error("You have not unlocked this avatar.");
+  }
+
+  try {
+    // Use transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      // Unequip all currently equipped avatars for this user
+      await tx.avatar.updateMany({
+        where: {
+          userId: email,
+          equipped: true,
+        },
+        data: { equipped: false },
+      });
+
+      // Equip the selected avatar
+      await tx.avatar.update({
+        where: { id: avatarId },
+        data: { equipped: true },
+      });
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error selecting avatar:", error);
+    throw new Error("Failed to select avatar.");
+  }
 };

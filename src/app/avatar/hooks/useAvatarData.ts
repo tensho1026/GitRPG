@@ -12,11 +12,18 @@ import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
 import { avatarCharacters } from "@/data/avatar";
 import type { Avatar as UserAvatar } from "@/generated/prisma";
 
+interface SelectedAvatar {
+  id: string;
+  name: string;
+  image: string;
+  type: string;
+}
+
 interface PlayerAvatarData {
   level: number;
   coins: number;
-  selectedAvatar: string;
-  unlockedAvatars: string[];
+  selectedAvatar: SelectedAvatar | null;
+  unlockedAvatars: UserAvatar[];
 }
 
 type DisplayAvatar = {
@@ -39,8 +46,8 @@ export function useAvatarData() {
   const [playerData, setPlayerData] = useState<PlayerAvatarData>({
     level: 0,
     coins: 0,
-    selectedAvatar: "warrior",
-    unlockedAvatars: ["warrior"],
+    selectedAvatar: null,
+    unlockedAvatars: [],
   });
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   const [coins, setCoins] = useState<number>(0);
