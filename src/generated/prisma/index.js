@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.9.0
- * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
+ * Prisma Client JS version: 6.10.1
+ * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
  */
 Prisma.prismaVersion = {
-  client: "6.9.0",
-  engine: "81e4af48011447c3cc503a190e86995b66d2a28e"
+  client: "6.10.1",
+  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -190,6 +190,10 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -201,12 +205,13 @@ const config = {
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
-  "clientVersion": "6.9.0",
-  "engineVersion": "81e4af48011447c3cc503a190e86995b66d2a28e",
+  "clientVersion": "6.10.1",
+  "engineVersion": "9b628578b3b7cae625e8c927178f15a170e74a9c",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -215,8 +220,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\n// generator schema {\n//   provider = \"prisma-schema-generator\"\n//   output   = \"../src/generated/prisma\"\n// }\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Users {\n  id        String      @id\n  name      String\n  image     String\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @default(now()) @updatedAt\n  status    UserStatus?\n  items     Items[]\n  avatar    Avatar[]\n}\n\nmodel UserStatus {\n  id        String   @id @default(cuid())\n  userId    String   @unique\n  level     Int      @default(1)\n  commit    Int      @default(0)\n  coin      Int      @default(100)\n  hp        Int      @default(100)\n  attack    Int      @default(10)\n  defense   Int      @default(5)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @default(now()) @updatedAt\n\n  user Users @relation(fields: [userId], references: [id])\n}\n\nmodel Items {\n  id          String   @id @default(cuid())\n  equipmentId String\n  name        String\n  image       String\n  description String\n  type        String\n  attack      Int?\n  defense     Int?\n  price       Int\n  equipped    Boolean  @default(false)\n  userId      String\n  user        Users    @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @default(now()) @updatedAt\n\n  @@unique([userId, equipmentId])\n}\n\nmodel Avatar {\n  id          String   @id @default(cuid())\n  name        String\n  image       String\n  description String\n  type        String\n  hp          Int?\n  attack      Int?\n  defense     Int?\n  price       Int\n  equipped    Boolean  @default(false)\n  userId      String\n  user        Users    @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @default(now()) @updatedAt\n}\n",
-  "inlineSchemaHash": "818b591a4086144c94489f71bc315c81982debd4830be54ded0ba306e61e30ab",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\n// generator schema {\n//   provider = \"prisma-schema-generator\"\n//   output   = \"../src/generated/prisma\"\n// }\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Users {\n  id        String      @id\n  name      String\n  image     String\n  createdAt DateTime    @default(now())\n  updatedAt DateTime    @default(now()) @updatedAt\n  status    UserStatus?\n  items     Items[]\n  avatar    Avatar[]\n}\n\nmodel UserStatus {\n  id        String   @id @default(cuid())\n  userId    String   @unique\n  level     Int      @default(1)\n  commit    Int      @default(0)\n  coin      Int      @default(100)\n  hp        Int      @default(100)\n  attack    Int      @default(10)\n  defense   Int      @default(5)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @default(now()) @updatedAt\n\n  user Users @relation(fields: [userId], references: [id])\n}\n\nmodel Items {\n  id          String   @id @default(cuid())\n  equipmentId String\n  name        String\n  image       String\n  description String\n  type        String\n  attack      Int?\n  defense     Int?\n  price       Int\n  equipped    Boolean  @default(false)\n  userId      String\n  user        Users    @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @default(now()) @updatedAt\n\n  @@unique([userId, equipmentId])\n}\n\nmodel Avatar {\n  id          String   @id @default(cuid())\n  name        String\n  image       String\n  description String\n  type        String\n  hp          Int?\n  attack      Int?\n  defense     Int?\n  price       Int\n  equipped    Boolean  @default(false)\n  userId      String\n  user        Users    @relation(fields: [userId], references: [id])\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @default(now()) @updatedAt\n}\n",
+  "inlineSchemaHash": "63b83ad04e2094a1d665aa6799bb3b8b80a611d9b6c7c70002b66f039b2fb2ce",
   "copyEngine": true
 }
 
@@ -257,6 +262,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
 path.join(process.cwd(), "src/generated/prisma/libquery_engine-darwin-arm64.dylib.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-rhel-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")
