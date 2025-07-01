@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUserBattleStatus } from "../../../../actions/user/status/getCurrentUserBattleStatus";
 import { prisma } from "../../../../../prisma/prisma";
 
@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export async function GET(
   request: NextRequest,
   { params }: { params: { name: string } }
-): Promise<Response> {
+): Promise<NextResponse> {
   try {
     // Find user by name
     const user = await prisma.users.findFirst({
@@ -24,7 +24,7 @@ export async function GET(
     });
 
     if (!user) {
-      return new Response("User Not Found", { status: 404 });
+      return new NextResponse("User Not Found", { status: 404 });
     }
 
     // Get battle status
@@ -52,7 +52,7 @@ export async function GET(
     </svg>
   `;
 
-    return new Response(svg, {
+    return new NextResponse(svg, {
       status: 200,
       headers: {
         "Content-Type": "image/svg+xml",
@@ -61,6 +61,6 @@ export async function GET(
     });
   } catch (error) {
     console.error("Error fetching user status:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
