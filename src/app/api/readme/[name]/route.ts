@@ -1,12 +1,14 @@
-import { prisma } from "../../../../../prisma/prisma";
+import { NextRequest, NextResponse } from "next/server"; // Import NextRequest and NextResponse
+
 import { getCurrentUserBattleStatus } from "../../../../actions/user/status/getCurrentUserBattleStatus";
+import { prisma } from "../../../../../prisma/prisma";
 
 export const runtime = "nodejs";
 
 export async function GET(
-  _req: Request,
+  _req: NextRequest, // Use NextRequest for consistency
   { params }: { params: { name: string } }
-): Promise<Response> {
+): Promise<NextResponse> { // Update the return type annotation
   const user = await prisma.users.findFirst({
     where: { name: params.name },
     select: {
@@ -21,7 +23,8 @@ export async function GET(
   });
 
   if (!user) {
-    return new Response("User Not Found", { status: 404 }); // ✅ Response を使う
+    // Use NextResponse for all responses
+    return new NextResponse("User Not Found", { status: 404 });
   }
 
   const battleStatus = await getCurrentUserBattleStatus(user.id);
@@ -47,7 +50,9 @@ export async function GET(
     </svg>
   `;
 
-  return new Response(svg, {
+  // Return a NextResponse object
+  return new NextResponse(svg, {
+    status: 200, // Explicitly set status 200
     headers: {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "no-cache",
