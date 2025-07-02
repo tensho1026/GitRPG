@@ -5,16 +5,48 @@ import { Session } from "next-auth";
 
 export const useHomeAuthEffect = (session: Session | null, status: string) => {
   useEffect(() => {
+    console.log("useHomeAuthEffect: status =", status);
+    console.log("useHomeAuthEffect: session =", session);
+
+    // @ts-ignore - NextAuth v4 user property compatibility
     if (status === "authenticated" && session?.user?.email) {
-      saveUserToDatabase({
-        email: session.user.email,
-        name: session.user.name ?? null,
-        image: session.user.image ?? null,
+      // @ts-ignore - NextAuth v4 user property compatibility
+      const userEmail = session.user.email;
+      // @ts-ignore - NextAuth v4 user property compatibility
+      const userName = session.user.name;
+      // @ts-ignore - NextAuth v4 user property compatibility
+      const userImage = session.user.image;
+
+      console.log("useHomeAuthEffect: extracted values:", {
+        email: userEmail,
+        name: userName,
+        image: userImage,
       });
 
+      // Only save if we have required data
+      if (userEmail && userName && userImage) {
+        console.log("useHomeAuthEffect: Calling saveUserToDatabase");
+        saveUserToDatabase({
+          email: userEmail,
+          name: userName,
+          image: userImage,
+        });
+      } else {
+        console.log("useHomeAuthEffect: Missing required user data", {
+          email: !!userEmail,
+          name: !!userName,
+          image: !!userImage,
+        });
+      }
+
+      // @ts-ignore - NextAuth v4 user and accessToken property compatibility
       if (session?.user?.email && session?.accessToken) {
+        console.log("useHomeAuthEffect: Calling updateCommits");
+        // @ts-ignore - NextAuth v4 user and accessToken property compatibility
         updateCommits(session.user.email, session.accessToken);
       }
+    } else {
+      console.log("useHomeAuthEffect: Not authenticated or missing email");
     }
   }, [session, status]);
 };

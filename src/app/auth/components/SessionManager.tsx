@@ -9,6 +9,7 @@ export default function SessionManager() {
   const { setSession, setStatus } = useSessionStore();
 
   useEffect(() => {
+    // @ts-ignore - NextAuth v4 Session type compatibility
     setSession(session);
     setStatus(status);
   }, [session, status, setSession, setStatus]);

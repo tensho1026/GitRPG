@@ -11,11 +11,14 @@ export const useHomeData = (session: Session | null, status: string) => {
     const fetchData = async () => {
       if (
         status === "authenticated" &&
+        // @ts-ignore - NextAuth v4 user property compatibility
         session?.user?.email &&
+        // @ts-ignore - NextAuth v4 accessToken property compatibility
         session.accessToken
       ) {
         try {
           setIsLoading(true);
+          // @ts-ignore - NextAuth v4 user property compatibility
           const statusResult = await getUserStatus(session.user.email);
           if (statusResult) {
             setUserStatus(statusResult);

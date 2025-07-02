@@ -39,6 +39,8 @@ model UserStatus {
   hp               Int      @default(100)
   attack           Int      @default(10)
   defense          Int      @default(5)
+  selectedAvatar   String?
+  unlockedAvatars  String[] @default([])
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now()) @updatedAt
 

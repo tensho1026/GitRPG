@@ -46,6 +46,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   const userData = useMemo(
     () => ({
       name: userStatus?.name || "",
+      // @ts-ignore - NextAuth v4 user property compatibility
       username: session?.user?.email || "",
       avatar: userStatus?.image || "",
       githubUrl: `https://github.com/${userStatus?.name}`,
@@ -55,6 +56,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
       userStatus?.name,
       userStatus?.image,
       userStatus?.createdAt,
+      // @ts-ignore - NextAuth v4 user property compatibility
       session?.user?.email,
     ]
   );

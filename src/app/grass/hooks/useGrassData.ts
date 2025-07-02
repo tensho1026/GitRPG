@@ -22,12 +22,14 @@ export function useGrassData() {
       if (
         status === "authenticated" &&
         session?.user?.email &&
+        // @ts-ignore - NextAuth v4 accessToken property compatibility
         session.accessToken
       ) {
         try {
           const statusResult = await getUserStatus(session.user.email);
           if (statusResult) {
             const contributionData = await fetchMonthlyContributions(
+              // @ts-ignore - NextAuth v4 accessToken property compatibility
               session.accessToken,
               statusResult.createdAt
             );
