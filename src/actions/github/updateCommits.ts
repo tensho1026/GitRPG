@@ -2,7 +2,7 @@
 "use server";
 
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
-import { prisma } from "../../../prisma/prisma";
+import { prisma } from "../../lib/prisma";
 import { getLevelFromCommits } from "@/lib/leveling";
 
 export async function updateCommits(userId: string, accessToken: string) {

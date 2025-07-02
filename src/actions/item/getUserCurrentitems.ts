@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../prisma/prisma";
+import { prisma } from "../../lib/prisma";
 
 export const getUserCurrentItems = async (email: string) => {
   if (!email) {
@@ -16,7 +16,7 @@ export const getUserCurrentItems = async (email: string) => {
     return items;
   } catch (error) {
     console.error("Error fetching user's current items:", error);
-    console.log('ss')
+    console.log("ss");
     return [];
   }
 };

@@ -1,4 +1,4 @@
-import { prisma } from "../../../prisma/prisma";
+import { prisma } from "../../lib/prisma";
 import { fetchTotalContributions } from "./fetchCommits";
 
 export const getCommitsAfterSignup = async (

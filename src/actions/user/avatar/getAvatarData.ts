@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../../prisma/prisma";
+import { prisma } from "../../../lib/prisma";
 
 export const getAvatarData = async (email: string) => {
   if (!email) {

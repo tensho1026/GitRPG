@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../../prisma/prisma";
+import { prisma } from "../../../lib/prisma";
 import { avatarCharacters } from "@/data/avatar";
 
 export const purchaseAvatar = async (email: string, avatarId: string) => {

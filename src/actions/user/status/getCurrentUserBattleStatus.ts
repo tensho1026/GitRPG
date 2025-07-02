@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../../prisma/prisma";
+import { prisma } from "../../../lib/prisma";
 import { getUserCurrentItems } from "../../item/getUserCurrentitems";
 
 export const getCurrentUserBattleStatus = async (email: string) => {
