@@ -16,6 +16,7 @@ export const getUserCurrentItems = async (email: string) => {
     return items;
   } catch (error) {
     console.error("Error fetching user's current items:", error);
+    console.log('ss')
     return [];
   }
 };
