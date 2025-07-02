@@ -1,50 +1,91 @@
 "use server";
 
-import { prisma } from "../../../lib/prisma";
+import { supabase } from "../../../supabase/supabase.config";
 
-export const saveUserToDatabase = async (userData: {
-  email: string;
-  name: string | null;
-  image: string | null;
-}) => {
-  // Debug logging to check the input
-  console.log("saveUserToDatabase called with:", userData);
+interface UserData {
+  id: string;
+  name: string;
+  image: string;
+}
 
-  if (!userData.email) {
-    console.error("saveUserToDatabase: email is undefined or empty");
-    throw new Error("User email is required");
+export const saveUserToDatabase = async (userData: UserData) => {
+  if (!userData?.id) {
+    console.error("User ID is missing:", userData);
+    throw new Error("User ID is required");
   }
 
   try {
-    // Test database connection first
-    await prisma.$connect();
+    console.log("Attempting to save/update user:", userData);
 
-    const user = await prisma.users.upsert({
-      where: { id: userData.email },
-      update: {
-        name: userData.name ?? "",
-        image: userData.image ?? "",
-        updatedAt: new Date(),
-      },
-      create: {
-        id: userData.email,
-        name: userData.name ?? "",
-        image: userData.image ?? "",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
+    // Upsert user in Users table
+    const { data: user, error: userError } = await supabase
+      .from("Users")
+      .upsert(
+        {
+          id: userData.id,
+          name: userData.name,
+          image: userData.image,
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          onConflict: "id",
+        }
+      )
+      .select();
 
-    console.log("User saved successfully:", user);
-    return user;
+    if (userError) {
+      console.error("Failed to upsert user:", userError);
+      throw new Error(`Failed to save user: ${userError.message}`);
+    }
+
+    console.log("User upserted successfully:", user);
+
+    // Check if UserStatus exists
+    const { data: existingStatus, error: statusCheckError } = await supabase
+      .from("UserStatus")
+      .select("id")
+      .eq("userId", userData.id)
+      .single();
+
+    if (statusCheckError && statusCheckError.code !== "PGRST116") {
+      console.error("Error checking user status:", statusCheckError);
+      throw new Error(
+        `Failed to check user status: ${statusCheckError.message}`
+      );
+    }
+
+    // Create UserStatus if it doesn't exist
+    if (!existingStatus) {
+      const { data: userStatus, error: statusError } = await supabase
+        .from("UserStatus")
+        .insert({
+          userId: userData.id,
+          level: 1,
+          commit: 0,
+          coin: 100,
+          hp: 100,
+          attack: 10,
+          defense: 5,
+          selectedAvatar: null,
+          unlockedAvatars: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        })
+        .select();
+
+      if (statusError) {
+        console.error("Failed to create user status:", statusError);
+        throw new Error(`Failed to create user status: ${statusError.message}`);
+      }
+
+      console.log("User status created successfully:", userStatus);
+    } else {
+      console.log("User status already exists for user:", userData.id);
+    }
+
+    return { success: true, user };
   } catch (error) {
-    console.error("Database connection or save failed:", error);
-    throw new Error(
-      `Failed to save user to database: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  } finally {
-    await prisma.$disconnect();
+    console.error("Error in saveUserToDatabase:", error);
+    throw error;
   }
 };

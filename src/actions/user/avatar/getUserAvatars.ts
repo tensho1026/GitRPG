@@ -1,38 +1,59 @@
 "use server";
 
-import { prisma } from "../../../lib/prisma";
+import { supabase } from "../../../supabase/supabase.config";
 
-export const getUserAvatars = async (email: string) => {
-  if (!email) {
-    throw new Error("User email is not provided");
+export const getUserAvatars = async (userId: string) => {
+  if (!userId) {
+    console.error("getUserAvatars: User ID is not provided");
+    return [];
   }
 
   try {
-    const avatars = await prisma.avatar.findMany({
-      where: { userId: email },
-      orderBy: { createdAt: "asc" },
-    });
+    const { data: avatars, error } = await supabase
+      .from("Avatar")
+      .select("*")
+      .eq("userId", userId)
+      .order("createdAt", { ascending: false });
 
-    return avatars;
+    if (error) {
+      console.error("Failed to fetch user avatars:", error);
+      throw new Error(`Failed to fetch user avatars: ${error.message}`);
+    }
+
+    return avatars || [];
   } catch (error) {
-    console.error("Error fetching user avatars:", error);
-    throw new Error("Failed to fetch user avatars.");
+    console.error("Error in getUserAvatars:", error);
+    throw error;
   }
 };
 
-export const getEquippedAvatar = async (email: string) => {
-  if (!email) {
-    throw new Error("User email is not provided");
+export const getEquippedAvatar = async (userId: string) => {
+  if (!userId) {
+    console.error("getEquippedAvatar: User ID is not provided");
+    return null;
   }
 
   try {
-    const equippedAvatar = await prisma.avatar.findFirst({
-      where: { userId: email, equipped: true },
-    });
+    const { data: equippedAvatar, error } = await supabase
+      .from("Avatar")
+      .select("*")
+      .eq("userId", userId)
+      .eq("equipped", true)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        // No rows found - user has no equipped avatar
+        console.log("No equipped avatar found for user:", userId);
+        return null;
+      }
+      console.error("Failed to fetch equipped avatar:", error);
+      throw new Error(`Failed to fetch equipped avatar: ${error.message}`);
+    }
 
     return equippedAvatar;
   } catch (error) {
-    console.error("Error fetching equipped avatar:", error);
-    throw new Error("Failed to fetch equipped avatar.");
+    console.error("Error in getEquippedAvatar:", error);
+    return null;
   }
 };

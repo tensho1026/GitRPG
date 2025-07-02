@@ -14,7 +14,7 @@ export const useUserStats = (userStatus: UserWithStatus | null) => {
       remainingCommits,
       progressPercentage: percentage,
       coins: userStatus?.status?.coin ?? 0,
-      items: userStatus?.items ?? [],
+      items: [], // Items are handled separately
     };
   }, [userStatus]);
 };

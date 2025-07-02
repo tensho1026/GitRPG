@@ -45,17 +45,19 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   // メモ化されたユーザーデータ
   const userData = useMemo(
     () => ({
-      name: userStatus?.name || "",
+      name: userStatus?.user?.name || "",
       // @ts-ignore - NextAuth v4 user property compatibility
       username: session?.user?.email || "",
-      avatar: userStatus?.image || "",
-      githubUrl: `https://github.com/${userStatus?.name}`,
-      registrationDate: userStatus?.createdAt?.toLocaleDateString() || "",
+      avatar: userStatus?.user?.image || "",
+      githubUrl: `https://github.com/${userStatus?.user?.name}`,
+      registrationDate: userStatus?.user?.createdAt
+        ? new Date(userStatus.user.createdAt).toLocaleDateString()
+        : "",
     }),
     [
-      userStatus?.name,
-      userStatus?.image,
-      userStatus?.createdAt,
+      userStatus?.user?.name,
+      userStatus?.user?.image,
+      userStatus?.user?.createdAt,
       // @ts-ignore - NextAuth v4 user property compatibility
       session?.user?.email,
     ]

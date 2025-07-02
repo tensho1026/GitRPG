@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../lib/prisma";
+import { supabase } from "../../../supabase/supabase.config";
 import { avatarCharacters } from "@/data/avatar";
 
 export const unlockAvatar = async (email: string, avatarId: string) => {
@@ -13,23 +13,26 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
     throw new Error("Avatar not found.");
   }
 
-  const userStatus = await prisma.userStatus.findUnique({
-    where: { userId: email },
-  });
+  const { data: userStatus, error: userStatusError } = await supabase
+    .from("UserStatus")
+    .select("*")
+    .eq("userId", email)
+    .single();
 
-  if (!userStatus) {
+  if (userStatusError || !userStatus) {
+    console.error("Failed to fetch user status:", userStatusError);
     throw new Error("User status not found.");
   }
 
   // Check if user already has this avatar
-  const existingAvatar = await prisma.avatar.findFirst({
-    where: {
-      userId: email,
-      name: avatarToUnlock.name,
-    },
-  });
+  const { data: existingAvatar, error: avatarError } = await supabase
+    .from("Avatar")
+    .select("*")
+    .eq("userId", email)
+    .eq("name", avatarToUnlock.name)
+    .single();
 
-  if (existingAvatar) {
+  if (!avatarError && existingAvatar) {
     throw new Error("Avatar already owned.");
   }
 
@@ -41,34 +44,47 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
     throw new Error("Not enough coins.");
   }
 
-  await prisma.$transaction(async (tx) => {
+  try {
     // Deduct coins from user
-    await tx.userStatus.update({
-      where: { userId: email },
-      data: {
-        coin: {
-          decrement: avatarToUnlock.price,
-        },
-      },
-    });
+    const { error: coinError } = await supabase
+      .from("UserStatus")
+      .update({
+        coin: userStatus.coin - avatarToUnlock.price,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("userId", email);
+
+    if (coinError) {
+      console.error("Failed to update coins:", coinError);
+      throw new Error("Failed to deduct coins.");
+    }
 
     // Create the avatar
-    await tx.avatar.create({
-      data: {
-        name: avatarToUnlock.name,
-        image: avatarToUnlock.image,
-        description: avatarToUnlock.description,
-        type: avatarToUnlock.type,
-        hp: avatarToUnlock.statBonus.hp,
-        attack: avatarToUnlock.statBonus.attack,
-        defense: avatarToUnlock.statBonus.defense,
-        price: avatarToUnlock.price,
-        userId: email,
-      },
+    const { error: createError } = await supabase.from("Avatar").insert({
+      name: avatarToUnlock.name,
+      image: avatarToUnlock.image,
+      description: avatarToUnlock.description,
+      type: avatarToUnlock.type,
+      hp: avatarToUnlock.statBonus.hp,
+      attack: avatarToUnlock.statBonus.attack,
+      defense: avatarToUnlock.statBonus.defense,
+      price: avatarToUnlock.price,
+      userId: email,
+      equipped: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
-  });
 
-  return { success: true };
+    if (createError) {
+      console.error("Failed to create avatar:", createError);
+      throw new Error("Failed to create avatar.");
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error in unlockAvatar:", error);
+    throw error;
+  }
 };
 
 export const autoUnlockAvatars = async (email: string) => {
@@ -76,21 +92,29 @@ export const autoUnlockAvatars = async (email: string) => {
     throw new Error("User not found.");
   }
 
-  const userStatus = await prisma.userStatus.findUnique({
-    where: { userId: email },
-  });
+  const { data: userStatus, error: userStatusError } = await supabase
+    .from("UserStatus")
+    .select("*")
+    .eq("userId", email)
+    .single();
 
-  if (!userStatus) {
+  if (userStatusError || !userStatus) {
+    console.error("Failed to fetch user status:", userStatusError);
     throw new Error("User status not found.");
   }
 
-  // Get user's owned avatars from the Avatar model
-  const userAvatars = await prisma.avatar.findMany({
-    where: { userId: email },
-    select: { name: true },
-  });
+  // Get user's owned avatars from the Avatar table
+  const { data: userAvatars, error: avatarsError } = await supabase
+    .from("Avatar")
+    .select("name")
+    .eq("userId", email);
 
-  const ownedAvatarNames = userAvatars.map((avatar) => avatar.name);
+  if (avatarsError) {
+    console.error("Failed to fetch user avatars:", avatarsError);
+    throw new Error("Failed to fetch user avatars.");
+  }
+
+  const ownedAvatarNames = userAvatars?.map((avatar) => avatar.name) || [];
 
   const newlyUnlockedAvatars: string[] = [];
 
@@ -107,7 +131,6 @@ export const autoUnlockAvatars = async (email: string) => {
     // Auto-unlock if user has enough coins or if it's free
     if (avatar.price === 0 || userStatus.coin >= avatar.price) {
       newlyUnlockedAvatars.push(avatar.id);
-    } else {
     }
   }
 
@@ -120,44 +143,69 @@ export const autoUnlockAvatars = async (email: string) => {
       return total + (avatar?.price || 0);
     }, 0);
 
-    // Create new avatars and update user coins
-    await prisma.$transaction(async (tx) => {
+    try {
       // Deduct coins from user
-      await tx.userStatus.update({
-        where: { userId: email },
-        data: {
-          coin: {
-            decrement: totalCost,
-          },
-        },
-      });
+      const { error: coinError } = await supabase
+        .from("UserStatus")
+        .update({
+          coin: userStatus.coin - totalCost,
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("userId", email);
+
+      if (coinError) {
+        console.error("Failed to update coins:", coinError);
+        throw new Error("Failed to deduct coins.");
+      }
 
       // Create new avatars
-      for (const avatarId of newlyUnlockedAvatars) {
-        const avatar = avatarCharacters.find((a) => a.id === avatarId);
-        if (avatar) {
-          await tx.avatar.create({
-            data: {
-              name: avatar.name,
-              image: avatar.image,
-              description: avatar.description,
-              type: avatar.type,
-              hp: avatar.statBonus.hp,
-              attack: avatar.statBonus.attack,
-              defense: avatar.statBonus.defense,
-              price: avatar.price,
-              userId: email,
-            },
-          });
+      const avatarsToCreate = newlyUnlockedAvatars
+        .map((avatarId) => {
+          const avatar = avatarCharacters.find((a) => a.id === avatarId);
+          if (!avatar) return null;
+
+          return {
+            name: avatar.name,
+            image: avatar.image,
+            description: avatar.description,
+            type: avatar.type,
+            hp: avatar.statBonus.hp,
+            attack: avatar.statBonus.attack,
+            defense: avatar.statBonus.defense,
+            price: avatar.price,
+            userId: email,
+            equipped: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+        })
+        .filter(Boolean);
+
+      if (avatarsToCreate.length > 0) {
+        const { error: createError } = await supabase
+          .from("Avatar")
+          .insert(avatarsToCreate);
+
+        if (createError) {
+          console.error("Failed to create avatars:", createError);
+          throw new Error("Failed to create avatars.");
         }
       }
-    });
 
-    // Get updated user status
-    updatedUserStatus =
-      (await prisma.userStatus.findUnique({
-        where: { userId: email },
-      })) || userStatus;
+      // Get updated user status
+      const { data: updatedStatus, error: updateError } = await supabase
+        .from("UserStatus")
+        .select("*")
+        .eq("userId", email)
+        .single();
+
+      if (!updateError && updatedStatus) {
+        updatedUserStatus = updatedStatus;
+      }
+    } catch (error) {
+      console.error("Error in autoUnlockAvatars transaction:", error);
+      throw error;
+    }
   }
 
   return {
@@ -171,8 +219,8 @@ export const autoUnlockAvatars = async (email: string) => {
     userData: {
       level: updatedUserStatus.level,
       coin: updatedUserStatus.coin,
-      selectedAvatar: "warrior", // Default value since we're not using this field anymore
-      unlockedAvatars: [], // Empty array since we're using Avatar model now
+      selectedAvatar: updatedUserStatus.selectedAvatar || "warrior",
+      unlockedAvatars: updatedUserStatus.unlockedAvatars || [],
     },
   };
 };

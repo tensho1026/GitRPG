@@ -6,13 +6,19 @@ import { ArrowLeft, Sword, Shield, Heart, Zap, Target } from "lucide-react";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import CombatStatus from "@/app/item/components/CombatStatus";
+import type { BattleStatus } from "@/types/user/userStatus";
 
 export default function BattlePage() {
   const { data: session, status } = useSession();
-  const [battleStatus, setBattleStatus] = useState({
-    hp: 0,
-    attack: 0,
-    defense: 0,
+  const [battleStatus, setBattleStatus] = useState<BattleStatus>({
+    userId: "",
+    level: 1,
+    baseStats: { hp: 0, attack: 0, defense: 0 },
+    totalStats: { hp: 0, attack: 0, defense: 0 },
+    equippedItems: [],
+    equippedAvatar: null,
+    coin: 0,
+    commit: 0,
   });
   const [userLevel, setUserLevel] = useState(1);
   console.log("aaaaa");
@@ -115,7 +121,9 @@ export default function BattlePage() {
                     boxShadow: "3px 3px 0px #d97706",
                   }}>
                   <Heart className="w-5 h-5" />
-                  <span className="pixel-text">HP: {battleStatus.hp}</span>
+                  <span className="pixel-text">
+                    HP: {battleStatus.totalStats.hp}
+                  </span>
                 </div>
               </div>
             </div>
@@ -127,9 +135,9 @@ export default function BattlePage() {
           {/* Combat Status Card */}
           <div className="lg:col-span-2">
             <CombatStatus
-              hp={battleStatus.hp}
-              attack={battleStatus.attack}
-              defense={battleStatus.defense}
+              hp={battleStatus.totalStats.hp}
+              attack={battleStatus.totalStats.attack}
+              defense={battleStatus.totalStats.defense}
             />
           </div>
 
@@ -149,7 +157,7 @@ export default function BattlePage() {
             </div>
             <div className="text-center">
               <div className="text-6xl font-bold text-red-200 pixel-text mb-2">
-                {battleStatus.attack}
+                {battleStatus.totalStats.attack}
               </div>
               <p className="text-red-300 pixel-text">敵に与えるダメージ</p>
             </div>
@@ -170,7 +178,7 @@ export default function BattlePage() {
             </div>
             <div className="text-center">
               <div className="text-6xl font-bold text-blue-200 pixel-text mb-2">
-                {battleStatus.defense}
+                {battleStatus.totalStats.defense}
               </div>
               <p className="text-blue-300 pixel-text">受けるダメージ軽減</p>
             </div>

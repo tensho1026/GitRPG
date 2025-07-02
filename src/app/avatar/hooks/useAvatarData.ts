@@ -10,7 +10,7 @@ import { getUserAvatars } from "@/actions/user/avatar/getUserAvatars";
 import { equipAvatar } from "@/actions/user/avatar/equipAvatar";
 import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
 import { avatarCharacters } from "@/data/avatar";
-import type { Avatar as UserAvatar } from "@/generated/prisma";
+import type { Avatar as UserAvatar } from "@/types/user/userStatus";
 
 interface PlayerAvatarData {
   level: number;

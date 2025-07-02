@@ -1,74 +1,98 @@
 "use server";
 
-import { prisma } from "../../../lib/prisma";
+import { supabase } from "../../../supabase/supabase.config";
 import { avatarCharacters } from "@/data/avatar";
 
-export const purchaseAvatar = async (email: string, avatarId: string) => {
-  if (!email) {
-    throw new Error("User not found.");
+export const purchaseAvatar = async (userId: string, avatarId: string) => {
+  if (!userId) {
+    throw new Error("User ID is required");
   }
 
-  const avatarToPurchase = avatarCharacters.find((a) => a.id === avatarId);
-  if (!avatarToPurchase) {
-    throw new Error("Avatar not found.");
+  if (!avatarId) {
+    throw new Error("Avatar ID is required");
   }
 
-  const userStatus = await prisma.userStatus.findUnique({
-    where: { userId: email },
-  });
+  try {
+    // Find the avatar to purchase
+    const avatar = avatarCharacters.find((a) => a.id === avatarId);
+    if (!avatar) {
+      throw new Error("Avatar not found");
+    }
 
-  if (!userStatus) {
-    throw new Error("User status not found.");
+    // Check if user already owns this avatar
+    const { data: existingAvatar, error: existingError } = await supabase
+      .from("Avatar")
+      .select("id")
+      .eq("userId", userId)
+      .eq("name", avatar.name)
+      .single();
+
+    if (!existingError && existingAvatar) {
+      throw new Error("You already own this avatar");
+    }
+
+    // Get user's current coin amount
+    const { data: userStatus, error: userError } = await supabase
+      .from("UserStatus")
+      .select("coin")
+      .eq("userId", userId)
+      .single();
+
+    if (userError || !userStatus) {
+      console.error("Failed to fetch user status:", userError);
+      throw new Error("Failed to fetch user status");
+    }
+
+    if (userStatus.coin < avatar.price) {
+      throw new Error("Insufficient coins");
+    }
+
+    // Update user's coin amount
+    const { error: coinError } = await supabase
+      .from("UserStatus")
+      .update({
+        coin: userStatus.coin - avatar.price,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("userId", userId);
+
+    if (coinError) {
+      console.error("Failed to update user coins:", coinError);
+      throw new Error("Failed to update user coins");
+    }
+
+    // Create the avatar
+    const { data: newAvatar, error: avatarError } = await supabase
+      .from("Avatar")
+      .insert({
+        name: avatar.name,
+        image: avatar.image,
+        description: avatar.description,
+        type: avatar.type,
+        hp: avatar.statBonus.hp,
+        attack: avatar.statBonus.attack,
+        defense: avatar.statBonus.defense,
+        price: avatar.price,
+        equipped: false,
+        userId: userId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (avatarError) {
+      console.error("Failed to create avatar:", avatarError);
+      throw new Error("Failed to create avatar");
+    }
+
+    return {
+      success: true,
+      avatar: newAvatar,
+      remainingCoin: userStatus.coin - avatar.price,
+    };
+  } catch (error) {
+    console.error("Error in purchaseAvatar:", error);
+    throw error;
   }
-
-  // Check if user already has this avatar
-  const existingAvatar = await prisma.avatar.findFirst({
-    where: {
-      userId: email,
-      name: avatarToPurchase.name,
-    },
-  });
-
-  if (existingAvatar) {
-    throw new Error("Avatar already owned.");
-  }
-
-  // Check if user has enough coins
-  if (userStatus.coin < avatarToPurchase.price) {
-    throw new Error("Not enough coins.");
-  }
-
-  // Check if user meets level requirement
-  if (userStatus.level < avatarToPurchase.unlockLevel) {
-    throw new Error("Level requirement not met.");
-  }
-
-  // Purchase the avatar
-  await prisma.$transaction([
-    // Deduct coins from user
-    prisma.userStatus.update({
-      where: { userId: email },
-      data: {
-        coin: {
-          decrement: avatarToPurchase.price,
-        },
-      },
-    }),
-    // Add avatar to user's collection
-    prisma.avatar.create({
-      data: {
-        name: avatarToPurchase.name,
-        image: avatarToPurchase.image,
-        description: avatarToPurchase.description,
-        type: avatarToPurchase.type,
-        hp: avatarToPurchase.statBonus.hp,
-        attack: avatarToPurchase.statBonus.attack,
-        defense: avatarToPurchase.statBonus.defense,
-        price: avatarToPurchase.price,
-        userId: email,
-      },
-    }),
-  ]);
-
-  return { success: true };
 };

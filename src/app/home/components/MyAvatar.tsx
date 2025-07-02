@@ -1,17 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Shirt, Heart, Sword, Shield } from "lucide-react";
-import type { Items } from "@/generated/prisma";
-import type { Avatar as UserAvatar } from "@/generated/prisma";
+import type { Item, Avatar as UserAvatar } from "@/types/user/userStatus";
 import Image from "next/image";
 import Link from "next/link";
 import { getEquippedAvatar } from "@/actions/user/avatar/getUserAvatars";
+import { Badge } from "@/components/ui/badge";
 
 interface MyAvatarProps {
-  userItems: Pick<Items, "id" | "name" | "image" | "type" | "equipped">[];
+  userItems?: Pick<Item, "id" | "name" | "image" | "type" | "equipped">[];
 }
 
 export default function MyAvatar({ userItems }: MyAvatarProps) {
@@ -128,7 +128,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                 <p className="text-purple-200 text-sm pixel-text">
                   装備中:{" "}
                   <span className="text-pink-300 font-bold">
-                    {userItems.find((item) => item.type === "weapon")?.name ||
+                    {userItems?.find((item) => item.type === "weapon")?.name ||
                       "未装備"}
                   </span>
                 </p>

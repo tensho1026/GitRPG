@@ -27,7 +27,7 @@ export default function ItemPage() {
           <ItemTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
           <ItemLayout
             userItems={userItems}
-            battleStatus={battleStatus}
+            battleStatus={battleStatus.totalStats}
             selectedTab={selectedTab}
             onDataUpdate={fetchData}
           />

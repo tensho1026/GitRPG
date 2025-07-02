@@ -1,51 +1,76 @@
 "use server";
 
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../supabase/supabase.config";
 import { revalidatePath } from "next/cache";
 
-export const equipItem = async (email: string, itemDbId: string) => {
-  if (!email) {
-    throw new Error("User not authenticated");
+export const equipItem = async (userId: string, itemId: string) => {
+  if (!userId) {
+    throw new Error("User ID is required");
   }
 
-  const itemToEquip = await prisma.items.findUnique({
-    where: { id: itemDbId, userId: email },
-  });
-
-  if (!itemToEquip) {
-    throw new Error("Item not found or does not belong to user");
+  if (!itemId) {
+    throw new Error("Item ID is required");
   }
 
   try {
-    await prisma.$transaction(async (tx) => {
-      // Unequip all items of the same type if a new item is being equipped
-      if (!itemToEquip.equipped) {
-        await tx.items.updateMany({
-          where: {
-            userId: email,
-            type: itemToEquip.type,
-            equipped: true,
-          },
-          data: {
-            equipped: false,
-          },
-        });
-      }
+    // Get the item to equip
+    const { data: itemToEquip, error: itemError } = await supabase
+      .from("Items")
+      .select("*")
+      .eq("id", itemId)
+      .eq("userId", userId)
+      .single();
 
-      // Toggle equipped state for the selected item
-      await tx.items.update({
-        where: {
-          id: itemDbId,
-        },
-        data: {
-          equipped: !itemToEquip.equipped,
-        },
-      });
-    });
+    if (itemError || !itemToEquip) {
+      console.error("Failed to fetch item:", itemError);
+      throw new Error("Item not found or doesn't belong to user");
+    }
+
+    // Unequip all items of the same type first
+    const { error: unequipError } = await supabase
+      .from("Items")
+      .update({
+        equipped: false,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("userId", userId)
+      .eq("type", itemToEquip.type);
+
+    if (unequipError) {
+      console.error("Failed to unequip items:", unequipError);
+      throw new Error("Failed to unequip existing items");
+    }
+
+    // Equip the selected item
+    const { data: equippedItem, error: equipError } = await supabase
+      .from("Items")
+      .update({
+        equipped: true,
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("id", itemId)
+      .eq("userId", userId)
+      .select()
+      .single();
+
+    if (equipError) {
+      console.error("Failed to equip item:", equipError);
+      throw new Error("Failed to equip item");
+    }
 
     revalidatePath("/item");
+    console.log(
+      `Item ${itemToEquip.name} ${
+        !itemToEquip.equipped ? "equipped" : "unequipped"
+      } successfully`
+    );
+
+    return {
+      success: true,
+      item: equippedItem,
+    };
   } catch (error) {
-    console.error("Equip failed:", error);
-    throw new Error("Failed to equip item.");
+    console.error("Error in equipItem:", error);
+    throw error;
   }
 };

@@ -1,20 +1,27 @@
 "use server";
 
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../supabase/supabase.config";
 
-export const getUserItems = async (email: string) => {
-  if (!email) {
-    return [];
+export const getUserItems = async (userId: string) => {
+  if (!userId) {
+    throw new Error("User ID is required");
   }
+
   try {
-    const items = await prisma.items.findMany({
-      where: {
-        userId: email,
-      },
-    });
-    return items;
+    const { data: items, error } = await supabase
+      .from("Items")
+      .select("*")
+      .eq("userId", userId)
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch user items:", error);
+      throw new Error(`Failed to fetch user items: ${error.message}`);
+    }
+
+    return items || [];
   } catch (error) {
-    console.error("Error fetching user items:", error);
-    return [];
+    console.error("Error in getUserItems:", error);
+    throw error;
   }
 };

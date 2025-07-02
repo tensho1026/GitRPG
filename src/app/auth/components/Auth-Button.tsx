@@ -2,34 +2,30 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Crown, LogOut, Github, Map, Compass } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
-import { Users } from "@/generated/prisma";
+import { useSessionStatus } from "@/lib/useSessionStatus";
+import Link from "next/link";
+import Loading from "@/components/ Loading";
+import type { UserWithStatus, BattleStatus } from "@/types/user/userStatus";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
-  const [userStatus, setUserStatus] = useState<
-    | (Users & {
-        status: {
-          commit: number;
-          level: number;
-          coin: number;
-          hp: number;
-          attack: number;
-          defense: number;
-        } | null;
-      })
-    | null
-  >(null);
-  const [battleStatus, setBattleStatus] = useState({
-    hp: 0,
-    attack: 0,
-    defense: 0,
+  const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
+  const [battleStatus, setBattleStatus] = useState<BattleStatus>({
+    userId: "",
+    level: 1,
+    baseStats: { hp: 0, attack: 0, defense: 0 },
+    totalStats: { hp: 0, attack: 0, defense: 0 },
+    equippedItems: [],
+    equippedAvatar: null,
+    coin: 0,
+    commit: 0,
   });
   const [expInfo, setExpInfo] = useState({
     remainingCommits: 0,
@@ -185,8 +181,7 @@ export default function AuthButton() {
                     </div>
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        {battleStatus.hp +
-                          (userStatus?.status?.level ?? 1) * 10}
+                        {battleStatus.totalStats.hp}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
                         HP
@@ -194,7 +189,7 @@ export default function AuthButton() {
                     </div>
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        {battleStatus.attack}
+                        {battleStatus.totalStats.attack}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
                         攻撃力
@@ -202,7 +197,7 @@ export default function AuthButton() {
                     </div>
                     <div>
                       <div className="text-yellow-300 font-mono text-lg pixel-text font-bold">
-                        {battleStatus.defense}
+                        {battleStatus.totalStats.defense}
                       </div>
                       <div className="text-emerald-200 font-mono text-xs pixel-text">
                         防御力

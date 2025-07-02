@@ -1,22 +1,28 @@
 "use server";
 
-import { prisma } from "../../lib/prisma";
+import { supabase } from "../../supabase/supabase.config";
 
-export const getUserCurrentItems = async (email: string) => {
-  if (!email) {
-    return [];
+export const getUserCurrentItems = async (userId: string) => {
+  if (!userId) {
+    throw new Error("User ID is required");
   }
+
   try {
-    const items = await prisma.items.findMany({
-      where: {
-        userId: email,
-        equipped: true,
-      },
-    });
-    return items;
+    const { data: items, error } = await supabase
+      .from("Items")
+      .select("*")
+      .eq("userId", userId)
+      .eq("equipped", true)
+      .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("Failed to fetch user equipped items:", error);
+      throw new Error(`Failed to fetch user equipped items: ${error.message}`);
+    }
+
+    return items || [];
   } catch (error) {
-    console.error("Error fetching user's current items:", error);
-    console.log("ss");
-    return [];
+    console.error("Error in getUserCurrentItems:", error);
+    throw error;
   }
 };

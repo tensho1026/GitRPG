@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Sword, Shield, Star, Coins, Lock } from "lucide-react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -9,7 +9,7 @@ import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
 import { getUserItems } from "@/actions/item/getUserItems";
 import { purchaseItem } from "@/actions/item/purchaseItem";
 import { equipItem } from "@/actions/item/equipItem";
-import type { Items as UserItem } from "@/generated/prisma";
+import type { Item as UserItem } from "@/types/user/userStatus";
 import type { Equipment } from "@/types/equipment/equipment";
 
 type DisplayEquipment = Equipment & {

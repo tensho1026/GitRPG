@@ -2,18 +2,25 @@
 
 export const fetchMonthlyContributions = async (
   accessToken: string,
-  userCreatedAt?: Date
+  userCreatedAt?: Date | string
 ) => {
   const today = new Date();
   let fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
   // If the user was created this month, fetch commits from their creation date.
-  if (
-    userCreatedAt &&
-    userCreatedAt.getFullYear() === today.getFullYear() &&
-    userCreatedAt.getMonth() === today.getMonth()
-  ) {
-    fromDate = userCreatedAt;
+  if (userCreatedAt) {
+    // Convert string to Date if necessary
+    const createdDate =
+      typeof userCreatedAt === "string"
+        ? new Date(userCreatedAt)
+        : userCreatedAt;
+
+    if (
+      createdDate.getFullYear() === today.getFullYear() &&
+      createdDate.getMonth() === today.getMonth()
+    ) {
+      fromDate = createdDate;
+    }
   }
 
   const query = `

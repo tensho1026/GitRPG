@@ -1,40 +1,74 @@
 // app/actions/updateCommits.ts
 "use server";
 
-import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
-import { prisma } from "../../lib/prisma";
-import { getLevelFromCommits } from "@/lib/leveling";
+import { supabase } from "../../supabase/supabase.config";
 
-export async function updateCommits(userId: string, accessToken: string) {
-  const count = await getCommitsAfterSignup(userId, accessToken);
-  const level = getLevelFromCommits(count);
+export const updateCommits = async (userId: string, commits: number) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
 
-  // 現在のユーザーステータスを取得
-  const currentStatus = await prisma.userStatus.findUnique({
-    where: { userId },
-  });
+  if (commits < 0) {
+    throw new Error("Commits must be non-negative");
+  }
 
-  // 新しいコミット数と前回のコミット数の差分を計算
-  const newCommits = count - (currentStatus?.commit ?? 0);
-  const newCoins = newCommits * 10; // 新しいコミット数に応じたコイン
+  try {
+    // Get current user status
+    const { data: currentStatus, error: fetchError } = await supabase
+      .from("UserStatus")
+      .select("commit, coin, level")
+      .eq("userId", userId)
+      .single();
 
-  // コミット数とレベルをDBに保存（コインは追加）
-  await prisma.userStatus.upsert({
-    where: { userId },
-    update: {
-      commit: count,
-      level: level,
-      coin: {
-        increment: newCoins, // 新しいコインを追加
-      },
-    },
-    create: {
-      userId,
-      commit: count,
-      coin: count * 10,
-      level: level,
-    },
-  });
+    if (fetchError) {
+      console.error("Failed to fetch current status:", fetchError);
+      throw new Error(`Failed to fetch current status: ${fetchError.message}`);
+    }
 
-  return count;
-}
+    if (!currentStatus) {
+      throw new Error("User status not found");
+    }
+
+    const newCommitCount = commits;
+    const commitDifference = Math.max(0, newCommitCount - currentStatus.commit);
+
+    // Award coins for new commits (1 coin per commit)
+    const coinsToAdd = commitDifference;
+    const newCoinAmount = currentStatus.coin + coinsToAdd;
+
+    // Calculate new level (every 10 commits = 1 level)
+    const newLevel = Math.floor(newCommitCount / 10) + 1;
+
+    // Update user status
+    const { data: updatedStatus, error: updateError } = await supabase
+      .from("UserStatus")
+      .update({
+        commit: newCommitCount,
+        coin: newCoinAmount,
+        level: Math.max(currentStatus.level, newLevel), // Don't decrease level
+        updatedAt: new Date().toISOString(),
+      })
+      .eq("userId", userId)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error("Failed to update user status:", updateError);
+      throw new Error(`Failed to update user status: ${updateError.message}`);
+    }
+
+    console.log(
+      `Updated commits for user ${userId}: ${newCommitCount} commits, +${coinsToAdd} coins, level ${newLevel}`
+    );
+
+    return {
+      success: true,
+      updatedStatus,
+      coinsAwarded: coinsToAdd,
+      newCommits: commitDifference,
+    };
+  } catch (error) {
+    console.error("Error in updateCommits:", error);
+    throw error;
+  }
+};

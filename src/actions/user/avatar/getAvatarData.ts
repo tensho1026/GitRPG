@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../../lib/prisma";
+import { supabase } from "../../../supabase/supabase.config";
 
 export const getAvatarData = async (email: string) => {
   if (!email) {
@@ -8,15 +8,16 @@ export const getAvatarData = async (email: string) => {
   }
 
   try {
-    const userStatus = await prisma.userStatus.findUnique({
-      where: { userId: email },
-      select: {
-        level: true,
-        coin: true,
-        selectedAvatar: true,
-        unlockedAvatars: true,
-      },
-    });
+    const { data: userStatus, error } = await supabase
+      .from("UserStatus")
+      .select("level, coin, selectedAvatar, unlockedAvatars")
+      .eq("userId", email)
+      .single();
+
+    if (error) {
+      console.error("Error fetching user status:", error);
+      throw new Error("Failed to fetch user status.");
+    }
 
     if (!userStatus) {
       throw new Error("User status not found");

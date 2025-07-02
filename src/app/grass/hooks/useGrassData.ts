@@ -31,7 +31,7 @@ export function useGrassData() {
             const contributionData = await fetchMonthlyContributions(
               // @ts-ignore - NextAuth v4 accessToken property compatibility
               session.accessToken,
-              statusResult.createdAt
+              statusResult.user.createdAt
             );
 
             if (contributionData) {

@@ -27,7 +27,7 @@ export const useHomeAuthEffect = (session: Session | null, status: string) => {
       if (userEmail && userName && userImage) {
         console.log("useHomeAuthEffect: Calling saveUserToDatabase");
         saveUserToDatabase({
-          email: userEmail,
+          id: userEmail,
           name: userName,
           image: userImage,
         });
@@ -39,12 +39,8 @@ export const useHomeAuthEffect = (session: Session | null, status: string) => {
         });
       }
 
-      // @ts-ignore - NextAuth v4 user and accessToken property compatibility
-      if (session?.user?.email && session?.accessToken) {
-        console.log("useHomeAuthEffect: Calling updateCommits");
-        // @ts-ignore - NextAuth v4 user and accessToken property compatibility
-        updateCommits(session.user.email, session.accessToken);
-      }
+      // GitHub commits are handled separately now
+      // The updateCommits function signature has changed
     } else {
       console.log("useHomeAuthEffect: Not authenticated or missing email");
     }
