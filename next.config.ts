@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
+  webpack(config) {
+    config.externals.push({
+      '@prisma/client': '@prisma/client',
+    });
+    return config;
+  },
 };
 
 export default nextConfig;
