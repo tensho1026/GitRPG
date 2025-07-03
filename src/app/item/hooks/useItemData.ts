@@ -9,6 +9,7 @@ import type { Item, BattleStatus } from "@/types/user/userStatus";
 
 export function useItemData() {
   const { data: session, status } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
   const [userItems, setUserItems] = useState<Item[]>([]);
   const [battleStatus, setBattleStatus] = useState<BattleStatus>({
     userId: "",
@@ -26,6 +27,7 @@ export function useItemData() {
   const fetchData = useCallback(async () => {
     if (status === "authenticated" && session?.user?.email) {
       try {
+        setIsLoading(true);
         const [items, battleStats, currentCoins] = await Promise.all([
           getUserItems(session.user.email),
           getCurrentUserBattleStatus(session.user.email),
@@ -43,7 +45,11 @@ export function useItemData() {
         }
       } catch (error) {
         console.error("Failed to fetch user items:", error);
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, [status, session]);
 
@@ -58,5 +64,6 @@ export function useItemData() {
     selectedTab,
     setSelectedTab,
     fetchData,
+    isLoading,
   };
 }

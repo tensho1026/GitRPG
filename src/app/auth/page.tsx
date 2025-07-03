@@ -1,4 +1,3 @@
-import React from "react";
 import AuthButton from "./components/Auth-Button";
 
 function page() {
