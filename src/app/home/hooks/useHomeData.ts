@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import { UserWithStatus } from "@/types/user/userStatus";
+import { getUserItems } from "@/actions/item/getUserItems";
+import { UserWithStatus, Item } from "@/types/user/userStatus";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
+  const [userItems, setUserItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -19,9 +21,18 @@ export const useHomeData = (session: Session | null, status: string) => {
         try {
           setIsLoading(true);
           // @ts-ignore - NextAuth v4 user property compatibility
-          const statusResult = await getUserStatus(session.user.email);
+          const [statusResult, itemsResult] = await Promise.all([
+            // @ts-ignore - NextAuth v4 user property compatibility
+            getUserStatus(session.user.email),
+            // @ts-ignore - NextAuth v4 user property compatibility
+            getUserItems(session.user.email),
+          ]);
+
           if (statusResult) {
             setUserStatus(statusResult);
+          }
+          if (itemsResult) {
+            setUserItems(itemsResult);
           }
         } catch (error) {
           console.error("Failed to fetch user data on home screen:", error);
@@ -36,5 +47,5 @@ export const useHomeData = (session: Session | null, status: string) => {
     fetchData();
   }, [status, session]);
 
-  return { userStatus, isLoading };
+  return { userStatus, userItems, isLoading };
 };

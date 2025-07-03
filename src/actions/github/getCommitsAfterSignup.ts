@@ -34,17 +34,12 @@ export const getCommitsAfterSignup = async (
     }
 
     const signupDate = new Date(user.createdAt);
-    console.log(
-      `Fetching commits for ${username} after signup date: ${signupDate.toISOString()}`
-    );
 
     let totalCommits = 0;
     let page = 1;
     const perPage = 100;
 
     while (true) {
-      console.log(`Fetching page ${page} of commits...`);
-
       const response = await fetch(
         `https://api.github.com/users/${username}/events?page=${page}&per_page=${perPage}`,
         {
@@ -71,7 +66,6 @@ export const getCommitsAfterSignup = async (
       const events = await response.json();
 
       if (!Array.isArray(events) || events.length === 0) {
-        console.log(`No more events found on page ${page}`);
         break;
       }
 
@@ -93,9 +87,6 @@ export const getCommitsAfterSignup = async (
       }
 
       totalCommits += commitsOnPage;
-      console.log(
-        `Found ${commitsOnPage} commits on page ${page}, total: ${totalCommits}`
-      );
 
       // If we got fewer events than per_page, we've reached the end
       if (events.length < perPage) {
@@ -106,14 +97,10 @@ export const getCommitsAfterSignup = async (
 
       // Safety limit to prevent infinite loops
       if (page > 10) {
-        console.log("Reached page limit, stopping");
         break;
       }
     }
 
-    console.log(
-      `Total commits found for ${username} after signup: ${totalCommits}`
-    );
     return totalCommits;
   } catch (error) {
     console.error("Error in getCommitsAfterSignup:", error);

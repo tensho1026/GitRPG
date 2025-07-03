@@ -128,8 +128,9 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                 <p className="text-purple-200 text-sm pixel-text">
                   装備中:{" "}
                   <span className="text-pink-300 font-bold">
-                    {userItems?.find((item) => item.type === "weapon")?.name ||
-                      "未装備"}
+                    {userItems?.find(
+                      (item) => item.type === "weapon" && item.equipped
+                    )?.name || "未装備"}
                   </span>
                 </p>
               </div>
