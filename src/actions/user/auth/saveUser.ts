@@ -15,8 +15,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
   }
 
   try {
-    console.log("Attempting to save/update user:", userData);
-
     // Upsert user in Users table
     const { data: user, error: userError } = await supabase
       .from("Users")
@@ -37,8 +35,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
       console.error("Failed to upsert user:", userError);
       throw new Error(`Failed to save user: ${userError.message}`);
     }
-
-    console.log("User upserted successfully:", user);
 
     // Check if UserStatus exists
     const { data: existingStatus, error: statusCheckError } = await supabase
@@ -77,8 +73,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
         console.error("Failed to create user status:", statusError);
         throw new Error(`Failed to create user status: ${statusError.message}`);
       }
-
-      console.log("User status created successfully:", userStatus);
     } else {
       console.log("User status already exists for user:", userData.id);
     }

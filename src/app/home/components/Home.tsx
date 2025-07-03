@@ -32,7 +32,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   // 認証効果を実行
   useHomeAuthEffect(session, status);
 
-  const { userStatus, isLoading } = useHomeData(session, status);
+  const { userStatus, userItems, isLoading } = useHomeData(session, status);
   const {
     currentLevel,
     totalCommits,
@@ -40,7 +40,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
     progressPercentage,
     coins,
     items,
-  } = useUserStats(userStatus);
+  } = useUserStats(userStatus, userItems);
 
   // メモ化されたユーザーデータ
   const userData = useMemo(

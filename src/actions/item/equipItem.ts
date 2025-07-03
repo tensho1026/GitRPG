@@ -59,11 +59,6 @@ export const equipItem = async (userId: string, itemId: string) => {
     }
 
     revalidatePath("/item");
-    console.log(
-      `Item ${itemToEquip.name} ${
-        !itemToEquip.equipped ? "equipped" : "unequipped"
-      } successfully`
-    );
 
     return {
       success: true,

@@ -88,7 +88,6 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
     }
 
     revalidatePath("/item");
-    console.log(`Item ${equipment.name} purchased successfully for ${userId}`);
 
     return {
       success: true,

@@ -57,10 +57,6 @@ export const updateCommits = async (userId: string, commits: number) => {
       throw new Error(`Failed to update user status: ${updateError.message}`);
     }
 
-    console.log(
-      `Updated commits for user ${userId}: ${newCommitCount} commits, +${coinsToAdd} coins, level ${newLevel}`
-    );
-
     return {
       success: true,
       updatedStatus,
