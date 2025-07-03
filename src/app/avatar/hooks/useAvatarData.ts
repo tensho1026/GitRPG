@@ -35,6 +35,7 @@ type DisplayAvatar = {
 
 export function useAvatarData() {
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [playerData, setPlayerData] = useState<PlayerAvatarData>({
     level: 0,
@@ -47,7 +48,7 @@ export function useAvatarData() {
 
   const fetchData = async () => {
     if (session?.user?.email) {
-      setIsProcessing(true);
+      setIsLoading(true);
       try {
         // First, try to auto-unlock any avatars that the user is now eligible for
         const autoUnlockResult = await autoUnlockAvatars(session.user.email);
@@ -74,8 +75,10 @@ export function useAvatarData() {
         console.error("❌ Failed to fetch avatar data:", error);
         alert((error as Error).message);
       } finally {
-        setIsProcessing(false);
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   };
 
@@ -127,6 +130,7 @@ export function useAvatarData() {
   return {
     playerData,
     coins,
+    isLoading,
     isProcessing,
     displayAvatars,
     handleEquip,
