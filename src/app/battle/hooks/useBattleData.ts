@@ -22,32 +22,28 @@ export function useBattleData() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
-          setIsLoading(true);
-          const [battleStats, userStatus] = await Promise.all([
-            getCurrentUserBattleStatus(session.user.email),
+          const [statusResult, battleStats] = await Promise.all([
             getUserStatus(session.user.email),
+            getCurrentUserBattleStatus(session.user.email),
           ]);
+
+          if (statusResult) {
+            setUserLevel(statusResult.status?.level ?? 1);
+          }
 
           if (battleStats) {
             setBattleStatus(battleStats);
           }
-          if (userStatus?.status?.level) {
-            setUserLevel(userStatus.status.level);
-          }
         } catch (error) {
-          console.error("Failed to fetch battle data:", error);
-        } finally {
-          setIsLoading(false);
+          console.error("Failed to fetch user data:", error);
         }
-      } else {
-        setIsLoading(false);
       }
     };
 
-    fetchData();
+    fetchUserData();
   }, [status, session]);
 
   return {

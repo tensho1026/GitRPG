@@ -52,27 +52,37 @@ export const saveUserToDatabase = async (userData: UserData) => {
 
     // Create UserStatus if it doesn't exist
     if (!existingStatus) {
+      console.log("Creating new UserStatus for user:", userData.id);
+
+      const insertData = {
+        id: crypto.randomUUID(),
+        userId: userData.id,
+        level: 1,
+        commit: 0,
+        coin: 100,
+        hp: 100,
+        attack: 10,
+        defense: 5,
+        selectedAvatar: null,
+        unlockedAvatars: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      console.log("Inserting UserStatus data:", insertData);
+
       const { data: userStatus, error: statusError } = await supabase
         .from("UserStatus")
-        .insert({
-          userId: userData.id,
-          level: 1,
-          commit: 0,
-          coin: 100,
-          hp: 100,
-          attack: 10,
-          defense: 5,
-          selectedAvatar: null,
-          unlockedAvatars: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        })
-        .select();
+        .insert(insertData)
+        .select("id, userId, level, coin");
 
       if (statusError) {
         console.error("Failed to create user status:", statusError);
+        console.error("Insert data was:", insertData);
         throw new Error(`Failed to create user status: ${statusError.message}`);
       }
+
+      console.log("UserStatus created successfully:", userStatus);
     } else {
       console.log("User status already exists for user:", userData.id);
     }

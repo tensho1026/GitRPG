@@ -16,6 +16,13 @@ export default function Avatar() {
     handleUnlockAvatar,
   } = useAvatarData();
 
+  // Debug: Log the actual values being passed to AvatarHeader
+  console.log("🔍 [Avatar] Values passed to AvatarHeader:", {
+    level: playerData.level,
+    coins: coins,
+    playerData: playerData,
+  });
+
   // Show loading screen during initial data fetch
   if (isLoading) {
     return <Loading backgroundImage="newavatar.JPG" />;
