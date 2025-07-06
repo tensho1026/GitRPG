@@ -23,6 +23,7 @@ export const useHomeData = (session: Session | null, status: string) => {
           setIsLoading(true);
 
           // 1. Fetch user status to get signup date
+          // @ts-ignore - NextAuth v4 user property compatibility
           const statusResult = await getUserStatus(session.user.email);
 
           // 2. Get total commits on GitHub since signup
@@ -41,6 +42,7 @@ export const useHomeData = (session: Session | null, status: string) => {
               totalCommitsGithub = contributions.commits;
 
               // 3. Update commits & level in DB
+              // @ts-ignore - NextAuth v4 user property compatibility
               await updateCommits(session.user.email, totalCommitsGithub);
             } catch (error) {
               console.error("Failed to update commits:", error);
@@ -48,6 +50,7 @@ export const useHomeData = (session: Session | null, status: string) => {
           }
 
           // 4. Fetch latest home data after possible update
+          // @ts-ignore - NextAuth v4 user property compatibility
           const homeData = await getHomeData(session.user.email);
 
           if (homeData) {

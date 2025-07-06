@@ -16,7 +16,7 @@ export const updateCommits = async (userId: string, commits: number) => {
     // Get current user status
     const { data: currentStatus, error: fetchError } = await supabase
       .from("UserStatus")
-      .select("commit, coin, level, hp")
+      .select("commit, coin, level, hp, attack, defense")
       .eq("userId", userId)
       .single();
 
@@ -40,7 +40,33 @@ export const updateCommits = async (userId: string, commits: number) => {
     const newLevel = Math.floor(newCommitCount / 10) + 1;
 
     const finalLevel = Math.max(currentStatus.level, newLevel);
-    const newHp = 100 + (finalLevel - 1) * 10;
+
+    // Increase stats by 10 per level gained
+    const levelDiff = finalLevel - currentStatus.level;
+
+    console.log("🔍 Level calculation debug:", {
+      currentLevel: currentStatus.level,
+      newLevel,
+      finalLevel,
+      levelDiff,
+      currentStats: {
+        hp: currentStatus.hp,
+        attack: currentStatus.attack,
+        defense: currentStatus.defense,
+      },
+    });
+
+    // Fix existing users' stats to match their level
+    // Base stats: HP=100, Attack=10, Defense=5 at level 1
+    // Each level adds +10 to all stats
+    const expectedHp = 100 + (finalLevel - 1) * 10;
+    const expectedAttack = 10 + (finalLevel - 1) * 10;
+    const expectedDefense = 5 + (finalLevel - 1) * 10;
+
+    // Use the higher value between current and expected (don't decrease)
+    const newHp = Math.max(currentStatus.hp, expectedHp);
+    const newAttack = Math.max(currentStatus.attack, expectedAttack);
+    const newDefense = Math.max(currentStatus.defense, expectedDefense);
 
     // Update user status
     const { data: updatedStatus, error: updateError } = await supabase
@@ -50,6 +76,8 @@ export const updateCommits = async (userId: string, commits: number) => {
         coin: newCoinAmount,
         level: finalLevel, // Don't decrease level
         hp: newHp,
+        attack: newAttack,
+        defense: newDefense,
         updatedAt: new Date().toISOString(),
       })
       .eq("userId", userId)
