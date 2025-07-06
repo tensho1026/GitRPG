@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, Calendar, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 interface GrassHeaderProps {
   thisMonthTotal: number;
@@ -18,12 +19,13 @@ export default function GrassHeader({ thisMonthTotal }: GrassHeaderProps) {
         }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => (window.location.href = "/home")}
-              className="p-3 border-3 bg-green-600 border-green-400 text-white pixel-border hover:bg-green-500"
-              style={{ boxShadow: "3px 3px 0px #047857" }}>
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+            <Link href="/home">
+              <button
+                className="p-3 border-3 bg-green-600 border-green-400 text-white pixel-border hover:bg-green-500"
+                style={{ boxShadow: "3px 3px 0px #047857" }}>
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            </Link>
             <h1 className="text-4xl font-bold text-white flex items-center gap-3 pixel-text">
               <Calendar className="w-10 h-10" />
               コミット草
