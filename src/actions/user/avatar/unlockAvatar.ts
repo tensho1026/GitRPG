@@ -88,139 +88,44 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 };
 
 export const autoUnlockAvatars = async (email: string) => {
-  if (!email) {
-    throw new Error("User not found.");
-  }
+  console.log("🔍 [autoUnlockAvatars] Starting with email:", email);
 
-  const { data: userStatus, error: userStatusError } = await supabase
-    .from("UserStatus")
-    .select("*")
-    .eq("userId", email)
-    .single();
+  try {
+    console.log("🔍 [autoUnlockAvatars] Function entered successfully");
 
-  if (userStatusError || !userStatus) {
-    console.error("Failed to fetch user status:", userStatusError);
-    throw new Error("User status not found.");
-  }
-
-  // Get user's owned avatars from the Avatar table
-  const { data: userAvatars, error: avatarsError } = await supabase
-    .from("Avatar")
-    .select("name")
-    .eq("userId", email);
-
-  if (avatarsError) {
-    console.error("Failed to fetch user avatars:", avatarsError);
-    throw new Error("Failed to fetch user avatars.");
-  }
-
-  const ownedAvatarNames = userAvatars?.map((avatar) => avatar.name) || [];
-
-  const newlyUnlockedAvatars: string[] = [];
-
-  // Check each avatar to see if it should be auto-unlocked
-  for (const avatar of avatarCharacters) {
-    // Skip if already owned or if level requirement not met
-    if (
-      ownedAvatarNames.includes(avatar.name) ||
-      userStatus.level < avatar.unlockLevel
-    ) {
-      continue;
+    if (!email) {
+      console.error("❌ [autoUnlockAvatars] No email provided");
+      throw new Error("User not found.");
     }
 
-    // Auto-unlock if user has enough coins or if it's free
-    if (avatar.price === 0 || userStatus.coin >= avatar.price) {
-      newlyUnlockedAvatars.push(avatar.id);
-    }
+    console.log("🔍 [autoUnlockAvatars] Email validation passed");
+
+    // Test if avatarCharacters is accessible
+    console.log("🔍 [autoUnlockAvatars] Testing avatarCharacters:", {
+      exists: !!avatarCharacters,
+      length: avatarCharacters?.length || 0,
+      type: typeof avatarCharacters,
+    });
+
+    // Test basic return first
+    console.log("🔍 [autoUnlockAvatars] Returning early for testing");
+    return {
+      success: true,
+      newlyUnlockedAvatars: [],
+      totalCost: 0,
+      userData: {
+        level: 1,
+        coin: 100,
+        selectedAvatar: "warrior",
+        unlockedAvatars: ["warrior"],
+      },
+    };
+  } catch (error) {
+    console.error("❌ [autoUnlockAvatars] Fatal error:", error);
+    console.error(
+      "❌ [autoUnlockAvatars] Error stack:",
+      (error as Error).stack
+    );
+    throw error;
   }
-
-  let updatedUserStatus = userStatus;
-
-  // Update the database with newly unlocked avatars
-  if (newlyUnlockedAvatars.length > 0) {
-    const totalCost = newlyUnlockedAvatars.reduce((total, avatarId) => {
-      const avatar = avatarCharacters.find((a) => a.id === avatarId);
-      return total + (avatar?.price || 0);
-    }, 0);
-
-    try {
-      // Deduct coins from user
-      const { error: coinError } = await supabase
-        .from("UserStatus")
-        .update({
-          coin: userStatus.coin - totalCost,
-          updatedAt: new Date().toISOString(),
-        })
-        .eq("userId", email);
-
-      if (coinError) {
-        console.error("Failed to update coins:", coinError);
-        throw new Error("Failed to deduct coins.");
-      }
-
-      // Create new avatars
-      const avatarsToCreate = newlyUnlockedAvatars
-        .map((avatarId) => {
-          const avatar = avatarCharacters.find((a) => a.id === avatarId);
-          if (!avatar) return null;
-
-          return {
-            name: avatar.name,
-            image: avatar.image,
-            description: avatar.description,
-            type: avatar.type,
-            hp: avatar.statBonus.hp,
-            attack: avatar.statBonus.attack,
-            defense: avatar.statBonus.defense,
-            price: avatar.price,
-            userId: email,
-            equipped: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-        })
-        .filter(Boolean);
-
-      if (avatarsToCreate.length > 0) {
-        const { error: createError } = await supabase
-          .from("Avatar")
-          .insert(avatarsToCreate);
-
-        if (createError) {
-          console.error("Failed to create avatars:", createError);
-          throw new Error("Failed to create avatars.");
-        }
-      }
-
-      // Get updated user status
-      const { data: updatedStatus, error: updateError } = await supabase
-        .from("UserStatus")
-        .select("*")
-        .eq("userId", email)
-        .single();
-
-      if (!updateError && updatedStatus) {
-        updatedUserStatus = updatedStatus;
-      }
-    } catch (error) {
-      console.error("Error in autoUnlockAvatars transaction:", error);
-      throw error;
-    }
-  }
-
-  return {
-    success: true,
-    newlyUnlockedAvatars,
-    totalCost: newlyUnlockedAvatars.reduce((total, avatarId) => {
-      const avatar = avatarCharacters.find((a) => a.id === avatarId);
-      return total + (avatar?.price || 0);
-    }, 0),
-    // Return updated user data directly
-    userData: {
-      level: updatedUserStatus.level,
-      coin: updatedUserStatus.coin,
-      selectedAvatar: updatedUserStatus.selectedAvatar || "warrior",
-      unlockedAvatars: updatedUserStatus.unlockedAvatars || [],
-    },
-  };
 };

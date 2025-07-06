@@ -42,11 +42,11 @@ export default function EquipmentShop({
     const fetchData = async () => {
       if (session?.user?.email) {
         setIsProcessing(true);
-        const email = session.user.email;
+        const userEmail = session.user.email;
         try {
           const [currentCoin, items] = await Promise.all([
-            getCurrentCoin(email),
-            getUserItems(email),
+            getCurrentCoin(userEmail),
+            getUserItems(userEmail),
           ]);
           setCoins(currentCoin || 0);
           setUserItems(items);
