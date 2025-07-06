@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, User, Crown, Coins } from "lucide-react";
+import Link from "next/link";
 
 interface AvatarHeaderProps {
   level: number;
@@ -19,12 +20,13 @@ export default function AvatarHeader({ level, coins }: AvatarHeaderProps) {
         }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => (window.location.href = "/home")}
-              className="p-3 border-3 bg-purple-600 border-purple-400 text-white pixel-border hover:bg-purple-500"
-              style={{ boxShadow: "3px 3px 0px #4c1d95" }}>
-              <ArrowLeft className="w-5 h-5" />
-            </button>
+            <Link href="/home">
+              <button
+                className="p-3 border-3 bg-purple-600 border-purple-400 text-white pixel-border hover:bg-purple-500"
+                style={{ boxShadow: "3px 3px 0px #4c1d95" }}>
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            </Link>
             <h1 className="text-4xl font-bold text-white flex items-center gap-3 pixel-text">
               <Crown className="w-10 h-10" />
               アバター選択

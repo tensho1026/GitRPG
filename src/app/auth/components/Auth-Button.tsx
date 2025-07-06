@@ -220,15 +220,16 @@ export default function AuthButton() {
                 </div>
 
                 {/* Return to Town Button */}
-                <Button
-                  onClick={async () => {
-                    await signOut();
-                    window.location.href = "/home";
-                  }}
-                  className="w-full h-12 bg-gradient-to-b from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 border-4 border-orange-500 text-white font-mono font-bold pixel-text shadow-lg transform hover:translate-y-[-2px] active:translate-y-[1px] transition-all duration-150 pixel-border">
-                  <LogOut className="w-5 h-5 mr-2" />
-                  町に戻る
-                </Button>
+                <Link href="/home">
+                  <Button
+                    onClick={async () => {
+                      await signOut();
+                    }}
+                    className="w-full h-12 bg-gradient-to-b from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 border-4 border-orange-500 text-white font-mono font-bold pixel-text shadow-lg transform hover:translate-y-[-2px] active:translate-y-[1px] transition-all duration-150 pixel-border">
+                    <LogOut className="w-5 h-5 mr-2" />
+                    町に戻る
+                  </Button>
+                </Link>
               </div>
             ) : (
               <div className="space-y-6 text-center">
