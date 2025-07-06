@@ -1,10 +1,6 @@
 "use client";
-
 import React from "react";
-import BackGround from "../../../components/BackGround";
-import { useItemData } from "../hooks/useItemData";
 import type { Item } from "@/types/user/userStatus";
-import ItemTabs from "./ItemTabs";
 import EquipmentStatus from "./EquipmentStatus";
 import CombatStatus from "./CombatStatus";
 import EquipmentShop from "./EquipmentShop";

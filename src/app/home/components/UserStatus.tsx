@@ -1,19 +1,16 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Coins, Star, TrendingUp } from "lucide-react";
+import { UserWithStatus } from "@/types/user/userStatus";
 
 type UserStatusProps = {
-  currentLevel: number;
-  totalCommits: number;
-  coins: number;
+  userStatus: UserWithStatus;
   remainingCommits: number;
   progressPercentage: number;
 };
 
 function UserStatus({
-  currentLevel,
-  totalCommits,
-  coins,
+  userStatus,
   remainingCommits,
   progressPercentage,
 }: UserStatusProps) {
@@ -31,7 +28,7 @@ function UserStatus({
           <div className="grid grid-cols-3 gap-4 mb-20">
             <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
               <div className="text-cyan-300 text-2xl pixel-text font-bold">
-                Lv.{currentLevel}
+                Lv.{userStatus?.status?.level}
               </div>
               <div className="text-blue-200 text-xs pixel-text">
                 ✅ 現在のレベル
@@ -40,7 +37,7 @@ function UserStatus({
 
             <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
               <div className="text-cyan-300 text-xl pixel-text font-bold">
-                {totalCommits}
+                {userStatus?.status?.commit}
               </div>
               <div className="text-blue-200 text-xs pixel-text">
                 💻 総コミット数
@@ -51,7 +48,7 @@ function UserStatus({
               <div className="flex items-center justify-center mb-1">
                 <Coins className="w-5 h-5 text-yellow-200 mr-1" />
                 <span className="text-yellow-100 text-xl pixel-text font-bold">
-                  {coins}
+                  {userStatus?.status?.coin}
                 </span>
               </div>
               <div className="text-yellow-200 text-xs pixel-text">

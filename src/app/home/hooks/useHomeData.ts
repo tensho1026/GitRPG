@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
-import { getUserStatus } from "@/actions/user/status/getUserStatus";
-import { getUserItems } from "@/actions/item/getUserItems";
-import { UserWithStatus, Item } from "@/types/user/userStatus";
-import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
+import { UserWithStatus, Item, Avatar } from "@/types/user/userStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
+import { getHomeData } from "@/actions/user/getHomeData";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
   const [userItems, setUserItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expInfo, setExpInfo] = useState({});
-  const [battleStatus, setBattleStatus] = useState(null);
+  const [battleStatus, setBattleStatus] = useState<any>(null);
+  const [equippedAvatar, setEquippedAvatar] = useState<Avatar | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -19,31 +18,28 @@ export const useHomeData = (session: Session | null, status: string) => {
       if (status === "authenticated" && session?.user?.email) {
         try {
           setIsLoading(true);
-          const [statusResult, battleStats, itemsResult] = await Promise.all([
-            // @ts-ignore - NextAuth v4 user property compatibility
-            getUserStatus(session.user.email),
-            // @ts-ignore - NextAuth v4 user property compatibility
-            getCurrentUserBattleStatus(session.user.email),
-            // @ts-ignore - NextAuth v4 user property compatibility
-            getUserItems(session.user.email),
-          ]);
 
-          if (statusResult) {
-            setUserStatus(statusResult);
+          // Use the consolidated getHomeData function
+          // @ts-ignore - NextAuth v4 user property compatibility
+          const homeData = await getHomeData(session.user.email);
+
+          if (homeData) {
+            // Set user status data
+            setUserStatus(homeData.userWithStatus);
+
+            // Set user items
+            setUserItems(homeData.items);
+
+            // Set battle status
+            setBattleStatus(homeData.battleStatus);
+
+            // Set equipped avatar
+            setEquippedAvatar(homeData.equippedAvatar);
 
             // Calculate EXP info
-            const totalCommits = statusResult.status?.commit ?? 0;
+            const totalCommits = homeData.status?.commit ?? 0;
             const expData = getRemainingCommitsToNextLevel(totalCommits);
             setExpInfo(expData);
-          }
-
-          if (battleStats) {
-            // @ts-ignore - Type compatibility issue
-            setBattleStatus(battleStats);
-          }
-
-          if (itemsResult) {
-            setUserItems(itemsResult);
           }
         } catch (error) {
           console.error("Failed to fetch user data on home screen:", error);
@@ -58,5 +54,12 @@ export const useHomeData = (session: Session | null, status: string) => {
     fetchUserData();
   }, [status, session]);
 
-  return { userStatus, userItems, isLoading, expInfo, battleStatus };
+  return {
+    userStatus,
+    userItems,
+    isLoading,
+    expInfo,
+    battleStatus,
+    equippedAvatar,
+  };
 };

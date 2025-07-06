@@ -52,8 +52,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
 
     // Create UserStatus if it doesn't exist
     if (!existingStatus) {
-      console.log("Creating new UserStatus for user:", userData.id);
-
       const insertData = {
         id: crypto.randomUUID(),
         userId: userData.id,
@@ -69,8 +67,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
         updatedAt: new Date().toISOString(),
       };
 
-      console.log("Inserting UserStatus data:", insertData);
-
       const { data: userStatus, error: statusError } = await supabase
         .from("UserStatus")
         .insert(insertData)
@@ -81,10 +77,6 @@ export const saveUserToDatabase = async (userData: UserData) => {
         console.error("Insert data was:", insertData);
         throw new Error(`Failed to create user status: ${statusError.message}`);
       }
-
-      console.log("UserStatus created successfully:", userStatus);
-    } else {
-      console.log("User status already exists for user:", userData.id);
     }
 
     return { success: true, user };

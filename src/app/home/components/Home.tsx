@@ -32,15 +32,14 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   // 認証効果を実行
   useHomeAuthEffect(session, status);
 
-  const { userStatus, userItems, isLoading } = useHomeData(session, status);
-  const {
-    currentLevel,
-    totalCommits,
-    remainingCommits,
-    progressPercentage,
-    coins,
-    items,
-  } = useUserStats(userStatus, userItems);
+  const { userStatus, userItems, isLoading, equippedAvatar } = useHomeData(
+    session,
+    status
+  );
+  const { remainingCommits, progressPercentage, items } = useUserStats(
+    userStatus,
+    userItems
+  );
 
   // メモ化されたユーザーデータ
   const userData = useMemo(
@@ -80,10 +79,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
 
       <div className="relative z-10 p-4 max-w-6xl mx-auto">
         {/* Header */}
-        <Header
-          currentLevel={currentLevel}
-          userStatus={userStatus as UserWithStatus}
-        />
+        <Header userStatus={userStatus as UserWithStatus} />
 
         {/* Main Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
@@ -92,15 +88,13 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
 
           {/* User Status */}
           <UserStatus
-            currentLevel={currentLevel}
-            totalCommits={totalCommits}
-            coins={coins}
+            userStatus={userStatus as UserWithStatus}
             remainingCommits={remainingCommits}
             progressPercentage={progressPercentage}
           />
 
           {/* Avatar Display */}
-          <MyAvatar userItems={items} />
+          <MyAvatar userItems={items} equippedAvatar={equippedAvatar} />
         </div>
 
         {/* Navigation Buttons */}

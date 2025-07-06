@@ -44,7 +44,6 @@ export const getEquippedAvatar = async (userId: string) => {
     if (error) {
       if (error.code === "PGRST116") {
         // No rows found - user has no equipped avatar
-        console.log("No equipped avatar found for user:", userId);
         return null;
       }
       console.error("Failed to fetch equipped avatar:", error);

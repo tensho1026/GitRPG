@@ -12,11 +12,8 @@ export const useUserStats = (
       getRemainingCommitsToNextLevel(totalCommits);
 
     return {
-      currentLevel: userStatus?.status?.level ?? 1,
-      totalCommits,
       remainingCommits,
       progressPercentage: percentage,
-      coins: userStatus?.status?.coin ?? 0,
       items: userItems,
     };
   }, [userStatus, userItems]);

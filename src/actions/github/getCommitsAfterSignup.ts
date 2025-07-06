@@ -2,15 +2,6 @@
 
 import { supabase } from "../../supabase/supabase.config";
 
-interface GitHubCommit {
-  sha: string;
-  commit: {
-    author: {
-      date: string;
-    };
-  };
-}
-
 export const getCommitsAfterSignup = async (
   username: string,
   githubAccessToken: string,

@@ -1,13 +1,9 @@
 "use client";
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap, Sword, Shield, Shirt } from "lucide-react";
 import Link from "next/link";
-
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import type { Item } from "@/types/user/userStatus";
 
 interface EquipmentStatusProps {
