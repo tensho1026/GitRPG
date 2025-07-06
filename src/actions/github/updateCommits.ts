@@ -16,7 +16,7 @@ export const updateCommits = async (userId: string, commits: number) => {
     // Get current user status
     const { data: currentStatus, error: fetchError } = await supabase
       .from("UserStatus")
-      .select("commit, coin, level")
+      .select("commit, coin, level, hp")
       .eq("userId", userId)
       .single();
 
@@ -39,13 +39,17 @@ export const updateCommits = async (userId: string, commits: number) => {
     // Calculate new level (every 10 commits = 1 level)
     const newLevel = Math.floor(newCommitCount / 10) + 1;
 
+    const finalLevel = Math.max(currentStatus.level, newLevel);
+    const newHp = 100 + (finalLevel - 1) * 10;
+
     // Update user status
     const { data: updatedStatus, error: updateError } = await supabase
       .from("UserStatus")
       .update({
         commit: newCommitCount,
         coin: newCoinAmount,
-        level: Math.max(currentStatus.level, newLevel), // Don't decrease level
+        level: finalLevel, // Don't decrease level
+        hp: newHp,
         updatedAt: new Date().toISOString(),
       })
       .eq("userId", userId)

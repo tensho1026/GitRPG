@@ -3,6 +3,9 @@ import { Session } from "next-auth";
 import { UserWithStatus, Item, Avatar } from "@/types/user/userStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import { getHomeData } from "@/actions/user/getHomeData";
+import { getUserStatus } from "@/actions/user/status/getUserStatus";
+import { fetchTotalContributions } from "@/actions/github/fetchCommits";
+import { updateCommits } from "@/actions/github/updateCommits";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
@@ -19,8 +22,32 @@ export const useHomeData = (session: Session | null, status: string) => {
         try {
           setIsLoading(true);
 
-          // Use the consolidated getHomeData function
-          // @ts-ignore - NextAuth v4 user property compatibility
+          // 1. Fetch user status to get signup date
+          const statusResult = await getUserStatus(session.user.email);
+
+          // 2. Get total commits on GitHub since signup
+          let totalCommitsGithub = 0;
+          if (
+            statusResult &&
+            // @ts-ignore - NextAuth v4 accessToken property compatibility
+            session.accessToken
+          ) {
+            try {
+              const contributions = await fetchTotalContributions(
+                // @ts-ignore - NextAuth v4 accessToken property compatibility
+                session.accessToken,
+                statusResult.user.createdAt
+              );
+              totalCommitsGithub = contributions.commits;
+
+              // 3. Update commits & level in DB
+              await updateCommits(session.user.email, totalCommitsGithub);
+            } catch (error) {
+              console.error("Failed to update commits:", error);
+            }
+          }
+
+          // 4. Fetch latest home data after possible update
           const homeData = await getHomeData(session.user.email);
 
           if (homeData) {
