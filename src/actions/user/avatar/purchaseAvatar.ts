@@ -1,6 +1,7 @@
 "use server";
 
 import { supabase } from "../../../supabase/supabase.config";
+import { randomUUID } from "crypto";
 import { avatarCharacters } from "@/data/avatar";
 
 export const purchaseAvatar = async (userId: string, avatarId: string) => {
@@ -65,6 +66,7 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
     const { data: newAvatar, error: avatarError } = await supabase
       .from("Avatar")
       .insert({
+        id: randomUUID(),
         name: avatar.name,
         image: avatar.image,
         description: avatar.description,
