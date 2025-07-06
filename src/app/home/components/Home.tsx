@@ -16,6 +16,7 @@ import { useHomeAuthEffect } from "../hooks/useHomeAuthEffect";
 import Loading from "@/components/ Loading";
 
 interface HomeScreenProps {
+  
   session: Session | null;
   status: string;
 }
@@ -34,11 +35,8 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
 
   const { userStatus, userItems, isLoading } = useHomeData(session, status);
   const {
-    currentLevel,
-    totalCommits,
     remainingCommits,
     progressPercentage,
-    coins,
     items,
   } = useUserStats(userStatus, userItems);
 
@@ -80,10 +78,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
 
       <div className="relative z-10 p-4 max-w-6xl mx-auto">
         {/* Header */}
-        <Header
-          currentLevel={currentLevel}
-          userStatus={userStatus as UserWithStatus}
-        />
+        <Header userStatus={userStatus as UserWithStatus} />
 
         {/* Main Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
@@ -92,9 +87,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
 
           {/* User Status */}
           <UserStatus
-            currentLevel={currentLevel}
-            totalCommits={totalCommits}
-            coins={coins}
+            userStatus={userStatus as UserWithStatus}
             remainingCommits={remainingCommits}
             progressPercentage={progressPercentage}
           />

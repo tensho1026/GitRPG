@@ -2,13 +2,7 @@ import { UserWithStatus } from "@/types/user/userStatus";
 import { Coins, Crown, User } from "lucide-react";
 import React from "react";
 
-function Header({
-  currentLevel,
-  userStatus,
-}: {
-  currentLevel: number;
-  userStatus: UserWithStatus;
-}) {
+function Header({ userStatus }: { userStatus: UserWithStatus }) {
   return (
     <div className="mb-6">
       <div
@@ -34,7 +28,7 @@ function Header({
                 boxShadow: "3px 3px 0px #d97706",
               }}>
               <User className="w-5 h-5" />
-              <span className="pixel-text">Lv.{currentLevel}</span>
+              <span className="pixel-text">Lv.{userStatus?.status?.level}</span>
             </div>
             <div
               className="flex items-center gap-2 px-4 py-2 border-3 text-blue-900 font-bold"
