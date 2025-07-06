@@ -2,16 +2,14 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Crown, LogOut, Github, Map, Compass } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
-import { useSessionStatus } from "@/lib/useSessionStatus";
 import Link from "next/link";
-import Loading from "@/components/ Loading";
 import type { UserWithStatus, BattleStatus } from "@/types/user/userStatus";
 
 export default function AuthButton() {

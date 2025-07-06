@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "vercel-build": "next build",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "lint:check": "next lint --quiet"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
@@ -32,6 +34,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",

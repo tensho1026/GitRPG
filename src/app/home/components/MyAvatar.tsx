@@ -1,44 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Shirt, Heart, Sword, Shield } from "lucide-react";
 import type { Item, Avatar as UserAvatar } from "@/types/user/userStatus";
 import Image from "next/image";
 import Link from "next/link";
-import { getEquippedAvatar } from "@/actions/user/avatar/getUserAvatars";
-import { Badge } from "@/components/ui/badge";
 
 interface MyAvatarProps {
   userItems?: Pick<Item, "id" | "name" | "image" | "type" | "equipped">[];
+  equippedAvatar?: UserAvatar | null;
 }
 
-export default function MyAvatar({ userItems }: MyAvatarProps) {
-  const { data: session } = useSession();
-  const [equippedAvatar, setEquippedAvatar] = useState<UserAvatar | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEquippedAvatar = async () => {
-      if (!session?.user?.email) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const equipped = await getEquippedAvatar(session.user.email);
-        setEquippedAvatar(equipped);
-      } catch (error) {
-        console.error("Failed to fetch equipped avatar:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchEquippedAvatar();
-  }, [session]);
-
+export default function MyAvatar({ userItems, equippedAvatar }: MyAvatarProps) {
   const statIcons = {
     hp: <Heart className="w-4 h-4 text-green-400" />,
     attack: <Sword className="w-4 h-4 text-red-400" />,
@@ -80,11 +54,7 @@ export default function MyAvatar({ userItems }: MyAvatarProps) {
                     boxShadow:
                       "inset 0 2px 8px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.4)",
                   }}>
-                  {isLoading ? (
-                    <div className="text-pink-200 text-sm pixel-text">
-                      読み込み中...
-                    </div>
-                  ) : equippedAvatar ? (
+                  {equippedAvatar ? (
                     <Image
                       src={equippedAvatar.image}
                       alt={equippedAvatar.name}

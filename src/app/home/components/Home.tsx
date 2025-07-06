@@ -16,7 +16,6 @@ import { useHomeAuthEffect } from "../hooks/useHomeAuthEffect";
 import Loading from "@/components/ Loading";
 
 interface HomeScreenProps {
-  
   session: Session | null;
   status: string;
 }
@@ -33,12 +32,14 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   // 認証効果を実行
   useHomeAuthEffect(session, status);
 
-  const { userStatus, userItems, isLoading } = useHomeData(session, status);
-  const {
-    remainingCommits,
-    progressPercentage,
-    items,
-  } = useUserStats(userStatus, userItems);
+  const { userStatus, userItems, isLoading, equippedAvatar } = useHomeData(
+    session,
+    status
+  );
+  const { remainingCommits, progressPercentage, items } = useUserStats(
+    userStatus,
+    userItems
+  );
 
   // メモ化されたユーザーデータ
   const userData = useMemo(
@@ -93,7 +94,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
           />
 
           {/* Avatar Display */}
-          <MyAvatar userItems={items} />
+          <MyAvatar userItems={items} equippedAvatar={equippedAvatar} />
         </div>
 
         {/* Navigation Buttons */}
