@@ -47,26 +47,9 @@ export function useAvatarData() {
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   const [coins, setCoins] = useState<number>(0);
 
-  // Debug session information
-  console.log("🔍 [useAvatarData] Session debug:", {
-    status,
-    session,
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    userEmail: session?.user?.email,
-    sessionKeys: session ? Object.keys(session) : null,
-    userKeys: session?.user ? Object.keys(session.user) : null,
-  });
-
   const fetchData = useCallback(async () => {
-    console.log(
-      "🔍 [useAvatarData] fetchData called with session status:",
-      status
-    );
-
     // Wait for session to load
     if (status === "loading") {
-      console.log("⏳ [useAvatarData] Session is still loading, waiting...");
       return;
     }
 
@@ -77,42 +60,21 @@ export function useAvatarData() {
         // @ts-ignore - NextAuth v4 user property compatibility
         const userEmail = session.user.email;
 
-        console.log("🔍 [useAvatarData] Fetching data for user:", userEmail);
-
         // First, try to auto-unlock any avatars that the user is now eligible for
-        console.log("🔄 [useAvatarData] Calling autoUnlockAvatars...");
         const autoUnlockResult = await autoUnlockAvatars(userEmail);
-        console.log(
-          "✅ [useAvatarData] autoUnlockAvatars result:",
-          autoUnlockResult
-        );
 
         // Get fresh user status data directly from database
-        console.log("🔄 [useAvatarData] Calling getUserStatus...");
         const userStatus = await getUserStatus(userEmail);
-        console.log("✅ [useAvatarData] getUserStatus result:", userStatus);
 
-        console.log("🔄 [useAvatarData] Calling getUserAvatars...");
         const avatars = await getUserAvatars(userEmail);
-        console.log("✅ [useAvatarData] getUserAvatars result:", avatars);
 
-        console.log("🔄 [useAvatarData] Calling getCurrentCoin...");
         const currentCoins = await getCurrentCoin(userEmail);
-        console.log("✅ [useAvatarData] getCurrentCoin result:", currentCoins);
-
-        console.log("🔍 [useAvatarData] All data received:", {
-          userStatus,
-          avatars,
-          currentCoins,
-          autoUnlockResult,
-        });
 
         setUserAvatars(avatars || []);
 
         // Use getCurrentCoin result as the primary source (same as item page)
         const finalCoins = currentCoins || 0;
         setCoins(finalCoins);
-        console.log("💰 [useAvatarData] Setting coins to:", finalCoins);
 
         // Use fresh database data for player data
         if (userStatus?.status) {
@@ -123,27 +85,8 @@ export function useAvatarData() {
             unlockedAvatars: userStatus.status.unlockedAvatars || ["warrior"],
           };
 
-          console.log(
-            "📊 [useAvatarData] UserStatus coin value:",
-            userStatus.status.coin
-          );
-          console.log(
-            "📊 [useAvatarData] UserStatus level value:",
-            userStatus.status.level
-          );
-
           setPlayerData(playerDataFromDB);
-
-          console.log(
-            "✅ [useAvatarData] Player data set from database:",
-            playerDataFromDB
-          );
         } else {
-          console.warn(
-            "⚠️ [useAvatarData] userStatus or userStatus.status is null/undefined"
-          );
-          console.log("🔍 [useAvatarData] userStatus object:", userStatus);
-
           // Fallback to basic data if userStatus is not available
           setPlayerData({
             level: 1,
@@ -152,8 +95,6 @@ export function useAvatarData() {
             unlockedAvatars: ["warrior"],
           });
         }
-
-        console.log("✅ [useAvatarData] Final state - Coins:", finalCoins);
       } catch (error) {
         console.error("❌ [useAvatarData] Error occurred:", error);
         console.error(
@@ -169,27 +110,17 @@ export function useAvatarData() {
           selectedAvatar: "warrior",
           unlockedAvatars: ["warrior"],
         });
-
       } finally {
         setIsLoading(false);
       }
     } else if (status === "unauthenticated") {
-      console.log("❌ [useAvatarData] User is not authenticated");
       setIsLoading(false);
     } else {
-      console.log("⚠️ [useAvatarData] Unexpected status or missing email");
-      console.log("🔍 [useAvatarData] Session status:", {
-        status,
-        session: !!session,
-        userEmail: session?.user?.email,
-        hasUser: !!session?.user,
-      });
       setIsLoading(false);
     }
   }, [status, session]);
 
   useEffect(() => {
-    console.log("🎯 [useAvatarData] useEffect triggered");
     fetchData();
   }, [fetchData]);
 

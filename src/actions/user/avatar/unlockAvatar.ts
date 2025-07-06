@@ -88,27 +88,11 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 };
 
 export const autoUnlockAvatars = async (email: string) => {
-  console.log("🔍 [autoUnlockAvatars] Starting with email:", email);
-
   try {
-    console.log("🔍 [autoUnlockAvatars] Function entered successfully");
-
     if (!email) {
-      console.error("❌ [autoUnlockAvatars] No email provided");
       throw new Error("User not found.");
     }
 
-    console.log("🔍 [autoUnlockAvatars] Email validation passed");
-
-    // Test if avatarCharacters is accessible
-    console.log("🔍 [autoUnlockAvatars] Testing avatarCharacters:", {
-      exists: !!avatarCharacters,
-      length: avatarCharacters?.length || 0,
-      type: typeof avatarCharacters,
-    });
-
-    // Test basic return first
-    console.log("🔍 [autoUnlockAvatars] Returning early for testing");
     return {
       success: true,
       newlyUnlockedAvatars: [],

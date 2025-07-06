@@ -23,22 +23,12 @@ export function useBattleData() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("🔍 [useBattleData] Starting fetch with status:", status);
-
       if (status === "authenticated" && session?.user?.email) {
-        console.log(
-          "🔍 [useBattleData] User authenticated, fetching data for:",
-          session.user.email
-        );
-
         try {
           const [statusResult, battleStats] = await Promise.all([
             getUserStatus(session.user.email),
             getCurrentUserBattleStatus(session.user.email),
           ]);
-
-          console.log("🔍 [useBattleData] Status result:", statusResult);
-          console.log("🔍 [useBattleData] Battle stats:", battleStats);
 
           if (statusResult) {
             setUserLevel(statusResult.status?.level ?? 1);
@@ -47,21 +37,15 @@ export function useBattleData() {
           if (battleStats) {
             setBattleStatus(battleStats);
           }
-
-          console.log("✅ [useBattleData] Data fetch completed successfully");
         } catch (error) {
           console.error("❌ [useBattleData] Failed to fetch user data:", error);
         } finally {
-          console.log("🔍 [useBattleData] Setting loading to false");
           setIsLoading(false);
         }
       } else if (status === "unauthenticated") {
-        console.log("⚠️ [useBattleData] User not authenticated");
         setIsLoading(false);
       } else {
-        console.log(
-          "⏳ [useBattleData] Still loading authentication status..."
-        );
+        setIsLoading(false);
       }
     };
 

@@ -7,7 +7,6 @@ export default async function Home() {
   // @ts-ignore - NextAuth v4 type compatibility workaround
   const session = await getServerSession(authOptions);
   const status = session ? "authenticated" : "unauthenticated";
-  console.log(session);
   return (
     <div className="h-screen w-screen">
       {status === "authenticated" ? (
