@@ -3,7 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
-import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import type { BattleStatus } from "@/types/user/userStatus";
 
 export function useBattleData() {
@@ -25,17 +24,13 @@ export function useBattleData() {
     const fetchUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
-          const [statusResult, battleStats] = await Promise.all([
-            getUserStatus(session.user.email),
-            getCurrentUserBattleStatus(session.user.email),
-          ]);
-
-          if (statusResult) {
-            setUserLevel(statusResult.status?.level ?? 1);
-          }
+          const battleStats = await getCurrentUserBattleStatus(
+            session.user.email
+          );
 
           if (battleStats) {
             setBattleStatus(battleStats);
+            setUserLevel(battleStats.level ?? 1);
           }
         } catch (error) {
           console.error("❌ [useBattleData] Failed to fetch user data:", error);

@@ -60,15 +60,18 @@ export function useAvatarData() {
         // @ts-ignore - NextAuth v4 user property compatibility
         const userEmail = session.user.email;
 
-        // First, try to auto-unlock any avatars that the user is now eligible for
-        const autoUnlockResult = await autoUnlockAvatars(userEmail);
+        /*
+         * Fire all requests in parallel for better performance
+         * - autoUnlockAvatars: unlocks if eligible, result not needed immediately
+         * - getUserStatus, getUserAvatars, getCurrentCoin: required for UI
+         */
 
-        // Get fresh user status data directly from database
-        const userStatus = await getUserStatus(userEmail);
-
-        const avatars = await getUserAvatars(userEmail);
-
-        const currentCoins = await getCurrentCoin(userEmail);
+        const [_, userStatus, avatars, currentCoins] = await Promise.all([
+          autoUnlockAvatars(userEmail),
+          getUserStatus(userEmail),
+          getUserAvatars(userEmail),
+          getCurrentCoin(userEmail),
+        ]);
 
         setUserAvatars(avatars || []);
 
