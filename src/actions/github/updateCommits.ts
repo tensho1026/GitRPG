@@ -44,18 +44,6 @@ export const updateCommits = async (userId: string, commits: number) => {
     // Increase stats by 10 per level gained
     const levelDiff = finalLevel - currentStatus.level;
 
-    console.log("🔍 Level calculation debug:", {
-      currentLevel: currentStatus.level,
-      newLevel,
-      finalLevel,
-      levelDiff,
-      currentStats: {
-        hp: currentStatus.hp,
-        attack: currentStatus.attack,
-        defense: currentStatus.defense,
-      },
-    });
-
     // Fix existing users' stats to match their level
     // Base stats: HP=100, Attack=10, Defense=5 at level 1
     // Each level adds +10 to all stats
