@@ -125,7 +125,7 @@ export default function AvatarCard({
               boxShadow: `4px 4px 0px ${colors.shadow}, 8px 8px 0px rgba(0,0,0,0.3)`,
             }}>
             <Image
-              src={character.image || "/placeholder.svg"}
+              src={character.image}
               alt={character.name}
               className="pixel-border"
               style={{

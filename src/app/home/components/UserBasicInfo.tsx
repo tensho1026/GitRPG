@@ -31,7 +31,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
           <div className="text-center mb-3">
             <div className="relative inline-block">
               <Image
-                src={userData.avatar || "/placeholder.svg"}
+                src={userData.avatar}
                 alt="User Avatar"
                 className="w-16 h-16 rounded-full border-3 border-yellow-400 pixelated mx-auto"
                 width={64}
