@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import {
   unlockAvatar,
@@ -47,6 +47,9 @@ export function useAvatarData() {
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   const [coins, setCoins] = useState<number>(0);
 
+  // Ref to ensure autoUnlock runs only once per session mount
+  const autoUnlockCalledRef = useRef(false);
+
   const fetchData = useCallback(async () => {
     // Wait for session to load
     if (status === "loading") {
@@ -66,8 +69,16 @@ export function useAvatarData() {
          * - getUserStatus, getUserAvatars, getCurrentCoin: required for UI
          */
 
-        const [_, userStatus, avatars, currentCoins] = await Promise.all([
-          autoUnlockAvatars(userEmail),
+        // Run autoUnlock just once
+        if (!autoUnlockCalledRef.current) {
+          try {
+            await autoUnlockAvatars(userEmail);
+          } finally {
+            autoUnlockCalledRef.current = true;
+          }
+        }
+
+        const [userStatus, avatars, currentCoins] = await Promise.all([
           getUserStatus(userEmail),
           getUserAvatars(userEmail),
           getCurrentCoin(userEmail),
@@ -123,13 +134,29 @@ export function useAvatarData() {
     }
   }, [status, session]);
 
+  // Prevent multiple initial fetches when status/session change repeatedly
+  const hasFetchedRef = useRef(false);
+
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (status === "authenticated" && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchData();
+    }
+  }, [status, fetchData]);
 
   const handleEquip = async (dbId: string) => {
+    // Avoid duplicate requests while processing
+    if (isProcessing) return;
+
     // @ts-ignore - NextAuth v4 user property compatibility
     if (!session?.user?.email) return;
+
+    // If this avatar is already equipped, do nothing
+    const currentEquipped = userAvatars.find(
+      (avatar) => avatar.id === dbId && avatar.equipped
+    );
+    if (currentEquipped) return;
+
     setIsProcessing(true);
     try {
       // @ts-ignore - NextAuth v4 user property compatibility
@@ -144,13 +171,23 @@ export function useAvatarData() {
   };
 
   const handleUnlockAvatar = async (avatarId: string) => {
+    if (isProcessing) return; // prevent duplicate clicks
+
     // @ts-ignore - NextAuth v4 user property compatibility
     if (!session?.user?.email) return;
+
+    // If already owned, skip
+    const alreadyOwned = userAvatars.some(
+      (avatar) =>
+        avatar.name === avatarCharacters.find((c) => c.id === avatarId)?.name
+    );
+    if (alreadyOwned) return;
+
     setIsProcessing(true);
     try {
       // @ts-ignore - NextAuth v4 user property compatibility
       await unlockAvatar(session.user.email, avatarId);
-      await fetchData(); // Refresh data after unlocking
+      await fetchData(); // Refresh
     } catch (error) {
       console.error("Unlock failed:", error);
       alert((error as Error).message);

@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Sword, Shield, Heart, Star, Coins, Lock } from "lucide-react";
 import Image from "next/image";
 
@@ -201,23 +200,7 @@ export default function AvatarCard({
               }}>
               {character.equipped ? "選択中" : "選択する"}
             </button>
-          ) : (
-            <button
-              onClick={() => onUnlock(character.id)}
-              disabled={!canUnlock || isProcessing}
-              className="w-full p-4 border-4 font-bold pixel-text text-lg"
-              style={{
-                backgroundColor: canUnlock ? "#22c55e" : "#6b7280",
-                borderColor: canUnlock ? "#16a34a" : "#4b5563",
-                color: "white",
-                boxShadow: canUnlock
-                  ? "4px 4px 0px #15803d, 8px 8px 0px rgba(0,0,0,0.4)"
-                  : "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)",
-                cursor: canUnlock && !isProcessing ? "pointer" : "not-allowed",
-              }}>
-              解放する
-            </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
