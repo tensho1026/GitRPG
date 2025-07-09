@@ -14,21 +14,53 @@ export const saveUserToDatabase = async (userData: UserData) => {
     throw new Error("User ID is required");
   }
 
+  console.log("👤 [DEBUG] Saving user to database:", {
+    userId: userData.id,
+    userName: userData.name,
+    hasImage: !!userData.image,
+  });
+
   try {
+    // Check if user already exists
+    const { data: existingUser, error: userCheckError } = await supabase
+      .from("Users")
+      .select("id, createdAt")
+      .eq("id", userData.id)
+      .single();
+
+    if (userCheckError && userCheckError.code !== "PGRST116") {
+      console.error("Error checking existing user:", userCheckError);
+      throw new Error(
+        `Failed to check existing user: ${userCheckError.message}`
+      );
+    }
+
+    const isNewUser = !existingUser;
+    const currentTime = new Date().toISOString();
+
+    console.log("🆔 [DEBUG] User existence check:", {
+      isNewUser,
+      existingUserId: existingUser?.id,
+      existingCreatedAt: existingUser?.createdAt,
+    });
+
     // Upsert user in Users table
+    const upsertData = {
+      id: userData.id,
+      name: userData.name,
+      image: userData.image,
+      updatedAt: currentTime,
+      // Only set createdAt for new users
+      ...(isNewUser && { createdAt: currentTime }),
+    };
+
+    console.log("📝 [DEBUG] Upserting user with data:", upsertData);
+
     const { data: user, error: userError } = await supabase
       .from("Users")
-      .upsert(
-        {
-          id: userData.id,
-          name: userData.name,
-          image: userData.image,
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          onConflict: "id",
-        }
-      )
+      .upsert(upsertData, {
+        onConflict: "id",
+      })
       .select();
 
     if (userError) {
@@ -50,8 +82,14 @@ export const saveUserToDatabase = async (userData: UserData) => {
       );
     }
 
+    console.log("🔍 [DEBUG] UserStatus check result:", {
+      existingStatus: !!existingStatus,
+      errorCode: statusCheckError?.code,
+    });
+
     // Create UserStatus if it doesn't exist
     if (!existingStatus) {
+      const currentTime = new Date().toISOString();
       const insertData = {
         id: crypto.randomUUID(),
         userId: userData.id,
@@ -63,9 +101,15 @@ export const saveUserToDatabase = async (userData: UserData) => {
         defense: 5,
         selectedAvatar: null,
         unlockedAvatars: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: currentTime,
+        updatedAt: currentTime,
       };
+
+      console.log("🆕 [DEBUG] Creating new UserStatus:", {
+        userId: userData.id,
+        createdAt: currentTime,
+        initialCommits: insertData.commit,
+      });
 
       const { data: userStatus, error: statusError } = await supabase
         .from("UserStatus")
@@ -77,6 +121,10 @@ export const saveUserToDatabase = async (userData: UserData) => {
         console.error("Insert data was:", insertData);
         throw new Error(`Failed to create user status: ${statusError.message}`);
       }
+
+      console.log("✅ [DEBUG] UserStatus created successfully:", userStatus);
+    } else {
+      console.log("ℹ️ [DEBUG] UserStatus already exists, skipping creation");
     }
 
     return { success: true, user };
