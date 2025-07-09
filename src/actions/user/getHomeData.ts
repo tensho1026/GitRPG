@@ -76,6 +76,15 @@ export const getHomeData = async (userId: string) => {
       throw new Error("User not found");
     }
 
+    console.log("📄 [DEBUG] Raw user data from DB:", {
+      userId: userData.id,
+      userName: userData.name,
+      createdAt: userData.createdAt,
+      updatedAt: userData.updatedAt,
+      statusArray: Array.isArray(userData.status),
+      hasStatus: !!userData.status,
+    });
+
     // Extract data from the response
     const user = {
       id: userData.id,
@@ -84,6 +93,8 @@ export const getHomeData = async (userId: string) => {
       createdAt: userData.createdAt,
       updatedAt: userData.updatedAt,
     };
+
+    console.log("👤 [DEBUG] Processed user object:", user);
 
     // UserStatus should be a single object, not an array
     const userStatus = Array.isArray(userData.status)
