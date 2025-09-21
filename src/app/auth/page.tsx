@@ -1,10 +1,11 @@
+import AuthRedirectWrapper from "@/app/components/AuthRedirectWrapper";
 import AuthButton from "./components/Auth-Button";
 
 function page() {
   return (
-    <div>
+    <AuthRedirectWrapper>
       <AuthButton />
-    </div>
+    </AuthRedirectWrapper>
   );
 }
 
