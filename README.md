@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Git-RPG 🎮
 
-## Getting Started
+Git-RPG は、**GitHub のコミット数に応じてコインや経験値を獲得し、アバターや装備を強化できるアプリ**です。  
+エンジニアのモチベーションを RPG 感覚で高めることを目的としています。
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ 特徴
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **コミットで強くなる**: GitHub のコミット数に応じてコインと経験値を獲得
+- **アバター強化**: コインを使ってアバターや装備をカスタマイズ
+- **カレンダー機能**: コミット履歴をカレンダーで可視化
+- **モチベーション向上**: 継続的な開発をゲーム感覚で楽しめる
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠 使用技術
 
-## Learn More
+- **フロントエンド**: Next.js
+- **バックエンド**: Next.js Server Actions
+- **認証**: NextAuth
+- **コミット数取得**: GitHub GraphQL API
+- **データベース**: Supabase
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📸 画面イメージ
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### ホーム画面
+（ここにスクリーンショットを挿入）
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### アバター画面
+（ここにスクリーンショットを挿入）
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### 装備画面
+（ここにスクリーンショットを挿入）
+
+---
+
+### カレンダー画面
+（ここにスクリーンショットを挿入）
+
+---
+
+## 🚀 今後追加予定
+
+- PvP やランキング要素
+- 装備・アバターのコレクション機能
+- スマホ対応 UI
