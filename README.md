@@ -27,27 +27,28 @@ Git-RPG は、**GitHub のコミット数に応じてコインや経験値を獲
 ## 📸 画面イメージ
 
 ### ホーム画面
-（ここにスクリーンショットを挿入）
+<img width="1463" height="834" alt="Image" src="https://github.com/user-attachments/assets/44d48ffa-5196-4344-bcce-b4fda73a979d" />
 
 ---
 
 ### アバター画面
-（ここにスクリーンショットを挿入）
+<img width="1464" height="842" alt="Image" src="https://github.com/user-attachments/assets/3bd8115b-4188-4202-a727-f4b4a4af7cda" />
 
 ---
 
 ### 装備画面
-（ここにスクリーンショットを挿入）
+<img width="1462" height="834" alt="Image" src="https://github.com/user-attachments/assets/d707de0f-abfc-4d39-b2f0-478ee2978497" />
 
 ---
 
 ### カレンダー画面
-（ここにスクリーンショットを挿入）
+<img width="1465" height="846" alt="Image" src="https://github.com/user-attachments/assets/7b64e705-6ee8-4fa4-ae56-a6ce90be9261" />
 
 ---
 
 ## 🚀 今後追加予定
 
-- PvP やランキング要素
-- 装備・アバターのコレクション機能
+- モンスター討伐
+- クラン機能
 - スマホ対応 UI
+- ターン制PvP
