@@ -27,7 +27,7 @@ Git-RPG は、**GitHub のコミット数に応じてコインや経験値を獲
 ## 📸 画面イメージ
 
 ### ホーム画面
-<img width="1463" height="834" alt="Image" src="https://github.com/user-attachments/assets/44d48ffa-5196-4344-bcce-b4fda73a979d" />
+<img width="1463" height="834" alt="Image" src="https://github.com/user-attachments/assets/b3bed0f2-df1d-44f2-bfce-6eca8c467ff2" />
 
 ---
 
