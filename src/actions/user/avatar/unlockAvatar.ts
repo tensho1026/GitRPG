@@ -1,6 +1,7 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+import { ensureDefaultAvatar } from "@/lib/defaultAvatar";
 
 import { supabase } from "../../../supabase/supabase.config";
 import { randomUUID } from "crypto";
@@ -19,7 +20,7 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 
   const { data: userStatus, error: userStatusError } = await supabase
     .from("UserStatus")
-    .select("*")
+    .select("level, coin")
     .eq("userId", email)
     .single();
 
@@ -31,7 +32,7 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
   // Check if user already has this avatar
   const { data: existingAvatar, error: avatarError } = await supabase
     .from("Avatar")
-    .select("*")
+    .select("id")
     .eq("userId", email)
     .eq("name", avatarToUnlock.name)
     .maybeSingle();
@@ -43,6 +44,15 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 
   if (existingAvatar) {
     throw new Error("Avatar already owned.");
+  }
+
+  if (
+    !Number.isSafeInteger(userStatus.level) ||
+    userStatus.level < 1 ||
+    !Number.isSafeInteger(userStatus.coin) ||
+    userStatus.coin < 0
+  ) {
+    throw new Error("Invalid user status");
   }
 
   if (userStatus.level < avatarToUnlock.unlockLevel) {
@@ -115,19 +125,14 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 export const autoUnlockAvatars = async (email: string) => {
   await assertAuthenticatedUser(email);
   try {
-    if (!email) {
-      throw new Error("User not found.");
-    }
-
+    const defaultAvatar = await ensureDefaultAvatar(email);
     return {
       success: true,
       newlyUnlockedAvatars: [],
       totalCost: 0,
       userData: {
-        level: 1,
-        coin: 100,
-        selectedAvatar: "warrior",
-        unlockedAvatars: ["warrior"],
+        selectedAvatar: defaultAvatar.selectedAvatar,
+        unlockedAvatars: defaultAvatar.unlockedAvatars,
       },
     };
   } catch (error) {

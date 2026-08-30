@@ -6,7 +6,7 @@ import { useGrassData } from "../hooks/useGrassData";
 import BackGround from "@/components/BackGround";
 
 export default function Grass() {
-  const { monthlyCommits, thisMonthTotal } = useGrassData();
+  const { monthlyContributions, thisMonthTotal } = useGrassData();
 
   return (
     <div className="relative min-h-screen">
@@ -19,7 +19,7 @@ export default function Grass() {
           {/* Grass Display */}
           <div className="lg:col-span-3">
             <MonthlyActivity
-              monthlyCommits={monthlyCommits}
+              monthlyContributions={monthlyContributions}
               thisMonthTotal={thisMonthTotal}
             />
           </div>

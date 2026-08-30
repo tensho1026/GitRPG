@@ -21,7 +21,7 @@ export const fetchMonthlyContributions = async () => {
     .maybeSingle();
   const userCreatedAt = user?.createdAt;
 
-  // If the user was created this month, fetch commits from their creation date.
+  // If the user was created this month, fetch activity from their creation date.
   if (userCreatedAt) {
     // Convert string to Date if necessary
     const createdDate =
@@ -42,11 +42,6 @@ export const fetchMonthlyContributions = async () => {
     query ($from: DateTime!) {
       viewer {
         contributionsCollection(from: $from) {
-          totalCommitContributions
-          totalIssueContributions
-          totalPullRequestContributions
-          totalPullRequestReviewContributions
-          totalRepositoryContributions
           contributionCalendar {
             weeks {
               contributionDays {
@@ -65,7 +60,9 @@ export const fetchMonthlyContributions = async () => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
+      "User-Agent": "GitHub-RPG-App",
     },
+    cache: "no-store",
     body: JSON.stringify({
       query,
       variables: {
@@ -91,33 +88,34 @@ export const fetchMonthlyContributions = async () => {
   }
 
   const data = json.data.viewer.contributionsCollection;
+  if (!data || !Array.isArray(data.contributionCalendar?.weeks)) {
+    throw new Error("Invalid contribution data from GitHub API.");
+  }
 
   const currentMonthStr = today.toISOString().slice(0, 7);
 
   // Flatten to a list of days and filter to the current month
-  const dailyCommits = data.contributionCalendar.weeks
+  const dailyContributions = data.contributionCalendar.weeks
     .flatMap(
       (week: {
-        contributionDays: { date: string; contributionCount: number }[];
-      }) => week.contributionDays
+        contributionDays?: { date: string; contributionCount: number }[];
+      }) => week.contributionDays ?? []
     )
     .filter((day: { date: string; contributionCount: number }) =>
       day.date.startsWith(currentMonthStr)
     );
 
-  // Calculate the total commits for the current month from the filtered list
-  const totalCommitsThisMonth = dailyCommits.reduce(
-    (acc: number, day: { contributionCount: number }) =>
-      acc + day.contributionCount,
+  // contributionCount is the total GitHub activity for a day (commits,
+  // issues, pull requests, and reviews), so keep the monthly total consistent
+  // with the calendar rather than labelling it as commit-only data.
+  const totalContributionsThisMonth = dailyContributions.reduce(
+    (total: number, day: { contributionCount: number }) =>
+      total + day.contributionCount,
     0
   );
 
   return {
-    totalCommits: totalCommitsThisMonth,
-    issues: data.totalIssueContributions,
-    pullRequests: data.totalPullRequestContributions,
-    reviews: data.totalPullRequestReviewContributions,
-    repositories: data.totalRepositoryContributions,
-    dailyCommits,
+    totalContributions: totalContributionsThisMonth,
+    dailyContributions,
   };
 };

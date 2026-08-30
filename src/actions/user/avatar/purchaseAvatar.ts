@@ -52,6 +52,10 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
       throw new Error("Failed to fetch user status");
     }
 
+    if (!Number.isSafeInteger(userStatus.coin) || userStatus.coin < 0) {
+      throw new Error("Invalid coin balance");
+    }
+
     if (userStatus.coin < avatar.price) {
       throw new Error("Insufficient coins");
     }

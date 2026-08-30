@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Sword, Shield, Star, Coins, Lock } from "lucide-react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { equipmentData } from "@/data/equipment";
-import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
-import { getUserItems } from "@/actions/item/getUserItems";
 import { purchaseItem } from "@/actions/item/purchaseItem";
 import { equipItem } from "@/actions/item/equipItem";
 import type { Item as UserItem } from "@/types/user/userStatus";
@@ -28,37 +26,17 @@ const typeIcons = {
 /* ---------- メインコンポーネント ---------- */
 export default function EquipmentShop({
   selectedTab,
+  userItems,
+  coins,
   onDataUpdate,
 }: {
   selectedTab: string;
-  onDataUpdate?: () => Promise<void>;
+  userItems: UserItem[];
+  coins: number;
+  onDataUpdate: () => Promise<void>;
 }) {
-  const [coins, setCoins] = useState<number>(0);
-  const [userItems, setUserItems] = useState<UserItem[]>([]);
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (session?.user?.email) {
-        setIsProcessing(true);
-        const userEmail = session.user.email;
-        try {
-          const [currentCoin, items] = await Promise.all([
-            getCurrentCoin(userEmail),
-            getUserItems(userEmail),
-          ]);
-          setCoins(currentCoin || 0);
-          setUserItems(items);
-        } catch (error) {
-          console.error("Failed to fetch initial data:", error);
-        } finally {
-          setIsProcessing(false);
-        }
-      }
-    };
-    fetchData();
-  }, [session]);
 
   const equipmentToDisplay = useMemo((): DisplayEquipment[] => {
     return equipmentData.map((staticItem) => {
@@ -79,17 +57,7 @@ export default function EquipmentShop({
     setIsProcessing(true);
     try {
       await purchaseItem(session.user.email, equipmentId);
-      const [currentCoin, items] = await Promise.all([
-        getCurrentCoin(session.user.email),
-        getUserItems(session.user.email),
-      ]);
-      setCoins(currentCoin || 0);
-      setUserItems(items);
-
-      // Call parent's update function to refresh equipment status and combat status
-      if (onDataUpdate) {
-        await onDataUpdate();
-      }
+      await onDataUpdate();
     } catch (error) {
       console.error("Purchase failed:", error);
       alert((error as Error).message);
@@ -103,13 +71,7 @@ export default function EquipmentShop({
     setIsProcessing(true);
     try {
       await equipItem(session.user.email, dbId);
-      const items = await getUserItems(session.user.email);
-      setUserItems(items);
-
-      // Call parent's update function to refresh equipment status and combat status
-      if (onDataUpdate) {
-        await onDataUpdate();
-      }
+      await onDataUpdate();
     } catch (error) {
       console.error("Equip failed:", error);
       alert((error as Error).message);

@@ -34,6 +34,10 @@ export const reduceCoin = async (
       throw new Error("User status not found");
     }
 
+    if (!Number.isSafeInteger(currentStatus.coin) || currentStatus.coin < 0) {
+      throw new Error("Invalid coin balance");
+    }
+
     const newCoinAmount = currentStatus.coin - amount;
 
     if (newCoinAmount < 0) {

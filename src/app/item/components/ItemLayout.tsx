@@ -7,6 +7,7 @@ import EquipmentShop from "./EquipmentShop";
 
 interface ItemLayoutProps {
   userItems: Item[];
+  coins: number;
   battleStatus: {
     hp: number;
     attack: number;
@@ -18,6 +19,7 @@ interface ItemLayoutProps {
 
 export default function ItemLayout({
   userItems,
+  coins,
   battleStatus,
   selectedTab,
   onDataUpdate,
@@ -36,7 +38,12 @@ export default function ItemLayout({
 
       {/* Right Side - Equipment Shop (70%) */}
       <div className="xl:col-span-7">
-        <EquipmentShop selectedTab={selectedTab} onDataUpdate={onDataUpdate} />
+        <EquipmentShop
+          selectedTab={selectedTab}
+          userItems={userItems}
+          coins={coins}
+          onDataUpdate={onDataUpdate}
+        />
       </div>
     </div>
   );

@@ -52,6 +52,10 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
       throw new Error("Failed to fetch user status");
     }
 
+    if (!Number.isSafeInteger(userStatus.coin) || userStatus.coin < 0) {
+      throw new Error("Invalid coin balance");
+    }
+
     if (userStatus.coin < equipment.price) {
       throw new Error("Insufficient coins");
     }

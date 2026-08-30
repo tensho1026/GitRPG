@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Crown, LogOut, Github, Map, Compass } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
@@ -28,8 +28,11 @@ export default function AuthButton() {
     remainingCommits: 0,
     percentage: 0,
   });
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
+    const requestId = ++requestIdRef.current;
+    let cancelled = false;
     const fetchUserData = async () => {
       if (status === "authenticated" && session?.user?.email) {
         try {
@@ -37,6 +40,8 @@ export default function AuthButton() {
             getUserStatus(session.user.email),
             getCurrentUserBattleStatus(session.user.email),
           ]);
+
+          if (cancelled || requestId !== requestIdRef.current) return;
 
           if (statusResult) {
             setUserStatus(statusResult);
@@ -51,12 +56,30 @@ export default function AuthButton() {
             setBattleStatus(battleStats);
           }
         } catch (error) {
-          console.error("Failed to fetch user data:", error);
+          if (!cancelled && requestId === requestIdRef.current) {
+            console.error("Failed to fetch user data:", error);
+          }
         }
+      } else if (status !== "loading") {
+        setUserStatus(null);
+        setBattleStatus({
+          userId: "",
+          level: 1,
+          baseStats: { hp: 0, attack: 0, defense: 0 },
+          totalStats: { hp: 0, attack: 0, defense: 0 },
+          equippedItems: [],
+          equippedAvatar: null,
+          coin: 0,
+          commit: 0,
+        });
       }
     };
 
-    fetchUserData();
+    void fetchUserData();
+    return () => {
+      cancelled = true;
+      requestIdRef.current += 1;
+    };
   }, [status, session]);
 
   if (status === "loading") {

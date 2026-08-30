@@ -13,15 +13,20 @@ export const useHomeData = (session: Session | null, status: string) => {
   const [expInfo, setExpInfo] = useState({});
   const [battleStatus, setBattleStatus] = useState<any>(null);
   const [equippedAvatar, setEquippedAvatar] = useState<Avatar | null>(null);
+  const userEmail = session?.user?.email ?? null;
+  const userName = session?.user?.name ?? null;
+  const userImage = session?.user?.image ?? null;
 
   useEffect(() => {
     let cancelled = false;
 
     const fetchUserData = async () => {
-      const user = session?.user;
-      const userEmail = user?.email;
-      if (status !== "authenticated" || !user || !userEmail) {
+      if (status !== "authenticated" || !userEmail) {
         if (!cancelled) {
+          setUserStatus(null);
+          setUserItems([]);
+          setBattleStatus(null);
+          setEquippedAvatar(null);
           setIsLoading(false);
         }
         return;
@@ -32,33 +37,27 @@ export const useHomeData = (session: Session | null, status: string) => {
 
         await saveUserToDatabase({
           id: userEmail,
-          name: user.name || userEmail,
-          image: user.image || "",
+          name: userName || userEmail,
+          image: userImage || "",
         });
 
         if (cancelled) return;
-
-        let homeData = await getHomeData(userEmail);
-        if (!homeData) {
-          throw new Error("Home data not found");
-        }
 
         // The server action obtains both the session token and the commit count
         // from trusted server-side sources. The browser never submits a count.
         try {
           await updateCommits();
-          if (!cancelled) {
-            const refreshedData = await getHomeData(userEmail);
-            if (refreshedData) {
-              homeData = refreshedData;
-            }
-          }
         } catch (error) {
           // The app remains usable when GitHub is temporarily unavailable.
           console.error("Failed to sync commits:", error);
         }
 
         if (cancelled) return;
+
+        const homeData = await getHomeData(userEmail);
+        if (!homeData) {
+          throw new Error("Home data not found");
+        }
 
         setUserStatus(homeData.userWithStatus);
         setUserItems(homeData.items);
@@ -82,7 +81,7 @@ export const useHomeData = (session: Session | null, status: string) => {
     return () => {
       cancelled = true;
     };
-  }, [status, session]);
+  }, [status, userEmail, userName, userImage]);
 
   return {
     userStatus,

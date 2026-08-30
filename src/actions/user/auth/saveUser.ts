@@ -1,6 +1,7 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+import { ensureDefaultAvatar } from "@/lib/defaultAvatar";
 
 import { supabase } from "../../../supabase/supabase.config";
 
@@ -11,11 +12,11 @@ interface UserData {
 }
 
 export const saveUserToDatabase = async (userData: UserData) => {
-  await assertAuthenticatedUser(userData.id);
   if (!userData?.id) {
     console.error("User ID is missing:", userData);
     throw new Error("User ID is required");
   }
+  await assertAuthenticatedUser(userData.id);
 
   console.log("👤 [DEBUG] Saving user to database:", {
     userId: userData.id,
@@ -102,8 +103,8 @@ export const saveUserToDatabase = async (userData: UserData) => {
         hp: 100,
         attack: 10,
         defense: 5,
-        selectedAvatar: null,
-        unlockedAvatars: [],
+        selectedAvatar: "warrior",
+        unlockedAvatars: ["warrior"],
         createdAt: currentTime,
         updatedAt: currentTime,
       };
@@ -129,6 +130,8 @@ export const saveUserToDatabase = async (userData: UserData) => {
       }
 
       console.log("✅ [DEBUG] UserStatus created successfully:", userStatus);
+
+      await ensureDefaultAvatar(userData.id);
     } else {
       console.log("ℹ️ [DEBUG] UserStatus already exists, skipping creation");
     }

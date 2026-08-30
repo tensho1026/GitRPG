@@ -28,7 +28,7 @@ export default function GrassHeader({ thisMonthTotal }: GrassHeaderProps) {
             </Link>
             <h1 className="text-4xl font-bold text-white flex items-center gap-3 pixel-text">
               <Calendar className="w-10 h-10" />
-              コミット草
+              活動の草
             </h1>
           </div>
           <div
@@ -39,7 +39,7 @@ export default function GrassHeader({ thisMonthTotal }: GrassHeaderProps) {
               boxShadow: "3px 3px 0px #d97706",
             }}>
             <TrendingUp className="w-5 h-5" />
-            <span className="pixel-text">今月: {thisMonthTotal}コミット</span>
+            <span className="pixel-text">今月: {thisMonthTotal}活動</span>
           </div>
         </div>
       </div>
