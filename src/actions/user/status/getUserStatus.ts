@@ -26,7 +26,7 @@ export const getUserStatus = async (userId: string) => {
     // Get user status
     const { data: userStatus, error: statusError } = await supabase
       .from("UserStatus")
-      .select("*")
+      .select("id, userId, level, commit, coin, hp, attack, defense, selectedAvatar, unlockedAvatars, createdAt, updatedAt")
       .eq("userId", userId)
       .single();
 

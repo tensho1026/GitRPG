@@ -34,6 +34,7 @@ export default function Item() {
           <ItemTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
           <ItemLayout
             userItems={userItems}
+            coins={coins}
             battleStatus={battleStatus.totalStats}
             selectedTab={selectedTab}
             onDataUpdate={fetchData}

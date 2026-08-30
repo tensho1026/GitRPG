@@ -9,7 +9,7 @@ export async function getUserBattleStatusById(userId: string) {
 
   const { data: userStatus, error: statusError } = await supabase
     .from("UserStatus")
-    .select("*")
+    .select("userId, level, commit, coin, hp, attack, defense")
     .eq("userId", userId)
     .single();
 
@@ -19,7 +19,7 @@ export async function getUserBattleStatusById(userId: string) {
 
   const { data: equippedItems, error: itemsError } = await supabase
     .from("Items")
-    .select("*")
+    .select("id, equipmentId, name, image, description, type, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)
     .eq("equipped", true);
 
@@ -29,9 +29,10 @@ export async function getUserBattleStatusById(userId: string) {
 
   const { data: equippedAvatar, error: avatarError } = await supabase
     .from("Avatar")
-    .select("*")
+    .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)
     .eq("equipped", true)
+    .limit(1)
     .maybeSingle();
 
   if (avatarError) {

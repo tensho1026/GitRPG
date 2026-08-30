@@ -9,7 +9,7 @@ export const getUserAvatars = async (userId: string) => {
   try {
     const { data: avatars, error } = await supabase
       .from("Avatar")
-      .select("*")
+      .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
       .eq("userId", userId)
       .order("createdAt", { ascending: false });
 
@@ -31,7 +31,7 @@ export const getEquippedAvatar = async (userId: string) => {
   try {
     const { data: equippedAvatar, error } = await supabase
       .from("Avatar")
-      .select("*")
+      .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
       .eq("userId", userId)
       .eq("equipped", true)
       .single();

@@ -1,18 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
 
-type DailyCommit = {
+type DailyContribution = {
   date: string;
   contributionCount: number;
 };
 
 interface MonthlyActivityProps {
-  monthlyCommits: DailyCommit[];
+  monthlyContributions: DailyContribution[];
   thisMonthTotal: number;
 }
 
 const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
-  monthlyCommits,
+  monthlyContributions,
   thisMonthTotal,
 }) => {
   const today = new Date();
@@ -28,9 +28,9 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
 
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  const commitsMap = new Map<string, number>();
-  monthlyCommits.forEach((commit) => {
-    commitsMap.set(commit.date, commit.contributionCount);
+  const contributionsMap = new Map<string, number>();
+  monthlyContributions.forEach((contribution) => {
+    contributionsMap.set(contribution.date, contribution.contributionCount);
   });
 
   return (
@@ -42,7 +42,7 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
               📈 今月の草
             </h2>
             <span className="bg-green-700 text-green-100 py-1 px-2 rounded font-mono text-sm pixel-text">
-              今月: {thisMonthTotal}コミット
+              今月: {thisMonthTotal}活動
             </span>
           </div>
 
@@ -65,21 +65,23 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
                   2,
                   "0"
                 )}-${String(day).padStart(2, "0")}`;
-                const commits = commitsMap.get(dateStr) || 0;
+                const contributions = contributionsMap.get(dateStr) || 0;
                 const bgColor =
-                  commits === 0
+                  contributions === 0
                     ? "bg-green-800/50"
-                    : commits <= 2
+                    : contributions <= 2
                     ? "bg-lime-700"
-                    : commits <= 4
+                    : contributions <= 4
                     ? "bg-lime-500"
                     : "bg-lime-300";
                 const textColor =
-                  commits > 2
+                  contributions > 2
                     ? "text-white [text-shadow:1px_1px_1px_rgba(0,0,0,0.6)]"
                     : "text-lime-100";
                 const borderColor =
-                  commits === 0 ? "border-green-600/50" : "border-lime-400";
+                  contributions === 0
+                    ? "border-green-600/50"
+                    : "border-lime-400";
 
                 return (
                   <div
@@ -90,7 +92,7 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
                     </div>
                     <div
                       className={`font-bold text-sm pixel-text ${textColor}`}>
-                      {commits}
+                      {contributions}
                     </div>
                   </div>
                 );
@@ -98,7 +100,7 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
             </div>
           </div>
           <p className="text-green-200 font-mono text-lg pixel-text mt-4 text-center">
-            🌱 コミットの草を育てよう！
+            🌱 活動の草を育てよう！
           </p>
           <p className="text-green-300 font-mono text-sm pixel-text mt-1 text-center">
             継続は力なり - 毎日少しずつでも成長しよう

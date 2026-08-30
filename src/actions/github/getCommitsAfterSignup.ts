@@ -45,6 +45,9 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
     }
 
     const signupDate = new Date(user.createdAt);
+    if (Number.isNaN(signupDate.getTime())) {
+      throw new Error("Invalid user signup date");
+    }
 
     let totalCommits = 0;
     let page = 1;
@@ -52,7 +55,9 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
 
     while (true) {
       const response = await fetch(
-        `https://api.github.com/users/${username}/events?page=${page}&per_page=${perPage}`,
+        `https://api.github.com/users/${encodeURIComponent(
+          username
+        )}/events?page=${page}&per_page=${perPage}`,
         {
           headers: {
             Authorization: `token ${githubAccessToken}`,
@@ -82,15 +87,24 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
 
       // Filter push events and count commits after signup
       let commitsOnPage = 0;
+      let reachedSignup = false;
       for (const event of events) {
-        if (event.type === "PushEvent" && event.payload?.commits) {
-          const eventDate = new Date(event.created_at);
-          if (eventDate > signupDate) {
+        const eventDate = new Date(event.created_at);
+        if (!Number.isNaN(eventDate.getTime()) && eventDate <= signupDate) {
+          reachedSignup = true;
+          break;
+        }
+
+        if (
+          event.type === "PushEvent" &&
+          Array.isArray(event.payload?.commits)
+        ) {
+          if (!Number.isNaN(eventDate.getTime())) {
             const commits = event.payload.commits.filter((commit: any) => {
               const commitDate = new Date(
                 commit.author?.date || event.created_at
               );
-              return commitDate > signupDate;
+              return !Number.isNaN(commitDate.getTime()) && commitDate > signupDate;
             });
             commitsOnPage += commits.length;
           }
@@ -99,8 +113,9 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
 
       totalCommits += commitsOnPage;
 
-      // If we got fewer events than per_page, we've reached the end
-      if (events.length < perPage) {
+      // Events are newest first, so older pages cannot contain post-signup
+      // activity after this point.
+      if (reachedSignup || events.length < perPage) {
         break;
       }
 

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getUserBattleStatusById } from "../../../../lib/userBattleStatus";
-import { getUserCurrentItemsById } from "../../../../lib/userItems";
 import { supabase } from "../../../../supabase/supabase.config";
 
 export const runtime = "nodejs";
@@ -14,7 +13,7 @@ const escapeXml = (value: unknown) =>
     .replaceAll("'", "&apos;");
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ name: string }> }
 ) {
   const { name } = await params; // ✅ Promise を await する
@@ -31,24 +30,10 @@ export async function GET(
       return new NextResponse("User Not Found", { status: 404 });
     }
 
-    // Get user status
-    const { data: userStatus, error: statusError } = await supabase
-      .from("UserStatus")
-      .select("level")
-      .eq("userId", user.id)
-      .single();
-
-    if (statusError) {
-      console.error("Failed to fetch user status:", statusError);
-      return new NextResponse("User status not found", { status: 404 });
-    }
-
     // Get battle status
     const battleStatus = await getUserBattleStatusById(user.id);
-    const level = userStatus?.level || 1;
-
-    // Get equipped items
-    const equippedItems = await getUserCurrentItemsById(user.id);
+    const level = battleStatus.level || 1;
+    const equippedItems = battleStatus.equippedItems;
 
     // Get weapon and armor info
     const weapon = equippedItems.find((item) => item.type === "weapon") || null;

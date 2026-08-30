@@ -10,6 +10,7 @@ import { getUserAvatars } from "@/actions/user/avatar/getUserAvatars";
 import { equipAvatar } from "@/actions/user/avatar/equipAvatar";
 import { getCurrentCoin } from "@/actions/user/status/coin/getCurrentCoin";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
+import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 import { avatarCharacters } from "@/data/avatar";
 import type { Avatar as UserAvatar } from "@/types/user/userStatus";
 
@@ -50,33 +51,29 @@ export function useAvatarData() {
   // Keep the one-time initialization scoped to the signed-in account, not the
   // lifetime of this component. The session can change without a remount.
   const autoUnlockUserRef = useRef<string | null>(null);
+  const requestIdRef = useRef(0);
+  const userEmail = session?.user?.email ?? null;
 
   const fetchData = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+
     // Wait for session to load
     if (status === "loading") {
       return;
     }
 
-    // @ts-ignore - NextAuth v4 user property compatibility
-    if (status === "authenticated" && session?.user?.email) {
+    if (status === "authenticated" && userEmail) {
       setIsLoading(true);
       try {
-        // @ts-ignore - NextAuth v4 user property compatibility
-        const userEmail = session.user.email;
-
-        /*
-         * Fire all requests in parallel for better performance
-         * - autoUnlockAvatars: unlocks if eligible, result not needed immediately
-         * - getUserStatus, getUserAvatars, getCurrentCoin: required for UI
-         */
-
-        // Run autoUnlock once per account
+        // Ensure legacy/directly-created accounts have their default avatar.
         if (autoUnlockUserRef.current !== userEmail) {
-          try {
-            await autoUnlockAvatars(userEmail);
-          } finally {
-            autoUnlockUserRef.current = userEmail;
-          }
+          await saveUserToDatabase({
+            id: userEmail,
+            name: session?.user?.name || userEmail,
+            image: session?.user?.image || "",
+          });
+          await autoUnlockAvatars(userEmail);
+          autoUnlockUserRef.current = userEmail;
         }
 
         const [userStatus, avatars, currentCoins] = await Promise.all([
@@ -84,6 +81,8 @@ export function useAvatarData() {
           getUserAvatars(userEmail),
           getCurrentCoin(userEmail),
         ]);
+
+        if (requestId !== requestIdRef.current) return;
 
         setUserAvatars(avatars || []);
 
@@ -117,30 +116,41 @@ export function useAvatarData() {
           (error as Error).stack
         );
 
-        // Set fallback values on error
-        setCoins(0);
-        setPlayerData({
-          level: 1,
-          coins: 0,
-          selectedAvatar: "warrior",
-          unlockedAvatars: ["warrior"],
-        });
+        if (requestId === requestIdRef.current) {
+          // Set fallback values on error
+          setCoins(0);
+          setPlayerData({
+            level: 1,
+            coins: 0,
+            selectedAvatar: "warrior",
+            unlockedAvatars: ["warrior"],
+          });
+        }
       } finally {
-        setIsLoading(false);
+        if (requestId === requestIdRef.current) {
+          setIsLoading(false);
+        }
       }
     } else if (status === "unauthenticated") {
+      setUserAvatars([]);
+      setCoins(0);
+      setPlayerData({
+        level: 1,
+        coins: 0,
+        selectedAvatar: "warrior",
+        unlockedAvatars: ["warrior"],
+      });
       setIsLoading(false);
     } else {
       setIsLoading(false);
     }
-  }, [status, session]);
+  }, [status, userEmail, session?.user?.name, session?.user?.image]);
 
   // Prevent duplicate initial fetches while still refetching after an account
   // switch in the same mounted application.
   const fetchedUserRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const userEmail = session?.user?.email;
     if (status === "authenticated" && userEmail) {
       if (fetchedUserRef.current !== userEmail) {
         fetchedUserRef.current = userEmail;
@@ -150,14 +160,16 @@ export function useAvatarData() {
       fetchedUserRef.current = null;
       autoUnlockUserRef.current = null;
     }
-  }, [status, session, fetchData]);
+    return () => {
+      requestIdRef.current += 1;
+    };
+  }, [status, userEmail, fetchData]);
 
   const handleEquip = async (dbId: string) => {
     // Avoid duplicate requests while processing
     if (isProcessing) return;
 
-    // @ts-ignore - NextAuth v4 user property compatibility
-    if (!session?.user?.email) return;
+    if (!userEmail) return;
 
     // If this avatar is already equipped, do nothing
     const currentEquipped = userAvatars.find(
@@ -167,8 +179,7 @@ export function useAvatarData() {
 
     setIsProcessing(true);
     try {
-      // @ts-ignore - NextAuth v4 user property compatibility
-      await equipAvatar(session.user.email, dbId);
+      await equipAvatar(userEmail, dbId);
       await fetchData(); // Refresh data after equipping
     } catch (error) {
       console.error("Equip failed:", error);
@@ -181,8 +192,7 @@ export function useAvatarData() {
   const handleUnlockAvatar = async (avatarId: string) => {
     if (isProcessing) return; // prevent duplicate clicks
 
-    // @ts-ignore - NextAuth v4 user property compatibility
-    if (!session?.user?.email) return;
+    if (!userEmail) return;
 
     // If already owned, skip
     const alreadyOwned = userAvatars.some(
@@ -193,8 +203,7 @@ export function useAvatarData() {
 
     setIsProcessing(true);
     try {
-      // @ts-ignore - NextAuth v4 user property compatibility
-      await unlockAvatar(session.user.email, avatarId);
+      await unlockAvatar(userEmail, avatarId);
       await fetchData(); // Refresh
     } catch (error) {
       console.error("Unlock failed:", error);

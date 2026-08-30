@@ -9,7 +9,7 @@ export const getUserItems = async (userId: string) => {
   try {
     const { data: items, error } = await supabase
       .from("Items")
-      .select("*")
+      .select("id, equipmentId, name, image, description, type, attack, defense, price, equipped, userId, createdAt, updatedAt")
       .eq("userId", userId)
       .order("createdAt", { ascending: false });
 

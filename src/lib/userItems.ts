@@ -9,7 +9,7 @@ export async function getUserCurrentItemsById(userId: string) {
 
   const { data: items, error } = await supabase
     .from("Items")
-    .select("*")
+    .select("id, equipmentId, name, image, description, type, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)
     .eq("equipped", true)
     .order("createdAt", { ascending: false });

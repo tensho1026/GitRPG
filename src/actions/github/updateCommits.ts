@@ -1,9 +1,7 @@
 // app/actions/updateCommits.ts
 "use server";
 
-import {
-  getAuthenticatedUserId,
-} from "@/lib/authenticatedUser";
+import { getAuthenticatedUserId } from "@/lib/authenticatedUser";
 import { fetchTotalContributions } from "@/actions/github/fetchCommits";
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
 import { supabase } from "../../supabase/supabase.config";
@@ -42,14 +40,43 @@ export const updateCommits = async () => {
 
     const fromDate = createdAt.toISOString();
     const contributions = await fetchTotalContributions(fromDate);
-    let newCommitCount = Math.max(0, contributions.commits || 0);
+    if (
+      !Number.isSafeInteger(currentStatus.commit) ||
+      currentStatus.commit < 0 ||
+      !Number.isSafeInteger(currentStatus.coin) ||
+      currentStatus.coin < 0 ||
+      !Number.isSafeInteger(currentStatus.level) ||
+      currentStatus.level < 1 ||
+      !Number.isSafeInteger(currentStatus.hp) ||
+      currentStatus.hp < 0 ||
+      !Number.isSafeInteger(currentStatus.attack) ||
+      currentStatus.attack < 0 ||
+      !Number.isSafeInteger(currentStatus.defense) ||
+      currentStatus.defense < 0
+    ) {
+      throw new Error("Invalid user status values");
+    }
+
+    if (!Number.isSafeInteger(contributions.commits) || contributions.commits < 0) {
+      throw new Error("Invalid commit count from GitHub");
+    }
+
+    // GitHub's aggregate can temporarily move backwards while contributions
+    // are re-indexed. Never lower the stored total, otherwise the next sync
+    // could award the same commits again.
+    let newCommitCount = Math.max(currentStatus.commit, contributions.commits);
 
     // GitHub's contribution graph can lag immediately after a new account is
     // linked. Use the recent events endpoint as a best-effort lower-level
     // fallback during the first 24 hours, but never accept a browser value.
     const hoursSinceCreation =
       (Date.now() - createdAt.getTime()) / (1000 * 60 * 60);
-    if (currentStatus.commit === 0 && hoursSinceCreation >= 0 && hoursSinceCreation < 24) {
+    if (
+      newCommitCount === 0 &&
+      currentStatus.commit === 0 &&
+      hoursSinceCreation >= 0 &&
+      hoursSinceCreation < 24
+    ) {
       try {
         const alternativeCommitCount = await getCommitsAfterSignup();
         newCommitCount = Math.max(newCommitCount, alternativeCommitCount);
@@ -58,13 +85,12 @@ export const updateCommits = async () => {
       }
     }
 
-    if (!Number.isSafeInteger(newCommitCount) || newCommitCount < 0) {
-      throw new Error("Invalid commit count from GitHub");
-    }
-
     const commitDifference = Math.max(0, newCommitCount - currentStatus.commit);
     const coinsToAdd = commitDifference;
     const newCoinAmount = currentStatus.coin + coinsToAdd;
+    if (!Number.isSafeInteger(newCoinAmount)) {
+      throw new Error("Coin balance is too large");
+    }
     const newLevel = Math.floor(newCommitCount / 10) + 1;
     const finalLevel = Math.max(currentStatus.level, newLevel);
 
@@ -89,7 +115,8 @@ export const updateCommits = async () => {
       })
       .eq("userId", userId)
       .eq("commit", currentStatus.commit)
-      .select()
+      .eq("coin", currentStatus.coin)
+      .select("id, userId, level, commit, coin, hp, attack, defense, updatedAt")
       .maybeSingle();
 
     if (updateError) {
