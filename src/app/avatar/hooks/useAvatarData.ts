@@ -47,8 +47,9 @@ export function useAvatarData() {
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   const [coins, setCoins] = useState<number>(0);
 
-  // Ref to ensure autoUnlock runs only once per session mount
-  const autoUnlockCalledRef = useRef(false);
+  // Keep the one-time initialization scoped to the signed-in account, not the
+  // lifetime of this component. The session can change without a remount.
+  const autoUnlockUserRef = useRef<string | null>(null);
 
   const fetchData = useCallback(async () => {
     // Wait for session to load
@@ -69,12 +70,12 @@ export function useAvatarData() {
          * - getUserStatus, getUserAvatars, getCurrentCoin: required for UI
          */
 
-        // Run autoUnlock just once
-        if (!autoUnlockCalledRef.current) {
+        // Run autoUnlock once per account
+        if (autoUnlockUserRef.current !== userEmail) {
           try {
             await autoUnlockAvatars(userEmail);
           } finally {
-            autoUnlockCalledRef.current = true;
+            autoUnlockUserRef.current = userEmail;
           }
         }
 
@@ -134,15 +135,22 @@ export function useAvatarData() {
     }
   }, [status, session]);
 
-  // Prevent multiple initial fetches when status/session change repeatedly
-  const hasFetchedRef = useRef(false);
+  // Prevent duplicate initial fetches while still refetching after an account
+  // switch in the same mounted application.
+  const fetchedUserRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (status === "authenticated" && !hasFetchedRef.current) {
-      hasFetchedRef.current = true;
-      fetchData();
+    const userEmail = session?.user?.email;
+    if (status === "authenticated" && userEmail) {
+      if (fetchedUserRef.current !== userEmail) {
+        fetchedUserRef.current = userEmail;
+        void fetchData();
+      }
+    } else if (status === "unauthenticated") {
+      fetchedUserRef.current = null;
+      autoUnlockUserRef.current = null;
     }
-  }, [status, fetchData]);
+  }, [status, session, fetchData]);
 
   const handleEquip = async (dbId: string) => {
     // Avoid duplicate requests while processing

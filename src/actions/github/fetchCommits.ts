@@ -1,3 +1,7 @@
+"use server";
+
+import { getAuthenticatedGitHubAccessToken } from "@/lib/authenticatedUser";
+
 export type GitHubContributions = {
   commits: number;
   issues: number;
@@ -7,9 +11,9 @@ export type GitHubContributions = {
 };
 
 export const fetchTotalContributions = async (
-  accessToken: string,
   fromDate: string
 ): Promise<GitHubContributions> => {
+  const accessToken = await getAuthenticatedGitHubAccessToken();
   console.log("🔧 [DEBUG] fetchTotalContributions called with:", {
     hasAccessToken: !!accessToken,
     fromDate,

@@ -13,8 +13,8 @@ export const reduceCoin = async (
     throw new Error("User ID is required");
   }
 
-  if (amount <= 0) {
-    throw new Error("Amount must be positive");
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
+    throw new Error("Amount must be a positive integer");
   }
 
   try {
@@ -48,8 +48,10 @@ export const reduceCoin = async (
         updatedAt: new Date().toISOString(),
       })
       .eq("userId", userId)
+      .eq("coin", currentStatus.coin)
+      .gte("coin", amount)
       .select("coin")
-      .single();
+      .maybeSingle();
 
     if (updateError) {
       console.error("Failed to update coin:", updateError);
@@ -57,7 +59,7 @@ export const reduceCoin = async (
     }
 
     if (!updatedStatus) {
-      throw new Error("Failed to get updated coin amount");
+      throw new Error("Coin balance changed. Please try again.");
     }
 
     return updatedStatus.coin;

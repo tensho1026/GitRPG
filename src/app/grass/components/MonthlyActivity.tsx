@@ -16,13 +16,15 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
   thisMonthTotal,
 }) => {
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
+  // GitHub returns contribution dates in UTC. Use the same timezone here so
+  // dates around midnight and month boundaries land in the correct cell.
+  const year = today.getUTCFullYear();
+  const month = today.getUTCMonth();
 
-  const firstDayOfMonth = new Date(year, month, 1);
-  const startDayOfWeek = firstDayOfMonth.getDay();
+  const firstDayOfMonth = new Date(Date.UTC(year, month, 1));
+  const startDayOfWeek = firstDayOfMonth.getUTCDay();
 
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
 
   const monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 

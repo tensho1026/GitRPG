@@ -1,11 +1,10 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { supabase } from "../../supabase/supabase.config";
 
 export const getUserItems = async (userId: string) => {
-  if (!userId) {
-    throw new Error("User ID is required");
-  }
+  await assertAuthenticatedUser(userId);
 
   try {
     const { data: items, error } = await supabase

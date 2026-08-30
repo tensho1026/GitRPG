@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
-import { getCurrentUserBattleStatus } from "../../../../actions/user/status/getCurrentUserBattleStatus";
-import { getUserCurrentItems } from "../../../../actions/item/getUserCurrentitems";
+import { getUserBattleStatusById } from "../../../../lib/userBattleStatus";
+import { getUserCurrentItemsById } from "../../../../lib/userItems";
 import { supabase } from "../../../../supabase/supabase.config";
 
 export const runtime = "nodejs";
+
+const escapeXml = (value: unknown) =>
+  String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 
 export async function GET(
   request: Request,
@@ -36,11 +44,11 @@ export async function GET(
     }
 
     // Get battle status
-    const battleStatus = await getCurrentUserBattleStatus(user.id);
+    const battleStatus = await getUserBattleStatusById(user.id);
     const level = userStatus?.level || 1;
 
     // Get equipped items
-    const equippedItems = await getUserCurrentItems(user.id);
+    const equippedItems = await getUserCurrentItemsById(user.id);
 
     // Get weapon and armor info
     const weapon = equippedItems.find((item) => item.type === "weapon") || null;
@@ -92,16 +100,20 @@ export async function GET(
       <rect x="25" y="85" width="250" height="100" rx="5" fill="#1e40af" opacity="0.8"/>
       
       <!-- Character info -->
-      <text x="35" y="105" class="pixel-font title">👤 ${user.name}</text>
+      <text x="35" y="105" class="pixel-font title">👤 ${escapeXml(
+        user.name
+      )}</text>
       <text x="35" y="125" class="pixel-font label">Level:</text>
-      <text x="85" y="125" class="pixel-font value">Lv.${level}</text>
+      <text x="85" y="125" class="pixel-font value">Lv.${escapeXml(
+        level
+      )}</text>
       <text x="35" y="145" class="pixel-font label">Commits:</text>
       <text x="95" y="145" class="pixel-font value">${
-        battleStatus.commit || 0
+        escapeXml(battleStatus.commit || 0)
       }</text>
       <text x="35" y="165" class="pixel-font label">Coins:</text>
       <text x="85" y="165" class="pixel-font value">💰${
-        battleStatus.coin || 0
+        escapeXml(battleStatus.coin || 0)
       }</text>
       
       <!-- Stats panel (purple) -->
@@ -111,15 +123,15 @@ export async function GET(
       <text x="315" y="105" class="pixel-font title">⚔️ Battle Status</text>
       <text x="315" y="125" class="pixel-font label">HP:</text>
       <text x="345" y="125" class="pixel-font stat-value">${
-        battleStatus.totalStats.hp
+        escapeXml(battleStatus.totalStats.hp)
       }</text>
       <text x="315" y="145" class="pixel-font label">ATK:</text>
       <text x="345" y="145" class="pixel-font stat-value">${
-        battleStatus.totalStats.attack
+        escapeXml(battleStatus.totalStats.attack)
       }</text>
       <text x="315" y="165" class="pixel-font label">DEF:</text>
       <text x="345" y="165" class="pixel-font stat-value">${
-        battleStatus.totalStats.defense
+        escapeXml(battleStatus.totalStats.defense)
       }</text>
       
       <!-- Equipment panel (red) -->
@@ -129,11 +141,15 @@ export async function GET(
       <text x="35" y="235" class="pixel-font title">🛡️ Equipment</text>
       <text x="35" y="255" class="pixel-font label">Weapon:</text>
       <text x="35" y="270" class="pixel-font item-name">${
-        weapon ? `⚔️ ${weapon.name} (+${weapon.attack || 0} ATK)` : "❌ None"
+        weapon
+          ? escapeXml(`⚔️ ${weapon.name} (+${weapon.attack || 0} ATK)`)
+          : "❌ None"
       }</text>
       <text x="35" y="285" class="pixel-font label">Armor:</text>
       <text x="35" y="300" class="pixel-font item-name">${
-        armor ? `🛡️ ${armor.name} (+${armor.defense || 0} DEF)` : "❌ None"
+        armor
+          ? escapeXml(`🛡️ ${armor.name} (+${armor.defense || 0} DEF)`)
+          : "❌ None"
       }</text>
       
       <!-- Avatar panel (green) -->
@@ -144,15 +160,17 @@ export async function GET(
       <text x="305" y="255" class="pixel-font label">Equipped:</text>
       <text x="305" y="270" class="pixel-font item-name">${
         battleStatus.equippedAvatar
-          ? `👤 ${battleStatus.equippedAvatar.name}`
+          ? escapeXml(`👤 ${battleStatus.equippedAvatar.name}`)
           : "❌ Default Avatar"
       }</text>
       <text x="305" y="285" class="pixel-font label">Bonus:</text>
       <text x="305" y="300" class="pixel-font item-name">${
         battleStatus.equippedAvatar
-          ? `HP+${battleStatus.equippedAvatar.hp || 0} ATK+${
-              battleStatus.equippedAvatar.attack || 0
-            } DEF+${battleStatus.equippedAvatar.defense || 0}`
+          ? escapeXml(
+              `HP+${battleStatus.equippedAvatar.hp || 0} ATK+${
+                battleStatus.equippedAvatar.attack || 0
+              } DEF+${battleStatus.equippedAvatar.defense || 0}`
+            )
           : "No Bonus"
       }</text>
       
@@ -171,8 +189,9 @@ export async function GET(
     return new NextResponse(svg, {
       status: 200,
       headers: {
-        "Content-Type": "image/svg+xml",
-        "Cache-Control": "no-cache",
+        "Content-Type": "image/svg+xml; charset=utf-8",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
       },
     });
   } catch (error) {

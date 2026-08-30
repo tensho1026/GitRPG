@@ -1,79 +1,96 @@
 // app/actions/updateCommits.ts
 "use server";
 
-import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
-
+import {
+  getAuthenticatedUserId,
+} from "@/lib/authenticatedUser";
+import { fetchTotalContributions } from "@/actions/github/fetchCommits";
+import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
 import { supabase } from "../../supabase/supabase.config";
 
-export const updateCommits = async (userId: string, commits: number) => {
-  await assertAuthenticatedUser(userId);
-  if (!userId) {
-    throw new Error("User ID is required");
+export const updateCommits = async () => {
+  const userId = await getAuthenticatedUserId();
+
+  const { data: user, error: userError } = await supabase
+    .from("Users")
+    .select("createdAt")
+    .eq("id", userId)
+    .single();
+
+  if (userError || !user) {
+    throw new Error("User not found");
   }
 
-  if (commits < 0) {
-    throw new Error("Commits must be non-negative");
+  const createdAt = new Date(user.createdAt);
+  if (Number.isNaN(createdAt.getTime())) {
+    throw new Error("Invalid user creation date");
   }
 
   try {
-    // Get current user status
     const { data: currentStatus, error: fetchError } = await supabase
       .from("UserStatus")
       .select("commit, coin, level, hp, attack, defense")
       .eq("userId", userId)
       .single();
 
-    if (fetchError) {
+    if (fetchError || !currentStatus) {
       console.error("Failed to fetch current status:", fetchError);
-      throw new Error(`Failed to fetch current status: ${fetchError.message}`);
+      throw new Error(
+        `Failed to fetch current status: ${fetchError?.message ?? "not found"}`
+      );
     }
 
-    if (!currentStatus) {
-      throw new Error("User status not found");
+    const fromDate = createdAt.toISOString();
+    const contributions = await fetchTotalContributions(fromDate);
+    let newCommitCount = Math.max(0, contributions.commits || 0);
+
+    // GitHub's contribution graph can lag immediately after a new account is
+    // linked. Use the recent events endpoint as a best-effort lower-level
+    // fallback during the first 24 hours, but never accept a browser value.
+    const hoursSinceCreation =
+      (Date.now() - createdAt.getTime()) / (1000 * 60 * 60);
+    if (currentStatus.commit === 0 && hoursSinceCreation >= 0 && hoursSinceCreation < 24) {
+      try {
+        const alternativeCommitCount = await getCommitsAfterSignup();
+        newCommitCount = Math.max(newCommitCount, alternativeCommitCount);
+      } catch (error) {
+        console.warn("Recent GitHub events fallback failed:", error);
+      }
     }
 
-    const newCommitCount = commits;
+    if (!Number.isSafeInteger(newCommitCount) || newCommitCount < 0) {
+      throw new Error("Invalid commit count from GitHub");
+    }
+
     const commitDifference = Math.max(0, newCommitCount - currentStatus.commit);
-
-    // Award coins for new commits (1 coin per commit)
     const coinsToAdd = commitDifference;
     const newCoinAmount = currentStatus.coin + coinsToAdd;
-
-    // Calculate new level (every 10 commits = 1 level)
     const newLevel = Math.floor(newCommitCount / 10) + 1;
-
     const finalLevel = Math.max(currentStatus.level, newLevel);
 
-    // Increase stats by 10 per level gained
-    const levelDiff = finalLevel - currentStatus.level;
+    // Keep existing manually repaired stats, while ensuring level-derived
+    // stats are present for older rows.
+    const newHp = Math.max(currentStatus.hp, 100 + (finalLevel - 1) * 10);
+    const newAttack = Math.max(currentStatus.attack, 10 + (finalLevel - 1) * 10);
+    const newDefense = Math.max(currentStatus.defense, 5 + (finalLevel - 1) * 10);
 
-    // Fix existing users' stats to match their level
-    // Base stats: HP=100, Attack=10, Defense=5 at level 1
-    // Each level adds +10 to all stats
-    const expectedHp = 100 + (finalLevel - 1) * 10;
-    const expectedAttack = 10 + (finalLevel - 1) * 10;
-    const expectedDefense = 5 + (finalLevel - 1) * 10;
-
-    // Use the higher value between current and expected (don't decrease)
-    const newHp = Math.max(currentStatus.hp, expectedHp);
-    const newAttack = Math.max(currentStatus.attack, expectedAttack);
-    const newDefense = Math.max(currentStatus.defense, expectedDefense);
-
-    // Update user status
+    // Avoid awarding the same commits twice when React Strict Mode or two tabs
+    // synchronize the account at the same time.
     const { data: updatedStatus, error: updateError } = await supabase
       .from("UserStatus")
       .update({
         commit: newCommitCount,
         coin: newCoinAmount,
-        level: finalLevel, // Don't decrease level
+        level: finalLevel,
         hp: newHp,
         attack: newAttack,
         defense: newDefense,
         updatedAt: new Date().toISOString(),
       })
       .eq("userId", userId)
+      .eq("commit", currentStatus.commit)
       .select()
-      .single();
+      .maybeSingle();
 
     if (updateError) {
       console.error("Failed to update user status:", updateError);
@@ -82,9 +99,9 @@ export const updateCommits = async (userId: string, commits: number) => {
 
     return {
       success: true,
-      updatedStatus,
-      coinsAwarded: coinsToAdd,
-      newCommits: commitDifference,
+      updatedStatus: updatedStatus ?? currentStatus,
+      coinsAwarded: updatedStatus ? coinsToAdd : 0,
+      newCommits: updatedStatus ? commitDifference : 0,
     };
   } catch (error) {
     console.error("Error in updateCommits:", error);

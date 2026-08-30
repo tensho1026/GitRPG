@@ -116,7 +116,10 @@ export const saveUserToDatabase = async (userData: UserData) => {
 
       const { data: userStatus, error: statusError } = await supabase
         .from("UserStatus")
-        .insert(insertData)
+        .upsert(insertData, {
+          onConflict: "userId",
+          ignoreDuplicates: true,
+        })
         .select("id, userId, level, coin");
 
       if (statusError) {

@@ -29,9 +29,14 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
       .select("id")
       .eq("userId", userId)
       .eq("equipmentId", equipmentId)
-      .single();
+      .maybeSingle();
 
-    if (!existingError && existingItem) {
+    if (existingError) {
+      console.error("Failed to check item ownership:", existingError);
+      throw new Error("Failed to check item ownership");
+    }
+
+    if (existingItem) {
       throw new Error("You already own this item");
     }
 
@@ -51,18 +56,28 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
       throw new Error("Insufficient coins");
     }
 
-    // Update user's coin amount
-    const { error: coinError } = await supabase
+    // Debit only if the balance has not changed since it was read. This
+    // prevents two simultaneous purchases from overwriting each other.
+    const remainingCoin = userStatus.coin - equipment.price;
+    const { data: debitedStatus, error: coinError } = await supabase
       .from("UserStatus")
       .update({
-        coin: userStatus.coin - equipment.price,
+        coin: remainingCoin,
         updatedAt: new Date().toISOString(),
       })
-      .eq("userId", userId);
+      .eq("userId", userId)
+      .eq("coin", userStatus.coin)
+      .gte("coin", equipment.price)
+      .select("coin")
+      .maybeSingle();
 
     if (coinError) {
       console.error("Failed to update user coins:", coinError);
       throw new Error("Failed to update user coins");
+    }
+
+    if (!debitedStatus) {
+      throw new Error("Coin balance changed. Please try again.");
     }
 
     // Create the item
@@ -87,6 +102,11 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
 
     if (itemError) {
       console.error("Failed to create item:", itemError);
+      await supabase
+        .from("UserStatus")
+        .update({ coin: userStatus.coin, updatedAt: new Date().toISOString() })
+        .eq("userId", userId)
+        .eq("coin", remainingCoin);
       throw new Error("Failed to create item");
     }
 
@@ -95,7 +115,7 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
     return {
       success: true,
       item: newItem,
-      remainingCoin: userStatus.coin - equipment.price,
+      remainingCoin,
     };
   } catch (error) {
     console.error("Error in purchaseItem:", error);

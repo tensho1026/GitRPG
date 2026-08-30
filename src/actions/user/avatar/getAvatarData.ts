@@ -1,11 +1,10 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { supabase } from "../../../supabase/supabase.config";
 
 export const getAvatarData = async (email: string) => {
-  if (!email) {
-    throw new Error("User email is not provided");
-  }
+  await assertAuthenticatedUser(email);
 
   try {
     const { data: userStatus, error } = await supabase

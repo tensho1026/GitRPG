@@ -21,7 +21,7 @@ export const selectAvatar = async (email: string, avatarId: string) => {
     throw new Error("User status not found.");
   }
 
-  if (!userStatus.unlockedAvatars.includes(avatarId)) {
+  if (!userStatus.unlockedAvatars?.includes(avatarId)) {
     throw new Error("You have not unlocked this avatar.");
   }
 

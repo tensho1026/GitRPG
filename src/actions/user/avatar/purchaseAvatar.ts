@@ -29,9 +29,14 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
       .select("id")
       .eq("userId", userId)
       .eq("name", avatar.name)
-      .single();
+      .maybeSingle();
 
-    if (!existingError && existingAvatar) {
+    if (existingError) {
+      console.error("Failed to check avatar ownership:", existingError);
+      throw new Error("Failed to check avatar ownership");
+    }
+
+    if (existingAvatar) {
       throw new Error("You already own this avatar");
     }
 
@@ -51,18 +56,28 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
       throw new Error("Insufficient coins");
     }
 
-    // Update user's coin amount
-    const { error: coinError } = await supabase
+    // Debit only if the balance has not changed since it was read. This
+    // prevents two simultaneous purchases from overwriting each other.
+    const remainingCoin = userStatus.coin - avatar.price;
+    const { data: debitedStatus, error: coinError } = await supabase
       .from("UserStatus")
       .update({
-        coin: userStatus.coin - avatar.price,
+        coin: remainingCoin,
         updatedAt: new Date().toISOString(),
       })
-      .eq("userId", userId);
+      .eq("userId", userId)
+      .eq("coin", userStatus.coin)
+      .gte("coin", avatar.price)
+      .select("coin")
+      .maybeSingle();
 
     if (coinError) {
       console.error("Failed to update user coins:", coinError);
       throw new Error("Failed to update user coins");
+    }
+
+    if (!debitedStatus) {
+      throw new Error("Coin balance changed. Please try again.");
     }
 
     // Create the avatar
@@ -88,13 +103,18 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
 
     if (avatarError) {
       console.error("Failed to create avatar:", avatarError);
+      await supabase
+        .from("UserStatus")
+        .update({ coin: userStatus.coin, updatedAt: new Date().toISOString() })
+        .eq("userId", userId)
+        .eq("coin", remainingCoin);
       throw new Error("Failed to create avatar");
     }
 
     return {
       success: true,
       avatar: newAvatar,
-      remainingCoin: userStatus.coin - avatar.price,
+      remainingCoin,
     };
   } catch (error) {
     console.error("Error in purchaseAvatar:", error);
