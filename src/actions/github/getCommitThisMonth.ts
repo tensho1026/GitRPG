@@ -5,7 +5,9 @@ export const fetchMonthlyContributions = async (
   userCreatedAt?: Date | string
 ) => {
   const today = new Date();
-  let fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  let fromDate = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1)
+  );
 
   // If the user was created this month, fetch commits from their creation date.
   if (userCreatedAt) {
@@ -16,8 +18,9 @@ export const fetchMonthlyContributions = async (
         : userCreatedAt;
 
     if (
-      createdDate.getFullYear() === today.getFullYear() &&
-      createdDate.getMonth() === today.getMonth()
+      !Number.isNaN(createdDate.getTime()) &&
+      createdDate.getUTCFullYear() === today.getUTCFullYear() &&
+      createdDate.getUTCMonth() === today.getUTCMonth()
     ) {
       fromDate = createdDate;
     }
@@ -58,6 +61,10 @@ export const fetchMonthlyContributions = async (
       },
     }),
   });
+
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status}`);
+  }
 
   const json = await response.json();
 

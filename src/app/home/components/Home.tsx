@@ -12,7 +12,6 @@ import BackGround from "../../../components/BackGround";
 import { useSessionStore } from "@/lib/sessionStore";
 import { useHomeData } from "../hooks/useHomeData";
 import { useUserStats } from "../hooks/useUserStats";
-import { useHomeAuthEffect } from "../hooks/useHomeAuthEffect";
 import Loading from "@/components/ Loading";
 
 interface HomeScreenProps {
@@ -28,9 +27,6 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
     setSession(session);
     setStatus(status as "loading" | "authenticated" | "unauthenticated");
   }, [session, status, setSession, setStatus]);
-
-  // 認証効果を実行
-  useHomeAuthEffect(session, status);
 
   const { userStatus, userItems, isLoading, equippedAvatar } = useHomeData(
     session,

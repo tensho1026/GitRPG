@@ -17,12 +17,12 @@ export default function AuthRedirectWrapper({
   // Redirect to home if user is authenticated
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/home");
+      router.replace("/home");
     }
   }, [status, router]);
 
   // Don't render the content if user is authenticated (will redirect)
-  if (status === "authenticated") {
+  if (status === "authenticated" || status === "loading") {
     return null;
   }
 

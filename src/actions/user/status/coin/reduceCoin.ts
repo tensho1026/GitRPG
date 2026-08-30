@@ -1,11 +1,14 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+
 import { supabase } from "../../../../supabase/supabase.config";
 
 export const reduceCoin = async (
   userId: string,
   amount: number
 ): Promise<number> => {
+  await assertAuthenticatedUser(userId);
   if (!userId) {
     throw new Error("User ID is required");
   }

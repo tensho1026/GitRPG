@@ -1,10 +1,13 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+
 import { supabase } from "../../../supabase/supabase.config";
 import { randomUUID } from "crypto";
 import { avatarCharacters } from "@/data/avatar";
 
 export const unlockAvatar = async (email: string, avatarId: string) => {
+  await assertAuthenticatedUser(email);
   if (!email) {
     throw new Error("User not found.");
   }
@@ -90,6 +93,7 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 };
 
 export const autoUnlockAvatars = async (email: string) => {
+  await assertAuthenticatedUser(email);
   try {
     if (!email) {
       throw new Error("User not found.");

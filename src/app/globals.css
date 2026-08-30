@@ -60,7 +60,7 @@
   }
 
   body {
-    font-family: var(--font-press-start-2p), monospace;
+    font-family: "Courier New", ui-monospace, monospace;
   }
 }
 
