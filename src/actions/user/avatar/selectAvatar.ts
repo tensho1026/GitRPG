@@ -1,8 +1,11 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+
 import { supabase } from "../../../supabase/supabase.config";
 
 export const selectAvatar = async (email: string, avatarId: string) => {
+  await assertAuthenticatedUser(email);
   if (!email) {
     throw new Error("User not found.");
   }

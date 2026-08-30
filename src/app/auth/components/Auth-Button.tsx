@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
-import Link from "next/link";
 import type { UserWithStatus, BattleStatus } from "@/types/user/userStatus";
 
 export default function AuthButton() {
@@ -218,16 +217,14 @@ export default function AuthButton() {
                 </div>
 
                 {/* Return to Town Button */}
-                <Link href="/home">
                   <Button
                     onClick={async () => {
-                      await signOut();
+                      await signOut({ callbackUrl: "/" });
                     }}
                     className="w-full h-12 bg-gradient-to-b from-orange-600 to-orange-700 hover:from-orange-500 hover:to-orange-600 border-4 border-orange-500 text-white font-mono font-bold pixel-text shadow-lg transform hover:translate-y-[-2px] active:translate-y-[1px] transition-all duration-150 pixel-border">
                     <LogOut className="w-5 h-5 mr-2" />
                     町に戻る
                   </Button>
-                </Link>
               </div>
             ) : (
               <div className="space-y-6 text-center">
@@ -269,7 +266,7 @@ export default function AuthButton() {
 
                 {/* Start Adventure Button */}
                 <Button
-                  onClick={() => signIn("github")}
+                  onClick={() => signIn("github", { callbackUrl: "/home" })}
                   className="w-full h-14 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 border-4 border-blue-500 text-white font-mono font-bold text-lg pixel-text shadow-lg transform hover:translate-y-[-2px] active:translate-y-[1px] transition-all duration-150 pixel-border relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
                   <Github className="w-6 h-6 mr-3" />

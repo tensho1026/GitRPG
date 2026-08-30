@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
+
 import { supabase } from "../../../supabase/supabase.config";
 
 interface UserData {
@@ -9,6 +11,7 @@ interface UserData {
 }
 
 export const saveUserToDatabase = async (userData: UserData) => {
+  await assertAuthenticatedUser(userData.id);
   if (!userData?.id) {
     console.error("User ID is missing:", userData);
     throw new Error("User ID is required");

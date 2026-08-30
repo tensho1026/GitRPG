@@ -6,6 +6,7 @@ import { getHomeData } from "@/actions/user/getHomeData";
 import { fetchTotalContributions } from "@/actions/github/fetchCommits";
 import { updateCommits } from "@/actions/github/updateCommits";
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
+import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
@@ -21,6 +22,13 @@ export const useHomeData = (session: Session | null, status: string) => {
       if (status === "authenticated" && session?.user?.email) {
         try {
           setIsLoading(true);
+
+          // Ensure first-time users and their status row exist before reading home data.
+          await saveUserToDatabase({
+            id: session.user.email,
+            name: session.user.name || session.user.email,
+            image: session.user.image || "",
+          });
 
           // 1. Fetch current home data (includes commit count & signup date)
           // @ts-ignore - NextAuth v4 user property compatibility
@@ -55,13 +63,15 @@ export const useHomeData = (session: Session | null, status: string) => {
               );
 
               // Ensure the date is in proper ISO format for GitHub API
-              const fromDate = new Date(
-                initialHomeData.user.createdAt
-              ).toISOString();
+              const createdAt = new Date(initialHomeData.user.createdAt);
+              if (Number.isNaN(createdAt.getTime())) {
+                throw new Error("Invalid user creation date");
+              }
+              const fromDate = createdAt.toISOString();
               console.log("📅 [DEBUG] Formatted fromDate:", fromDate);
 
               // Check if this is a new user (created within last 24 hours)
-              const userCreatedDate = new Date(initialHomeData.user.createdAt);
+              const userCreatedDate = createdAt;
               const now = new Date();
               const hoursSinceCreation =
                 (now.getTime() - userCreatedDate.getTime()) / (1000 * 60 * 60);

@@ -1,34 +1,22 @@
-// レベルごとの累積必要コミット数
-const levelThresholds = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // 例：レベル1〜10
+const COMMITS_PER_LEVEL = 10;
 
-export const getLevelFromCommits = (commitCount: number): number => {
-  for (let i = levelThresholds.length - 1; i >= 0; i--) {
-    if (commitCount >= levelThresholds[i]) {
-      return i + 1; // レベルは1始まり
-    }
-  }
-  return 1;
-};
+export const getLevelFromCommits = (commitCount: number): number =>
+  Math.floor(Math.max(0, commitCount) / COMMITS_PER_LEVEL) + 1;
 
-export const getNextLevelCommitGoal = (currentLevel: number): number => {
-  if (currentLevel >= levelThresholds.length) return Infinity;
-  return levelThresholds[currentLevel]; // 次のレベルに必要な累積コミット数
-};
+export const getNextLevelCommitGoal = (currentLevel: number): number =>
+  Math.max(1, currentLevel) * COMMITS_PER_LEVEL;
 
 export const getRemainingCommitsToNextLevel = (
   commitCount: number
 ): { remainingCommits: number; percentage: number } => {
   const level = getLevelFromCommits(commitCount);
-  const currentLevelTotalCommits = levelThresholds[level - 1];
+  const safeCommitCount = Math.max(0, commitCount);
+  const currentLevelTotalCommits = (level - 1) * COMMITS_PER_LEVEL;
   const nextGoal = getNextLevelCommitGoal(level);
 
-  if (nextGoal === Infinity) {
-    return { remainingCommits: 0, percentage: 100 };
-  }
-
-  const remainingCommits = nextGoal - commitCount;
+  const remainingCommits = nextGoal - safeCommitCount;
   const commitsForThisLevel = nextGoal - currentLevelTotalCommits;
-  const progressInLevel = commitCount - currentLevelTotalCommits;
+  const progressInLevel = safeCommitCount - currentLevelTotalCommits;
   const percentage = (progressInLevel / commitsForThisLevel) * 100;
 
   return { remainingCommits, percentage };
