@@ -34,9 +34,14 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
     .select("*")
     .eq("userId", email)
     .eq("name", avatarToUnlock.name)
-    .single();
+    .maybeSingle();
 
-  if (!avatarError && existingAvatar) {
+  if (avatarError) {
+    console.error("Failed to check avatar ownership:", avatarError);
+    throw new Error("Failed to check avatar ownership.");
+  }
+
+  if (existingAvatar) {
     throw new Error("Avatar already owned.");
   }
 
@@ -49,18 +54,28 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
   }
 
   try {
-    // Deduct coins from user
-    const { error: coinError } = await supabase
+    // Debit only if the balance has not changed since it was read. This
+    // prevents concurrent unlock requests from overspending the account.
+    const remainingCoin = userStatus.coin - avatarToUnlock.price;
+    const { data: debitedStatus, error: coinError } = await supabase
       .from("UserStatus")
       .update({
-        coin: userStatus.coin - avatarToUnlock.price,
+        coin: remainingCoin,
         updatedAt: new Date().toISOString(),
       })
-      .eq("userId", email);
+      .eq("userId", email)
+      .eq("coin", userStatus.coin)
+      .gte("coin", avatarToUnlock.price)
+      .select("coin")
+      .maybeSingle();
 
     if (coinError) {
       console.error("Failed to update coins:", coinError);
       throw new Error("Failed to deduct coins.");
+    }
+
+    if (!debitedStatus) {
+      throw new Error("Coin balance changed. Please try again.");
     }
 
     // Create the avatar
@@ -82,6 +97,11 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
 
     if (createError) {
       console.error("Failed to create avatar:", createError);
+      await supabase
+        .from("UserStatus")
+        .update({ coin: userStatus.coin, updatedAt: new Date().toISOString() })
+        .eq("userId", email)
+        .eq("coin", remainingCoin);
       throw new Error("Failed to create avatar.");
     }
 

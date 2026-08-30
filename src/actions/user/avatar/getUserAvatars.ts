@@ -1,12 +1,10 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { supabase } from "../../../supabase/supabase.config";
 
 export const getUserAvatars = async (userId: string) => {
-  if (!userId) {
-    console.error("getUserAvatars: User ID is not provided");
-    return [];
-  }
+  await assertAuthenticatedUser(userId);
 
   try {
     const { data: avatars, error } = await supabase
@@ -28,10 +26,7 @@ export const getUserAvatars = async (userId: string) => {
 };
 
 export const getEquippedAvatar = async (userId: string) => {
-  if (!userId) {
-    console.error("getEquippedAvatar: User ID is not provided");
-    return null;
-  }
+  await assertAuthenticatedUser(userId);
 
   try {
     const { data: equippedAvatar, error } = await supabase
@@ -53,6 +48,6 @@ export const getEquippedAvatar = async (userId: string) => {
     return equippedAvatar;
   } catch (error) {
     console.error("Error in getEquippedAvatar:", error);
-    return null;
+    throw error;
   }
 };

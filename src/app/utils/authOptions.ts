@@ -14,14 +14,24 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, profile }) {
       if (account) {
-        token.accessToken = account.access_token; // ← GitHubトークンを保存
+        token.accessToken = account.access_token;
+      }
+      const githubLogin = (profile as { login?: unknown } | undefined)?.login;
+      if (typeof githubLogin === "string" && githubLogin.length > 0) {
+        token.githubUsername = githubLogin;
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
+      if (
+        session.user &&
+        typeof token.githubUsername === "string" &&
+        token.githubUsername.length > 0
+      ) {
+        session.user.githubUsername = token.githubUsername;
+      }
       return session;
     },
   },

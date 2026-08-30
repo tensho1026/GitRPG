@@ -3,7 +3,6 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { fetchMonthlyContributions } from "@/actions/github/getCommitThisMonth";
-import { getUserStatus } from "@/actions/user/status/getUserStatus";
 
 type DailyCommit = {
   date: string;
@@ -21,25 +20,16 @@ export function useGrassData() {
     const fetchData = async () => {
       if (
         status === "authenticated" &&
-        session?.user?.email &&
-        // @ts-ignore - NextAuth v4 accessToken property compatibility
-        session.accessToken
+        session?.user?.email
       ) {
         try {
-          const statusResult = await getUserStatus(session.user.email);
-          if (statusResult) {
-            const contributionData = await fetchMonthlyContributions(
-              // @ts-ignore - NextAuth v4 accessToken property compatibility
-              session.accessToken,
-              statusResult.user.createdAt
-            );
+          const contributionData = await fetchMonthlyContributions();
 
-            if (contributionData) {
-              setUserData({
-                monthlyCommits: contributionData.dailyCommits,
-                thisMonthTotal: contributionData.totalCommits,
-              });
-            }
+          if (contributionData) {
+            setUserData({
+              monthlyCommits: contributionData.dailyCommits,
+              thisMonthTotal: contributionData.totalCommits,
+            });
           }
         } catch (error) {
           console.error("Failed to fetch contribution data:", error);

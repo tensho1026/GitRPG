@@ -1,11 +1,10 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { supabase } from "../../supabase/supabase.config";
 
 export const getHomeData = async (userId: string) => {
-  if (!userId) {
-    throw new Error("User ID is required");
-  }
+  await assertAuthenticatedUser(userId);
 
   try {
     // Get user data with all relations in one query

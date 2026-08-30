@@ -1,13 +1,25 @@
 "use server";
 
-export const fetchMonthlyContributions = async (
-  accessToken: string,
-  userCreatedAt?: Date | string
-) => {
+import {
+  getAuthenticatedGitHubAccessToken,
+  getAuthenticatedUserId,
+} from "@/lib/authenticatedUser";
+import { supabase } from "../../supabase/supabase.config";
+
+export const fetchMonthlyContributions = async () => {
+  const userId = await getAuthenticatedUserId();
+  const accessToken = await getAuthenticatedGitHubAccessToken();
   const today = new Date();
   let fromDate = new Date(
     Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1)
   );
+
+  const { data: user } = await supabase
+    .from("Users")
+    .select("createdAt")
+    .eq("id", userId)
+    .maybeSingle();
+  const userCreatedAt = user?.createdAt;
 
   // If the user was created this month, fetch commits from their creation date.
   if (userCreatedAt) {

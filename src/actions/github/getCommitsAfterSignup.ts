@@ -1,17 +1,37 @@
 "use server";
 
+import {
+  getAuthenticatedGitHubAccessToken,
+  getAuthenticatedUserId,
+} from "@/lib/authenticatedUser";
 import { supabase } from "../../supabase/supabase.config";
 
-export const getCommitsAfterSignup = async (
-  username: string,
-  githubAccessToken: string,
-  userId: string
-): Promise<number> => {
-  if (!username || !githubAccessToken || !userId) {
-    throw new Error("Username, GitHub access token, and user ID are required");
-  }
+export const getCommitsAfterSignup = async (): Promise<number> => {
+  const userId = await getAuthenticatedUserId();
+  const githubAccessToken = await getAuthenticatedGitHubAccessToken();
 
   try {
+    const githubUserResponse = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `Bearer ${githubAccessToken}`,
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "GitHub-RPG-App",
+      },
+    });
+
+    if (!githubUserResponse.ok) {
+      throw new Error(
+        `GitHub user API error: ${githubUserResponse.status} ${githubUserResponse.statusText}`
+      );
+    }
+
+    const githubUser = await githubUserResponse.json();
+    if (typeof githubUser.login !== "string" || githubUser.login.length === 0) {
+      throw new Error("GitHub username not found");
+    }
+
+    const username = githubUser.login;
+
     // Get user signup date
     const { data: user, error: userError } = await supabase
       .from("Users")

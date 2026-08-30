@@ -1,11 +1,10 @@
 "use server";
 
+import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { supabase } from "../../../../supabase/supabase.config";
 
 export const getCurrentCoin = async (userId: string): Promise<number> => {
-  if (!userId) {
-    throw new Error("User ID is required");
-  }
+  await assertAuthenticatedUser(userId);
 
   try {
     const { data: userStatus, error } = await supabase
