@@ -6,6 +6,20 @@ import {
 } from "@/lib/authenticatedUser";
 import { supabase } from "../../supabase/supabase.config";
 
+export type DailyContribution = {
+  date: string;
+  contributionCount: number;
+};
+
+export type MonthlyContributions = {
+  totalContributions: number;
+  totalCommits: number;
+  totalIssues: number;
+  totalPullRequests: number;
+  totalReviews: number;
+  dailyContributions: DailyContribution[];
+};
+
 export const fetchMonthlyContributions = async () => {
   const userId = await getAuthenticatedUserId();
   const accessToken = await getAuthenticatedGitHubAccessToken();
@@ -42,6 +56,10 @@ export const fetchMonthlyContributions = async () => {
     query ($from: DateTime!) {
       viewer {
         contributionsCollection(from: $from) {
+          totalCommitContributions
+          totalIssueContributions
+          totalPullRequestContributions
+          totalPullRequestReviewContributions
           contributionCalendar {
             weeks {
               contributionDays {
@@ -95,13 +113,13 @@ export const fetchMonthlyContributions = async () => {
   const currentMonthStr = today.toISOString().slice(0, 7);
 
   // Flatten to a list of days and filter to the current month
-  const dailyContributions = data.contributionCalendar.weeks
+  const dailyContributions: DailyContribution[] = data.contributionCalendar.weeks
     .flatMap(
       (week: {
-        contributionDays?: { date: string; contributionCount: number }[];
+        contributionDays?: DailyContribution[];
       }) => week.contributionDays ?? []
     )
-    .filter((day: { date: string; contributionCount: number }) =>
+    .filter((day: DailyContribution) =>
       day.date.startsWith(currentMonthStr)
     );
 
@@ -109,13 +127,28 @@ export const fetchMonthlyContributions = async () => {
   // issues, pull requests, and reviews), so keep the monthly total consistent
   // with the calendar rather than labelling it as commit-only data.
   const totalContributionsThisMonth = dailyContributions.reduce(
-    (total: number, day: { contributionCount: number }) =>
+    (total: number, day: DailyContribution) =>
       total + day.contributionCount,
     0
   );
 
-  return {
+  const toNonNegativeInteger = (value: unknown) =>
+    typeof value === "number" && Number.isSafeInteger(value) && value >= 0
+      ? value
+      : 0;
+
+  const result: MonthlyContributions = {
     totalContributions: totalContributionsThisMonth,
+    totalCommits: toNonNegativeInteger(data.totalCommitContributions),
+    totalIssues: toNonNegativeInteger(data.totalIssueContributions),
+    totalPullRequests: toNonNegativeInteger(
+      data.totalPullRequestContributions
+    ),
+    totalReviews: toNonNegativeInteger(
+      data.totalPullRequestReviewContributions
+    ),
     dailyContributions,
   };
+
+  return result;
 };

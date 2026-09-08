@@ -2,19 +2,25 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
-import { fetchMonthlyContributions } from "@/actions/github/getCommitThisMonth";
+import {
+  fetchMonthlyContributions,
+  type MonthlyContributions,
+} from "@/actions/github/getCommitThisMonth";
 
-type DailyContribution = {
-  date: string;
-  contributionCount: number;
+const EMPTY_MONTHLY_CONTRIBUTIONS: MonthlyContributions = {
+  totalContributions: 0,
+  totalCommits: 0,
+  totalIssues: 0,
+  totalPullRequests: 0,
+  totalReviews: 0,
+  dailyContributions: [],
 };
 
 export function useGrassData() {
   const { data: session, status } = useSession();
-  const [userData, setUserData] = useState({
-    monthlyContributions: [] as DailyContribution[],
-    thisMonthTotal: 0,
-  });
+  const [userData, setUserData] = useState<MonthlyContributions>(
+    EMPTY_MONTHLY_CONTRIBUTIONS
+  );
   const requestIdRef = useRef(0);
   const userEmail = session?.user?.email ?? null;
 
@@ -29,10 +35,7 @@ export function useGrassData() {
           if (cancelled || requestId !== requestIdRef.current) return;
 
           if (contributionData) {
-            setUserData({
-              monthlyContributions: contributionData.dailyContributions,
-              thisMonthTotal: contributionData.totalContributions,
-            });
+            setUserData(contributionData);
           }
         } catch (error) {
           if (!cancelled && requestId === requestIdRef.current) {
@@ -40,7 +43,7 @@ export function useGrassData() {
           }
         }
       } else if (status !== "authenticated") {
-        setUserData({ monthlyContributions: [], thisMonthTotal: 0 });
+        setUserData(EMPTY_MONTHLY_CONTRIBUTIONS);
       }
     };
 
@@ -52,7 +55,11 @@ export function useGrassData() {
   }, [status, userEmail]);
 
   return {
-    monthlyContributions: userData.monthlyContributions,
-    thisMonthTotal: userData.thisMonthTotal,
+    monthlyContributions: userData.dailyContributions,
+    thisMonthTotal: userData.totalContributions,
+    totalCommits: userData.totalCommits,
+    totalIssues: userData.totalIssues,
+    totalPullRequests: userData.totalPullRequests,
+    totalReviews: userData.totalReviews,
   };
 }

@@ -39,7 +39,7 @@ export default function GrassHeader({ thisMonthTotal }: GrassHeaderProps) {
               boxShadow: "3px 3px 0px #d97706",
             }}>
             <TrendingUp className="w-5 h-5" />
-            <span className="pixel-text">今月: {thisMonthTotal}活動</span>
+            <span className="pixel-text">活動合計: {thisMonthTotal}</span>
           </div>
         </div>
       </div>
