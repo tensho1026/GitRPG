@@ -9,11 +9,19 @@ type DailyContribution = {
 interface MonthlyActivityProps {
   monthlyContributions: DailyContribution[];
   thisMonthTotal: number;
+  totalCommits: number;
+  totalIssues: number;
+  totalPullRequests: number;
+  totalReviews: number;
 }
 
 const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
   monthlyContributions,
   thisMonthTotal,
+  totalCommits,
+  totalIssues,
+  totalPullRequests,
+  totalReviews,
 }) => {
   const today = new Date();
   // GitHub returns contribution dates in UTC. Use the same timezone here so
@@ -42,9 +50,37 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
               📈 今月の草
             </h2>
             <span className="bg-green-700 text-green-100 py-1 px-2 rounded font-mono text-sm pixel-text">
-              今月: {thisMonthTotal}活動
+              活動合計: {thisMonthTotal}
             </span>
           </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            {[
+              { label: "コミット", value: totalCommits, color: "text-lime-200" },
+              { label: "Issue", value: totalIssues, color: "text-yellow-200" },
+              {
+                label: "Pull Request",
+                value: totalPullRequests,
+                color: "text-cyan-200",
+              },
+              { label: "レビュー", value: totalReviews, color: "text-pink-200" },
+            ].map((metric) => (
+              <div
+                key={metric.label}
+                className="bg-green-700/60 border-2 border-green-400/70 p-3 text-center">
+                <div className={`text-lg font-bold pixel-text ${metric.color}`}>
+                  {metric.value}
+                </div>
+                <div className="text-xs text-green-100 pixel-text">
+                  {metric.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-green-100 text-sm pixel-text mb-4">
+            カレンダーと活動合計はContribution全体、レベル・コインはコミット数を基準にしています。
+          </p>
 
           <div className="bg-green-700/60 p-4 rounded pixel-border border-2 border-lime-400">
             <div className="grid grid-cols-7 gap-2">

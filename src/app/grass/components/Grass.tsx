@@ -6,7 +6,14 @@ import { useGrassData } from "../hooks/useGrassData";
 import BackGround from "@/components/BackGround";
 
 export default function Grass() {
-  const { monthlyContributions, thisMonthTotal } = useGrassData();
+  const {
+    monthlyContributions,
+    thisMonthTotal,
+    totalCommits,
+    totalIssues,
+    totalPullRequests,
+    totalReviews,
+  } = useGrassData();
 
   return (
     <div className="relative min-h-screen">
@@ -21,6 +28,10 @@ export default function Grass() {
             <MonthlyActivity
               monthlyContributions={monthlyContributions}
               thisMonthTotal={thisMonthTotal}
+              totalCommits={totalCommits}
+              totalIssues={totalIssues}
+              totalPullRequests={totalPullRequests}
+              totalReviews={totalReviews}
             />
           </div>
         </div>
