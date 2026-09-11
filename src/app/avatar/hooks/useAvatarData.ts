@@ -47,6 +47,8 @@ export function useAvatarData() {
   });
   const [userAvatars, setUserAvatars] = useState<UserAvatar[]>([]);
   const [coins, setCoins] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // Keep the one-time initialization scoped to the signed-in account, not the
   // lifetime of this component. The session can change without a remount.
@@ -64,6 +66,7 @@ export function useAvatarData() {
 
     if (status === "authenticated" && userEmail) {
       setIsLoading(true);
+      setError(null);
       try {
         // Ensure legacy/directly-created accounts have their default avatar.
         if (autoUnlockUserRef.current !== userEmail) {
@@ -84,6 +87,7 @@ export function useAvatarData() {
 
         if (requestId !== requestIdRef.current) return;
 
+        setError(null);
         setUserAvatars(avatars || []);
 
         // Use getCurrentCoin result as the primary source (same as item page)
@@ -117,14 +121,11 @@ export function useAvatarData() {
         );
 
         if (requestId === requestIdRef.current) {
-          // Set fallback values on error
-          setCoins(0);
-          setPlayerData({
-            level: 1,
-            coins: 0,
-            selectedAvatar: "warrior",
-            unlockedAvatars: ["warrior"],
-          });
+          setError(
+            error instanceof Error
+              ? error.message
+              : "アバターデータを取得できませんでした"
+          );
         }
       } finally {
         if (requestId === requestIdRef.current) {
@@ -141,6 +142,7 @@ export function useAvatarData() {
         unlockedAvatars: ["warrior"],
       });
       setIsLoading(false);
+      setError(null);
     } else {
       setIsLoading(false);
     }
@@ -179,11 +181,14 @@ export function useAvatarData() {
 
     setIsProcessing(true);
     try {
+      setActionError(null);
       await equipAvatar(userEmail, dbId);
       await fetchData(); // Refresh data after equipping
     } catch (error) {
       console.error("Equip failed:", error);
-      alert((error as Error).message);
+      setActionError(
+        error instanceof Error ? error.message : "装備変更に失敗しました"
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -203,11 +208,16 @@ export function useAvatarData() {
 
     setIsProcessing(true);
     try {
+      setActionError(null);
       await unlockAvatar(userEmail, avatarId);
       await fetchData(); // Refresh
     } catch (error) {
       console.error("Unlock failed:", error);
-      alert((error as Error).message);
+      setActionError(
+        error instanceof Error
+          ? error.message
+          : "アバター解放に失敗しました"
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -234,5 +244,8 @@ export function useAvatarData() {
     displayAvatars,
     handleEquip,
     handleUnlockAvatar,
+    error,
+    actionError,
+    retry: fetchData,
   };
 }

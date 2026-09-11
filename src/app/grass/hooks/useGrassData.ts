@@ -22,6 +22,8 @@ export function useGrassData() {
     EMPTY_MONTHLY_CONTRIBUTIONS
   );
   const requestIdRef = useRef(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const userEmail = session?.user?.email ?? null;
 
   useEffect(() => {
@@ -29,6 +31,8 @@ export function useGrassData() {
     let cancelled = false;
     const fetchData = async () => {
       if (status === "authenticated" && userEmail) {
+        setIsLoading(true);
+        setError(null);
         try {
           const contributionData = await fetchMonthlyContributions();
 
@@ -36,14 +40,26 @@ export function useGrassData() {
 
           if (contributionData) {
             setUserData(contributionData);
+            setError(null);
           }
         } catch (error) {
           if (!cancelled && requestId === requestIdRef.current) {
+            setError(
+              error instanceof Error
+                ? error.message
+                : "活動データを取得できませんでした"
+            );
             console.error("Failed to fetch contribution data:", error);
+          }
+        } finally {
+          if (!cancelled && requestId === requestIdRef.current) {
+            setIsLoading(false);
           }
         }
       } else if (status !== "authenticated") {
         setUserData(EMPTY_MONTHLY_CONTRIBUTIONS);
+        setError(null);
+        setIsLoading(false);
       }
     };
 
@@ -61,5 +77,8 @@ export function useGrassData() {
     totalIssues: userData.totalIssues,
     totalPullRequests: userData.totalPullRequests,
     totalReviews: userData.totalReviews,
+    isLoading,
+    error,
+    retry: () => window.location.reload(),
   };
 }

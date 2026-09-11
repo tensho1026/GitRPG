@@ -10,6 +10,8 @@ export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
   const [userItems, setUserItems] = useState<HomeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [expInfo, setExpInfo] = useState({});
   const [battleStatus, setBattleStatus] = useState<any>(null);
   const [equippedAvatar, setEquippedAvatar] = useState<HomeAvatar | null>(null);
@@ -26,6 +28,11 @@ export const useHomeData = (session: Session | null, status: string) => {
     setUserItems(homeData.items);
     setBattleStatus(homeData.battleStatus);
     setEquippedAvatar(homeData.equippedAvatar);
+    setSyncError(
+      homeData.status?.syncStatus === "error"
+        ? homeData.status.syncError || "GitHub同期に失敗しました"
+        : null
+    );
     const totalCommits = homeData.status?.commit ?? 0;
     setExpInfo(getRemainingCommitsToNextLevel(totalCommits));
   };
@@ -40,6 +47,8 @@ export const useHomeData = (session: Session | null, status: string) => {
           setUserItems([]);
           setBattleStatus(null);
           setEquippedAvatar(null);
+          setError(null);
+          setSyncError(null);
           setIsLoading(false);
         }
         return;
@@ -47,6 +56,7 @@ export const useHomeData = (session: Session | null, status: string) => {
 
       try {
         setIsLoading(true);
+        setError(null);
 
         await saveUserToDatabase({
           id: userEmail,
@@ -70,6 +80,11 @@ export const useHomeData = (session: Session | null, status: string) => {
         await loadHomeData();
       } catch (error) {
         if (!cancelled) {
+          setError(
+            error instanceof Error
+              ? error.message
+              : "ホームデータを取得できませんでした"
+          );
           console.error("Failed to fetch user data on home screen:", error);
         }
       } finally {
@@ -87,8 +102,37 @@ export const useHomeData = (session: Session | null, status: string) => {
 
   const retrySync = async () => {
     if (!userEmail) return;
-    await updateCommits({ force: true });
-    await loadHomeData();
+    setSyncError(null);
+    try {
+      await updateCommits({ force: true });
+      await loadHomeData();
+    } catch (error) {
+      setSyncError(
+        error instanceof Error ? error.message : "GitHub同期に失敗しました"
+      );
+      try {
+        await loadHomeData();
+      } catch {
+        // Keep the existing dashboard visible until the regular retry works.
+      }
+    }
+  };
+
+  const retry = async () => {
+    if (!userEmail) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      await loadHomeData();
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "ホームデータを取得できませんでした"
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return {
@@ -99,5 +143,8 @@ export const useHomeData = (session: Session | null, status: string) => {
     battleStatus,
     equippedAvatar,
     retrySync,
+    retry,
+    error,
+    syncError,
   };
 };

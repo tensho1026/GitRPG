@@ -13,6 +13,7 @@ import { useSessionStore } from "@/lib/sessionStore";
 import { useHomeData } from "../hooks/useHomeData";
 import { useUserStats } from "../hooks/useUserStats";
 import Loading from "@/components/ Loading";
+import { DataState, InlineError } from "@/app/components/DataState";
 
 interface HomeScreenProps {
   session: Session | null;
@@ -28,10 +29,16 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
     setStatus(status as "loading" | "authenticated" | "unauthenticated");
   }, [session, status, setSession, setStatus]);
 
-  const { userStatus, userItems, isLoading, equippedAvatar } = useHomeData(
-    session,
-    status
-  );
+  const {
+    userStatus,
+    userItems,
+    isLoading,
+    equippedAvatar,
+    error,
+    syncError,
+    retry,
+    retrySync,
+  } = useHomeData(session, status);
   const { remainingCommits, progressPercentage, items } = useUserStats(
     userStatus,
     userItems
@@ -71,6 +78,16 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
     return <Loading backgroundImage={"/newhomepage.JPG"} />;
   }
 
+  if (error) {
+    return (
+      <DataState
+        title="ホームデータを読み込めません"
+        message={error}
+        onRetry={retry}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
       {/* Background */}
@@ -79,6 +96,13 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
       <div className="relative z-10 p-4 max-w-6xl mx-auto">
         {/* Header */}
         <Header userStatus={userStatus as UserWithStatus} />
+
+        {syncError && (
+          <InlineError
+            message={"GitHub同期に失敗しました: " + syncError}
+            onRetry={retrySync}
+          />
+        )}
 
         {/* Main Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">

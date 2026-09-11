@@ -21,6 +21,7 @@ export function useItemData() {
     commit: 0,
   });
   const [coins, setCoins] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState("all");
   const requestIdRef = useRef(0);
   const userEmail = session?.user?.email ?? null;
@@ -30,6 +31,7 @@ export function useItemData() {
     if (status === "authenticated" && userEmail) {
       try {
         setIsLoading(true);
+        setError(null);
 
         const [items, battleStats] = await Promise.all([
           getUserItems(userEmail),
@@ -42,6 +44,11 @@ export function useItemData() {
         setBattleStatus(battleStats);
         setCoins(battleStats.coin ?? 0);
       } catch (error) {
+        setError(
+          error instanceof Error
+            ? error.message
+            : "装備データを取得できませんでした"
+        );
         console.error("❌ [useItemData] Failed to fetch user items:", error);
       } finally {
         if (requestId === requestIdRef.current) {
@@ -61,6 +68,7 @@ export function useItemData() {
         commit: 0,
       });
       setCoins(0);
+      setError(null);
       setIsLoading(false);
     }
   }, [status, userEmail]);
@@ -80,5 +88,7 @@ export function useItemData() {
     setSelectedTab,
     fetchData,
     isLoading,
+    error,
+    retry: fetchData,
   };
 }

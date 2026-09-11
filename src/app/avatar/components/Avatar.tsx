@@ -4,6 +4,7 @@ import AvatarGrid from "./AvatarGrid";
 import { useAvatarData } from "../hooks/useAvatarData";
 import BackGround from "@/components/BackGround";
 import Loading from "@/components/ Loading";
+import { DataState, InlineError } from "@/app/components/DataState";
 
 export default function Avatar() {
   const {
@@ -14,11 +15,24 @@ export default function Avatar() {
     displayAvatars,
     handleEquip,
     handleUnlockAvatar,
+    error,
+    actionError,
+    retry,
   } = useAvatarData();
 
   // Show loading screen during initial data fetch
   if (isLoading) {
     return <Loading backgroundImage="newavatar.JPG" />;
+  }
+
+  if (error) {
+    return (
+      <DataState
+        title="アバターデータを読み込めません"
+        message={error}
+        onRetry={retry}
+      />
+    );
   }
 
   return (
@@ -36,6 +50,7 @@ export default function Avatar() {
 
       <div className="relative z-10 p-4 font-mono">
         <div className="max-w-6xl mx-auto">
+          {actionError && <InlineError message={actionError} />}
           <AvatarHeader level={playerData.level} coins={coins} />
 
           <AvatarGrid

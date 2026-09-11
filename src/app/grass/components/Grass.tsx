@@ -4,6 +4,8 @@ import GrassHeader from "./GrassHeader";
 import MonthlyActivity from "./MonthlyActivity";
 import { useGrassData } from "../hooks/useGrassData";
 import BackGround from "@/components/BackGround";
+import Loading from "@/components/ Loading";
+import { DataState } from "@/app/components/DataState";
 
 export default function Grass() {
   const {
@@ -13,7 +15,21 @@ export default function Grass() {
     totalIssues,
     totalPullRequests,
     totalReviews,
+    isLoading,
+    error,
+    retry,
   } = useGrassData();
+
+  if (isLoading) return <Loading backgroundImage="/newhomepage.JPG" />;
+  if (error) {
+    return (
+      <DataState
+        title="活動データを読み込めません"
+        message={error}
+        onRetry={retry}
+      />
+    );
+  }
 
   return (
     <div className="relative min-h-screen">

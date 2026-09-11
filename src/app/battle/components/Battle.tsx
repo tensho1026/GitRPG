@@ -7,12 +7,23 @@ import BattleTips from "./BattleTips";
 import BattleStyles from "./BattleStyles";
 import { useBattleData } from "../hooks/useBattleData";
 import Loading from "@/components/ Loading";
+import { DataState } from "@/app/components/DataState";
 
 export default function Battle() {
-  const { battleStatus, userLevel, isLoading } = useBattleData();
+  const { battleStatus, userLevel, isLoading, error, retry } = useBattleData();
 
   if (isLoading) {
     return <Loading backgroundImage="/newhomepage.JPG" />;
+  }
+
+  if (error) {
+    return (
+      <DataState
+        title="戦闘ステータスを読み込めません"
+        message={error}
+        onRetry={retry}
+      />
+    );
   }
 
   return (
