@@ -23,6 +23,7 @@ export function DataState({
         <p className="mb-6 text-slate-200 pixel-text">{message}</p>
         <button
           type="button"
+          aria-label={retryLabel}
           onClick={() => void onRetry()}
           className="min-h-12 border-4 border-emerald-400 bg-emerald-700 px-8 py-3 font-bold text-white hover:bg-emerald-600 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300"
           autoFocus>
