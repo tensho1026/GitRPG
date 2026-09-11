@@ -12,10 +12,10 @@ export const menuItems = [
     descriptionColor: "text-purple-200",
   },
   {
-    href: "/battle",
+    href: "/game",
     icon: Target,
-    title: "戦闘",
-    description: "HP・攻撃力・防御力",
+    title: "バトル",
+    description: "敵を倒して報酬を獲得",
     bgColor: "#ea580c",
     borderColor: "#fb923c",
     shadowColor: "#c2410c",
