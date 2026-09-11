@@ -7,7 +7,9 @@ export const getHomeData = async (userId: string) => {
   await assertAuthenticatedUser(userId);
 
   try {
-    // Get user data with all relations in one query
+    // The home screen only needs equipped data. Inventory pages own the full
+    // Items/Avatar queries, so never transfer or scan the complete inventory
+    // as part of the initial dashboard request.
     const { data: userData, error: userError } = await supabase
       .from("Users")
       .select(
@@ -33,37 +35,30 @@ export const getHomeData = async (userId: string) => {
         ),
         items:Items(
           id,
-          equipmentId,
           name,
           image,
-          description,
           type,
           attack,
           defense,
-          price,
           equipped,
-          userId,
-          createdAt,
-          updatedAt
+          userId
         ),
         avatar:Avatar(
           id,
           name,
           image,
-          description,
           type,
           hp,
           attack,
           defense,
-          price,
           equipped,
-          userId,
-          createdAt,
-          updatedAt
+          userId
         )
       `
       )
       .eq("id", userId)
+      .eq("items.equipped", true)
+      .eq("avatar.equipped", true)
       .single();
 
     if (userError) {
@@ -75,7 +70,6 @@ export const getHomeData = async (userId: string) => {
       throw new Error("User not found");
     }
 
-    // Extract data from the response
     const user = {
       id: userData.id,
       name: userData.name,
@@ -84,35 +78,29 @@ export const getHomeData = async (userId: string) => {
       updatedAt: userData.updatedAt,
     };
 
-    // UserStatus should be a single object, not an array
     const userStatus = Array.isArray(userData.status)
       ? userData.status[0]
       : userData.status;
-    const items = userData.items || [];
-    const avatars = userData.avatar || [];
-
-    // Find equipped avatar
-    const equippedAvatar = avatars.find((avatar) => avatar.equipped) || null;
-
-    // Find equipped items
-    const equippedItems = items.filter((item) => item.equipped);
+    const equippedItems = userData.items || [];
+    const equippedAvatars = userData.avatar || [];
+    const equippedAvatar = equippedAvatars[0] || null;
 
     // Calculate battle stats (base stats + equipped bonuses)
-    let totalHp = userStatus?.hp || 100;
-    let totalAttack = userStatus?.attack || 10;
-    let totalDefense = userStatus?.defense || 5;
+    let totalHp = userStatus?.hp ?? 100;
+    let totalAttack = userStatus?.attack ?? 10;
+    let totalDefense = userStatus?.defense ?? 5;
 
     // Add item bonuses
     equippedItems.forEach((item) => {
-      totalAttack += item.attack || 0;
-      totalDefense += item.defense || 0;
+      totalAttack += item.attack ?? 0;
+      totalDefense += item.defense ?? 0;
     });
 
     // Add avatar bonuses
     if (equippedAvatar) {
-      totalHp += equippedAvatar.hp || 0;
-      totalAttack += equippedAvatar.attack || 0;
-      totalDefense += equippedAvatar.defense || 0;
+      totalHp += equippedAvatar.hp ?? 0;
+      totalAttack += equippedAvatar.attack ?? 0;
+      totalDefense += equippedAvatar.defense ?? 0;
     }
 
     // Return consolidated data
@@ -124,11 +112,13 @@ export const getHomeData = async (userId: string) => {
       status: userStatus,
 
       // Items
-      items,
+      // Kept under the existing property name for the home component API;
+      // unlike the inventory action, this contains equipped items only.
+      items: equippedItems,
       equippedItems,
 
       // Avatar
-      avatars,
+      avatars: equippedAvatars,
       equippedAvatar,
 
       // Battle stats

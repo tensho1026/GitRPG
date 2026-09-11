@@ -3,13 +3,13 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Shirt, Heart, Sword, Shield } from "lucide-react";
-import type { Item, Avatar as UserAvatar } from "@/types/user/userStatus";
+import type { HomeItem, HomeAvatar } from "@/types/user/userStatus";
 import Image from "next/image";
 import Link from "next/link";
 
 interface MyAvatarProps {
-  userItems?: Pick<Item, "id" | "name" | "image" | "type" | "equipped">[];
-  equippedAvatar?: UserAvatar | null;
+  userItems?: Pick<HomeItem, "id" | "name" | "image" | "type" | "equipped">[];
+  equippedAvatar?: HomeAvatar | null;
 }
 
 export default function MyAvatar({ userItems, equippedAvatar }: MyAvatarProps) {

@@ -57,6 +57,18 @@ export interface Avatar {
   updatedAt: string;
 }
 
+// Lightweight projections used by the home dashboard. Inventory pages should
+// use Item/Avatar and fetch the complete records when they need them.
+export type HomeItem = Pick<
+  Item,
+  "id" | "name" | "image" | "type" | "attack" | "defense" | "equipped" | "userId"
+>;
+
+export type HomeAvatar = Pick<
+  Avatar,
+  "id" | "name" | "image" | "type" | "hp" | "attack" | "defense" | "equipped" | "userId"
+>;
+
 // Combined user data type
 export interface UserWithStatus {
   user: User;
