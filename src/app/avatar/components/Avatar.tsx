@@ -48,7 +48,7 @@ export default function Avatar() {
         </div>
       )}
 
-      <div className="relative z-10 p-4 font-mono">
+      <div className="relative z-10 p-3 sm:p-4 font-mono">
         <div className="max-w-6xl mx-auto">
           {actionError && <InlineError message={actionError} />}
           <AvatarHeader level={playerData.level} coins={coins} />

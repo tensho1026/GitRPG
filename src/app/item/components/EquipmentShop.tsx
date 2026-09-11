@@ -112,7 +112,7 @@ export default function EquipmentShop({
 
       <div className="max-w-7xl mx-auto">
         {/* -------- Equipment Grid -------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
           {filteredEquipment.map((item) => (
             <div
               key={item.id}
@@ -167,7 +167,7 @@ export default function EquipmentShop({
               )}
 
               {/* ------------ Card Body ------------ */}
-              <div className="p-6 flex flex-col h-full">
+              <div className="p-4 sm:p-6 flex flex-col h-full min-w-0">
                 {/* Equipment Image */}
                 <div className="mb-4 flex justify-center">
                   <div
@@ -197,13 +197,13 @@ export default function EquipmentShop({
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
                     {typeIcons[item.type as keyof typeof typeIcons]}
-                    <h3 className="text-xl font-bold text-white pixel-text">
+                    <h3 className="text-xl font-bold text-white pixel-text break-words">
                       {item.name}
                     </h3>
                   </div>
                 </div>
 
-                <p className="text-white text-opacity-90 text-sm mb-4 pixel-text leading-relaxed">
+                <p className="text-white text-opacity-90 text-sm mb-4 pixel-text leading-relaxed break-words">
                   {item.description}
                 </p>
 
@@ -292,7 +292,7 @@ export default function EquipmentShop({
                     <button
                       onClick={() => handlePurchase(item.id)}
                       disabled={coins < item.price || isProcessing}
-                      className="w-full p-4 border-4 font-bold pixel-text text-lg"
+                      className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
                       style={{
                         backgroundColor:
                           coins >= item.price ? "#22c55e" : "#6b7280",
@@ -314,7 +314,7 @@ export default function EquipmentShop({
                     <button
                       onClick={() => handleEquip(item.dbId)}
                       disabled={isProcessing}
-                      className="w-full p-4 border-4 font-bold pixel-text text-lg"
+                      className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
                       style={{
                         backgroundColor: item.equipped ? "#6b7280" : "#3b82f6",
                         borderColor: item.equipped ? "#4b5563" : "#1d4ed8",

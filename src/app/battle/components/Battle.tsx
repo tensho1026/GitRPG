@@ -27,7 +27,7 @@ export default function Battle() {
   }
 
   return (
-    <div className="min-h-screen p-4 font-mono battle-background">
+    <div className="min-h-screen p-3 sm:p-4 font-mono battle-background">
       <BattleStyles />
 
       <div className="max-w-6xl mx-auto">

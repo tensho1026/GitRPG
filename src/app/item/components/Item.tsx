@@ -41,7 +41,7 @@ export default function Item() {
       <BackGround backgroundImage="newitempage.JPG" />
 
       <div className="absolute inset-0 bg-black/30" />
-      <div className="relative z-10 p-4 font-mono">
+      <div className="relative z-10 p-3 sm:p-4 font-mono">
         <div className="max-w-6xl mx-auto">
           <ItemHeader coins={coins} />
           <ItemTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
