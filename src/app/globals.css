@@ -61,6 +61,8 @@
 
   body {
     font-family: "Courier New", ui-monospace, monospace;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -79,6 +81,11 @@
 .pixel-border {
   border-style: solid;
   border-image: none;
+}
+
+.touch-target {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
 }
 
 @layer utilities {

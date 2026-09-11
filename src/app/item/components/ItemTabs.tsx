@@ -36,7 +36,7 @@ export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
   return (
     <div className="mb-6">
       <div
-        className="grid grid-cols-4 gap-4 p-4 pixel-border"
+        className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-4 pixel-border"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           borderColor: "#fbbf24",
@@ -45,7 +45,7 @@ export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
           <button
             key={tab.value}
             onClick={() => onTabChange(tab.value)}
-            className="p-4 border-4 font-bold text-white pixel-text text-lg"
+            className="touch-target p-3 sm:p-4 border-4 font-bold text-white pixel-text text-sm sm:text-lg"
             style={{
               backgroundColor:
                 selectedTab === tab.value ? tab.color : "#4b5563",

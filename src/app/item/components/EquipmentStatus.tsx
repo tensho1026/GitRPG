@@ -25,40 +25,40 @@ export default function EquipmentStatus({ userItems }: EquipmentStatusProps) {
           </div>
 
           <div className="space-y-3 mb-4">
-            <div className="flex items-center justify-between bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
+            <div className="flex items-center justify-between gap-3 bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
               <div className="flex items-center">
                 <Sword className="w-5 h-5 text-gray-300 mr-2" />
                 <span className="text-gray-200 font-mono text-sm pixel-text">
                   武器
                 </span>
               </div>
-              <span className="text-gray-100 font-mono text-sm pixel-text font-bold">
+              <span className="min-w-0 break-words text-right text-gray-100 font-mono text-sm pixel-text font-bold">
                 {userItems.find((item) => item.type === "weapon")?.name ||
                   "未装備"}
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
+            <div className="flex items-center justify-between gap-3 bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
               <div className="flex items-center">
                 <Shield className="w-5 h-5 text-gray-300 mr-2" />
                 <span className="text-gray-200 font-mono text-sm pixel-text">
                   防具
                 </span>
               </div>
-              <span className="text-gray-100 font-mono text-sm pixel-text font-bold">
+              <span className="min-w-0 break-words text-right text-gray-100 font-mono text-sm pixel-text font-bold">
                 {userItems.find((item) => item.type === "armor")?.name ||
                   "未装備"}
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
+            <div className="flex items-center justify-between gap-3 bg-gray-700/60 p-3 rounded pixel-border border-2 border-gray-400">
               <div className="flex items-center">
                 <Zap className="w-5 h-5 text-gray-300 mr-2" />
                 <span className="text-gray-200 font-mono text-sm pixel-text">
                   装飾品
                 </span>
               </div>
-              <span className="text-gray-100 font-mono text-sm pixel-text font-bold">
+              <span className="min-w-0 break-words text-right text-gray-100 font-mono text-sm pixel-text font-bold">
                 {userItems.find((item) => item.type === "accessory")?.name ||
                   "未装備"}
               </span>

@@ -50,7 +50,7 @@ export default function AvatarCard({
 
   return (
     <div
-      className="relative pixel-border flex flex-col cursor-pointer transform transition-all duration-200 hover:scale-105"
+      className="relative pixel-border flex flex-col cursor-pointer transform transition-all duration-200 hover:scale-105 min-w-0"
       style={{
         backgroundColor: "#1f2937",
         borderWidth: "6px",
@@ -100,7 +100,7 @@ export default function AvatarCard({
             <button
               onClick={() => onUnlock(character.id)}
               disabled={isProcessing}
-              className="px-6 py-3 border-4 font-bold pixel-text text-lg"
+              className="touch-target px-6 py-3 border-4 font-bold pixel-text text-lg"
               style={{
                 backgroundColor: "#22c55e",
                 borderColor: "#16a34a",
@@ -114,7 +114,7 @@ export default function AvatarCard({
       )}
 
       {/* Card Content */}
-      <div className="p-6 flex flex-col h-full">
+      <div className="p-4 sm:p-6 flex flex-col h-full">
         {/* Character Image */}
         <div className="mb-6 flex justify-center">
           <div
@@ -186,10 +186,10 @@ export default function AvatarCard({
           )}
 
           {character.owned ? (
-            <button
+              <button
               onClick={() => character.dbId && onEquip(character.dbId)}
               disabled={isProcessing}
-              className="w-full p-4 border-4 font-bold pixel-text text-lg"
+              className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
               style={{
                 backgroundColor: character.equipped ? "#10b981" : "#3b82f6",
                 borderColor: character.equipped ? "#059669" : "#2563eb",

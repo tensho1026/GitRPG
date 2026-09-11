@@ -93,7 +93,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
       {/* Background */}
       <BackGround backgroundImage={"/newhomepage.JPG"} />
 
-      <div className="relative z-10 p-4 max-w-6xl mx-auto">
+      <div className="relative z-10 p-3 sm:p-4 max-w-6xl mx-auto">
         {/* Header */}
         <Header userStatus={userStatus as UserWithStatus} />
 
@@ -105,7 +105,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         )}
 
         {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
           {/* User Basic Information */}
           <UserBasicInfo userData={userData} />
 
@@ -121,7 +121,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ml-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 ml-0 lg:ml-8">
           {menuButtons}
         </div>
       </div>
