@@ -15,53 +15,19 @@ export const equipAvatar = async (userId: string, avatarId: string) => {
   }
 
   try {
-    // Get the avatar to equip
-    const { data: avatarToEquip, error: avatarError } = await supabase
-      .from("Avatar")
-      .select("*")
-      .eq("id", avatarId)
-      .eq("userId", userId)
-      .single();
+    const { data, error } = await supabase.rpc("equip_avatar", {
+      p_user_id: userId,
+      p_avatar_id: avatarId,
+    });
 
-    if (avatarError || !avatarToEquip) {
-      console.error("Failed to fetch avatar:", avatarError);
-      throw new Error("Avatar not found or doesn't belong to user");
-    }
-
-    // Unequip all other avatars first
-    const { error: unequipError } = await supabase
-      .from("Avatar")
-      .update({
-        equipped: false,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("userId", userId);
-
-    if (unequipError) {
-      console.error("Failed to unequip other avatars:", unequipError);
-      throw new Error("Failed to unequip other avatars");
-    }
-
-    // Equip the selected avatar
-    const { data: equippedAvatar, error: equipError } = await supabase
-      .from("Avatar")
-      .update({
-        equipped: true,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("id", avatarId)
-      .eq("userId", userId)
-      .select()
-      .single();
-
-    if (equipError) {
-      console.error("Failed to equip avatar:", equipError);
-      throw new Error("Failed to equip avatar");
+    if (error || !data?.avatar) {
+      console.error("Failed to equip avatar transaction:", error);
+      throw new Error(error?.message || "Failed to equip avatar");
     }
 
     return {
       success: true,
-      avatar: equippedAvatar,
+      avatar: data.avatar,
     };
   } catch (error) {
     console.error("Error in equipAvatar:", error);

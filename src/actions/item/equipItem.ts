@@ -16,56 +16,21 @@ export const equipItem = async (userId: string, itemId: string) => {
   }
 
   try {
-    // Get the item to equip
-    const { data: itemToEquip, error: itemError } = await supabase
-      .from("Items")
-      .select("*")
-      .eq("id", itemId)
-      .eq("userId", userId)
-      .single();
+    const { data, error } = await supabase.rpc("equip_item", {
+      p_user_id: userId,
+      p_item_id: itemId,
+    });
 
-    if (itemError || !itemToEquip) {
-      console.error("Failed to fetch item:", itemError);
-      throw new Error("Item not found or doesn't belong to user");
-    }
-
-    // Unequip all items of the same type first
-    const { error: unequipError } = await supabase
-      .from("Items")
-      .update({
-        equipped: false,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("userId", userId)
-      .eq("type", itemToEquip.type);
-
-    if (unequipError) {
-      console.error("Failed to unequip items:", unequipError);
-      throw new Error("Failed to unequip existing items");
-    }
-
-    // Equip the selected item
-    const { data: equippedItem, error: equipError } = await supabase
-      .from("Items")
-      .update({
-        equipped: true,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("id", itemId)
-      .eq("userId", userId)
-      .select()
-      .single();
-
-    if (equipError) {
-      console.error("Failed to equip item:", equipError);
-      throw new Error("Failed to equip item");
+    if (error || !data?.item) {
+      console.error("Failed to equip item transaction:", error);
+      throw new Error(error?.message || "Failed to equip item");
     }
 
     revalidatePath("/item");
 
     return {
       success: true,
-      item: equippedItem,
+      item: data.item,
     };
   } catch (error) {
     console.error("Error in equipItem:", error);
