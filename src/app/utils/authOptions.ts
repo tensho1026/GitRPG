@@ -1,6 +1,14 @@
 import GitHubProvider from "next-auth/providers/github";
 import type { NextAuthOptions } from "next-auth";
 
+// Public contributions only need profile and email access. Private repository
+// contributions are opt-in because the classic "repo" scope grants access to
+// all private repositories visible to the GitHub account.
+const githubScope =
+  process.env.GITHUB_INCLUDE_PRIVATE_CONTRIBUTIONS === "true"
+    ? "read:user user:email repo"
+    : "read:user user:email";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
@@ -8,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
       authorization: {
         params: {
-          scope: "read:user user:email repo",
+          scope: githubScope,
         },
       },
     }),
