@@ -60,14 +60,15 @@ export default function LandingPage() {
             </div>
 
             <div className="space-y-4">
-              <Link href="/auth">
-                <Button
-                  size="lg"
+              <Button asChild size="lg">
+                <Link
+                  href="/auth"
+                  aria-label="GitHubログイン画面を開く"
                   className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
                   <Github className="mr-3 h-5 w-5" />
                   GitHubでログイン
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
               <div className="text-sm text-gray-400">
                 ※ GitHubアカウントが必要です

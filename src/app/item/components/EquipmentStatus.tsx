@@ -65,12 +65,15 @@ export default function EquipmentStatus({ userItems }: EquipmentStatusProps) {
             </div>
           </div>
 
-          <Link href="/item">
-            <Button className="w-full bg-gradient-to-b from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 border-4 border-gray-500 text-white font-mono font-bold pixel-text pixel-border">
+          <Button asChild>
+            <Link
+              href="/item"
+              aria-label="装備変更画面を開く"
+              className="w-full bg-gradient-to-b from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 border-4 border-gray-500 text-white font-mono font-bold pixel-text pixel-border">
               <Shirt className="w-4 h-4 mr-2" />
               装備変更
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </CardContent>
       </Card>
     </div>

@@ -19,15 +19,16 @@ export default function ItemHeader({ coins }: ItemHeaderProps) {
         }}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <Link href="/home" className="shrink-0">
-              <button
-                className="touch-target p-3 border-3 bg-gray-800/80 text-white pixel-border hover:bg-gray-700/80"
+            <Link href="/home" aria-label="ホームへ戻る" className="shrink-0">
+              <span
+                aria-label="ホームへ戻る"
+                className="touch-target flex items-center justify-center p-3 border-3 bg-gray-800/80 text-white pixel-border hover:bg-gray-700/80 focus-visible:outline-2 focus-visible:outline-yellow-300"
                 style={{
                   borderColor: "#fbbf24",
                   boxShadow: "3px 3px 0px #d97706",
                 }}>
-                <ArrowLeft className="w-5 h-5" />
-              </button>
+                <ArrowLeft className="w-5 h-5" aria-hidden="true" />
+              </span>
             </Link>
             <h1 className="text-2xl sm:text-4xl font-bold text-white flex items-center gap-2 sm:gap-3 pixel-text break-words">
               <Sword className="w-8 h-8 sm:w-10 sm:h-10 shrink-0" />

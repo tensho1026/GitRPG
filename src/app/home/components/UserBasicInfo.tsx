@@ -56,15 +56,15 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             </div>
           </div>
 
-          <Link href={userData.githubUrl}>
-            <Button
-              variant="outline"
-              size="sm"
+          <Button asChild variant="outline" size="sm">
+            <Link
+              href={userData.githubUrl}
+              aria-label="GitHubプロフィールを開く"
               className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs mb-8 mt-5">
               <Github className="w-3 h-3 mr-1" />
               GitHub
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           <Button
             variant="outline"

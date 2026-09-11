@@ -95,6 +95,9 @@ export default function EquipmentShop({
 
   return (
     <div
+      id="equipment-panel"
+      role="tabpanel"
+      aria-label="装備一覧"
       className="font-mono relative"
       style={{
         fontFamily: '"Courier New", monospace',
@@ -144,6 +147,8 @@ export default function EquipmentShop({
                     </span>
                   </div>
                   <button
+                    type="button"
+                    aria-label={`${item.name}を購入する（${item.price}コイン）`}
                     onClick={() => handlePurchase(item.id)}
                     disabled={coins < item.price || isProcessing}
                     className="px-6 py-3 border-4 font-bold pixel-text text-lg"
@@ -290,6 +295,8 @@ export default function EquipmentShop({
 
                   {!item.owned ? (
                     <button
+                      type="button"
+                      aria-label={`${item.name}を購入する（${item.price}コイン）`}
                       onClick={() => handlePurchase(item.id)}
                       disabled={coins < item.price || isProcessing}
                       className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
@@ -312,6 +319,8 @@ export default function EquipmentShop({
                     </button>
                   ) : (
                     <button
+                      type="button"
+                      aria-label={item.equipped ? `${item.name}は装備中` : `${item.name}を装備する`}
                       onClick={() => handleEquip(item.dbId)}
                       disabled={isProcessing}
                       className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"

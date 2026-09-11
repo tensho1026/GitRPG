@@ -1,11 +1,14 @@
 "use client";
 
+import { useRef } from "react";
+
 interface ItemTabsProps {
   selectedTab: string;
   onTabChange: (tab: string) => void;
 }
 
 export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const tabs = [
     {
       value: "all",
@@ -36,15 +39,49 @@ export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
   return (
     <div className="mb-6">
       <div
+        role="tablist"
+        aria-label="装備カテゴリ"
         className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-4 pixel-border"
         style={{
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           borderColor: "#fbbf24",
         }}>
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <button
             key={tab.value}
+            ref={(element) => {
+              tabRefs.current[index] = element;
+            }}
+            type="button"
+            role="tab"
+            aria-selected={selectedTab === tab.value}
+            aria-controls="equipment-panel"
+            tabIndex={selectedTab === tab.value ? 0 : -1}
             onClick={() => onTabChange(tab.value)}
+            onKeyDown={(event) => {
+              const currentIndex = tabs.findIndex(
+                (item) => item.value === selectedTab
+              );
+              let nextIndex = currentIndex;
+              if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                nextIndex = (currentIndex + 1) % tabs.length;
+              } else if (
+                event.key === "ArrowLeft" ||
+                event.key === "ArrowUp"
+              ) {
+                nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+              } else if (event.key === "Home") {
+                nextIndex = 0;
+              } else if (event.key === "End") {
+                nextIndex = tabs.length - 1;
+              } else {
+                return;
+              }
+              event.preventDefault();
+              const nextTab = tabs[nextIndex];
+              onTabChange(nextTab.value);
+              tabRefs.current[nextIndex]?.focus();
+            }}
             className="touch-target p-3 sm:p-4 border-4 font-bold text-white pixel-text text-sm sm:text-lg"
             style={{
               backgroundColor:
