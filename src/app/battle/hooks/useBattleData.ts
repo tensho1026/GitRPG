@@ -19,6 +19,7 @@ export function useBattleData() {
   });
   const [userLevel, setUserLevel] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const requestIdRef = useRef(0);
   const userEmail = session?.user?.email ?? null;
 
@@ -28,6 +29,7 @@ export function useBattleData() {
     const fetchUserData = async () => {
       if (status === "loading") {
         setIsLoading(true);
+        setError(null);
         return;
       }
 
@@ -42,7 +44,13 @@ export function useBattleData() {
             setBattleStatus(battleStats);
             setUserLevel(battleStats.level ?? 1);
           }
+          setError(null);
         } catch (error) {
+          setError(
+            error instanceof Error
+              ? error.message
+              : "戦闘ステータスを取得できませんでした"
+          );
           console.error("❌ [useBattleData] Failed to fetch user data:", error);
         } finally {
           if (!cancelled && requestId === requestIdRef.current) {
@@ -77,5 +85,7 @@ export function useBattleData() {
     battleStatus,
     userLevel,
     isLoading,
+    error,
+    retry: () => window.location.reload(),
   };
 }

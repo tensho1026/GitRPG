@@ -6,6 +6,7 @@ import ItemLayout from "./ItemLayout";
 import { useItemData } from "../hooks/useItemData";
 import BackGround from "@/components/BackGround";
 import Loading from "@/components/ Loading";
+import { DataState } from "@/app/components/DataState";
 
 export default function Item() {
   const {
@@ -16,11 +17,23 @@ export default function Item() {
     setSelectedTab,
     fetchData,
     isLoading,
+    error,
+    retry,
   } = useItemData();
 
   // Show loading screen during initial data fetch
   if (isLoading) {
     return <Loading backgroundImage="newitempage.JPG" />;
+  }
+
+  if (error) {
+    return (
+      <DataState
+        title="装備データを読み込めません"
+        message={error}
+        onRetry={retry}
+      />
+    );
   }
 
   return (

@@ -9,6 +9,7 @@ import { purchaseItem } from "@/actions/item/purchaseItem";
 import { equipItem } from "@/actions/item/equipItem";
 import type { Item as UserItem } from "@/types/user/userStatus";
 import type { Equipment } from "@/types/equipment/equipment";
+import { InlineError } from "@/app/components/DataState";
 
 type DisplayEquipment = Equipment & {
   dbId?: string;
@@ -37,6 +38,7 @@ export default function EquipmentShop({
 }) {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const equipmentToDisplay = useMemo((): DisplayEquipment[] => {
     return equipmentData.map((staticItem) => {
@@ -56,11 +58,14 @@ export default function EquipmentShop({
     if (!session?.user?.email) return;
     setIsProcessing(true);
     try {
+      setActionError(null);
       await purchaseItem(session.user.email, equipmentId);
       await onDataUpdate();
     } catch (error) {
       console.error("Purchase failed:", error);
-      alert((error as Error).message);
+      setActionError(
+        error instanceof Error ? error.message : "購入に失敗しました"
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -70,11 +75,14 @@ export default function EquipmentShop({
     if (!dbId || !session?.user?.email) return;
     setIsProcessing(true);
     try {
+      setActionError(null);
       await equipItem(session.user.email, dbId);
       await onDataUpdate();
     } catch (error) {
       console.error("Equip failed:", error);
-      alert((error as Error).message);
+      setActionError(
+        error instanceof Error ? error.message : "装備変更に失敗しました"
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -93,6 +101,7 @@ export default function EquipmentShop({
         fontSize: "14px",
         imageRendering: "pixelated",
       }}>
+      {actionError && <InlineError message={actionError} />}
       {/* {isProcessing && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
           <p className="text-white text-3xl font-bold pixel-text animate-pulse">
