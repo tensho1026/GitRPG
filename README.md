@@ -18,8 +18,8 @@ GitHubでの活動を、コミット・Pull Request・Issue・総合貢献数の
 
 <div align="center">
 
-<a href="https://github.com/tensho1026">
-  <img src="https://github-readme-stats.vercel.app/api?username=tensho1026&show_icons=true&include_all_commits=true&hide_border=true&theme=tokyonight&custom_title=GitHub%20RPG%20Adventurer%20Status" alt="GitHub stats: commits, pull requests, issues and contributions" />
+<a href="https://git-game.vercel.app/">
+  <img src="https://git-game.vercel.app/api/readme/tensho1026?v=2" alt="Git-RPG status" width="680" />
 </a>
 
 <br />
