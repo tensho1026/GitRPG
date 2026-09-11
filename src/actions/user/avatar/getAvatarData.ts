@@ -1,13 +1,13 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 
 export const getAvatarData = async (email: string) => {
   await assertAuthenticatedUser(email);
 
   try {
-    const { data: userStatus, error } = await supabase
+    const { data: userStatus, error } = await db
       .from("UserStatus")
       .select("level, coin, selectedAvatar, unlockedAvatars")
       .eq("userId", email)

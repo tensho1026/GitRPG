@@ -4,7 +4,7 @@ import {
   getAuthenticatedGitHubAccessToken,
   getAuthenticatedUserId,
 } from "@/lib/authenticatedUser";
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
 
 export type DailyContribution = {
   date: string;
@@ -28,7 +28,7 @@ export const fetchMonthlyContributions = async () => {
     Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1)
   );
 
-  const { data: user } = await supabase
+  const { data: user } = await db
     .from("Users")
     .select("createdAt")
     .eq("id", userId)

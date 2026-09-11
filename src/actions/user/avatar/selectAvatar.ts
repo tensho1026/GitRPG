@@ -2,7 +2,7 @@
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 
 export const selectAvatar = async (email: string, avatarId: string) => {
   await assertAuthenticatedUser(email);
@@ -10,7 +10,7 @@ export const selectAvatar = async (email: string, avatarId: string) => {
     throw new Error("User not found.");
   }
 
-  const { data: userStatus, error: userStatusError } = await supabase
+  const { data: userStatus, error: userStatusError } = await db
     .from("UserStatus")
     .select("unlockedAvatars")
     .eq("userId", email)
@@ -25,7 +25,7 @@ export const selectAvatar = async (email: string, avatarId: string) => {
     throw new Error("You have not unlocked this avatar.");
   }
 
-  const { error: updateError } = await supabase
+  const { error: updateError } = await db
     .from("UserStatus")
     .update({
       selectedAvatar: avatarId,

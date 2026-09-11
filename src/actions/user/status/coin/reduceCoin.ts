@@ -2,7 +2,7 @@
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 
-import { supabase } from "../../../../supabase/supabase.config";
+import { db } from "../../../../db/neon";
 
 export const reduceCoin = async (
   userId: string,
@@ -19,7 +19,7 @@ export const reduceCoin = async (
 
   try {
     // Get current coin amount
-    const { data: currentStatus, error: fetchError } = await supabase
+    const { data: currentStatus, error: fetchError } = await db
       .from("UserStatus")
       .select("coin")
       .eq("userId", userId)
@@ -45,7 +45,7 @@ export const reduceCoin = async (
     }
 
     // Update coin amount
-    const { data: updatedStatus, error: updateError } = await supabase
+    const { data: updatedStatus, error: updateError } = await db
       .from("UserStatus")
       .update({
         coin: newCoinAmount,

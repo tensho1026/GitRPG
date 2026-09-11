@@ -1,13 +1,13 @@
 import "server-only";
 
-import { supabase } from "@/supabase/supabase.config";
+import { db } from "@/db/neon";
 
 export async function getUserCurrentItemsById(userId: string) {
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  const { data: items, error } = await supabase
+  const { data: items, error } = await db
     .from("Items")
     .select("id, equipmentId, name, image, description, type, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)

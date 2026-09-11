@@ -2,7 +2,7 @@
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
 import { revalidatePath } from "next/cache";
 
 export const equipItem = async (userId: string, itemId: string) => {
@@ -16,7 +16,7 @@ export const equipItem = async (userId: string, itemId: string) => {
   }
 
   try {
-    const { data, error } = await supabase.rpc("equip_item", {
+    const { data, error } = await db.rpc("equip_item", {
       p_user_id: userId,
       p_item_id: itemId,
     });

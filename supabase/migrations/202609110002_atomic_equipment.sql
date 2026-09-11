@@ -116,7 +116,5 @@ begin
 end;
 $$;
 
-revoke execute on function public.equip_item(text, uuid) from public, anon, authenticated;
-revoke execute on function public.equip_avatar(text, uuid) from public, anon, authenticated;
-grant execute on function public.equip_item(text, uuid) to service_role;
-grant execute on function public.equip_avatar(text, uuid) to service_role;
+revoke execute on function public.equip_item(text, uuid) from public;
+revoke execute on function public.equip_avatar(text, uuid) from public;

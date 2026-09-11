@@ -18,7 +18,7 @@ vi.mock("@/actions/github/fetchCommits", () => ({
 vi.mock("@/actions/github/getCommitsAfterSignup", () => ({
   getCommitsAfterSignup: getRecentCommits,
 }));
-vi.mock("@/supabase/supabase.config", () => ({ supabase: { from } }));
+vi.mock("@/db/neon", () => ({ db: { from } }));
 
 import { updateCommits } from "@/actions/github/updateCommits";
 

@@ -2,7 +2,7 @@
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 import { avatarCharacters } from "@/data/avatar";
 
 export const purchaseAvatar = async (userId: string, avatarId: string) => {
@@ -22,7 +22,7 @@ export const purchaseAvatar = async (userId: string, avatarId: string) => {
       throw new Error("Avatar not found");
     }
 
-    const { data, error } = await supabase.rpc("purchase_avatar", {
+    const { data, error } = await db.rpc("purchase_avatar", {
       p_user_id: userId,
       p_avatar_id: crypto.randomUUID(),
       p_name: avatar.name,

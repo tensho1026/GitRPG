@@ -6,8 +6,8 @@ const { rpc, assertAuthenticatedUser } = vi.hoisted(() => ({
 }));
 
 vi.mock("@/lib/authenticatedUser", () => ({ assertAuthenticatedUser }));
-vi.mock("@/supabase/supabase.config", () => ({
-  supabase: { rpc },
+vi.mock("@/db/neon", () => ({
+  db: { rpc },
 }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 

@@ -1,4 +1,4 @@
-// User types for Supabase database
+// User types for Neon database
 export interface User {
   id: string;
   name: string;
@@ -7,7 +7,7 @@ export interface User {
   updatedAt: string;
 }
 
-// UserStatus types for Supabase database
+// UserStatus types for Neon database
 export interface UserStatus {
   id: string;
   userId: string;
@@ -27,7 +27,7 @@ export interface UserStatus {
   updatedAt: string;
 }
 
-// Items types for Supabase database
+// Items types for Neon database
 export interface Item {
   id: string;
   equipmentId: string;
@@ -44,7 +44,7 @@ export interface Item {
   updatedAt: string;
 }
 
-// Avatar types for Supabase database
+// Avatar types for Neon database
 export interface Avatar {
   id: string;
   name: string;

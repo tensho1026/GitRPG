@@ -4,7 +4,7 @@ import {
   getAuthenticatedGitHubAccessToken,
   getAuthenticatedUserId,
 } from "@/lib/authenticatedUser";
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
 
 export const getCommitsAfterSignup = async (): Promise<number> => {
   const userId = await getAuthenticatedUserId();
@@ -33,7 +33,7 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
     const username = githubUser.login;
 
     // Get user signup date
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await db
       .from("Users")
       .select("createdAt")
       .eq("id", userId)

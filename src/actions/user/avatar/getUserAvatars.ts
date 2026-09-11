@@ -1,13 +1,13 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 
 export const getUserAvatars = async (userId: string) => {
   await assertAuthenticatedUser(userId);
 
   try {
-    const { data: avatars, error } = await supabase
+    const { data: avatars, error } = await db
       .from("Avatar")
       .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
       .eq("userId", userId)
@@ -29,7 +29,7 @@ export const getEquippedAvatar = async (userId: string) => {
   await assertAuthenticatedUser(userId);
 
   try {
-    const { data: equippedAvatar, error } = await supabase
+    const { data: equippedAvatar, error } = await db
       .from("Avatar")
       .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
       .eq("userId", userId)

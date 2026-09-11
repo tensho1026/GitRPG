@@ -3,7 +3,7 @@
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { ensureDefaultAvatar } from "@/lib/defaultAvatar";
 
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 import { avatarCharacters } from "@/data/avatar";
 
 export const unlockAvatar = async (email: string, avatarId: string) => {
@@ -18,7 +18,7 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
   }
 
   try {
-    const { data, error } = await supabase.rpc("unlock_avatar", {
+    const { data, error } = await db.rpc("unlock_avatar", {
       p_user_id: email,
       p_avatar_id: crypto.randomUUID(),
       p_name: avatarToUnlock.name,

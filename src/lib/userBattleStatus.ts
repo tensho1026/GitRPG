@@ -1,13 +1,14 @@
 import "server-only";
 
-import { supabase } from "@/supabase/supabase.config";
+import { db } from "@/db/neon";
+import type { Avatar, Item } from "@/types/user/userStatus";
 
 export async function getUserBattleStatusById(userId: string) {
   if (!userId) {
     throw new Error("User ID is required");
   }
 
-  const { data: userStatus, error: statusError } = await supabase
+  const { data: userStatus, error: statusError } = await db
     .from("UserStatus")
     .select("userId, level, commit, coin, hp, attack, defense")
     .eq("userId", userId)
@@ -17,7 +18,7 @@ export async function getUserBattleStatusById(userId: string) {
     throw new Error("Failed to fetch user status");
   }
 
-  const { data: equippedItems, error: itemsError } = await supabase
+  const { data: equippedItemsData, error: itemsError } = await db
     .from("Items")
     .select("id, equipmentId, name, image, description, type, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)
@@ -27,7 +28,11 @@ export async function getUserBattleStatusById(userId: string) {
     throw new Error("Failed to fetch equipped items");
   }
 
-  const { data: equippedAvatar, error: avatarError } = await supabase
+  const equippedItems = (Array.isArray(equippedItemsData)
+    ? equippedItemsData
+    : []) as Item[];
+
+  const { data: equippedAvatarData, error: avatarError } = await db
     .from("Avatar")
     .select("id, name, image, description, type, hp, attack, defense, price, equipped, userId, createdAt, updatedAt")
     .eq("userId", userId)
@@ -38,6 +43,8 @@ export async function getUserBattleStatusById(userId: string) {
   if (avatarError) {
     throw new Error("Failed to fetch equipped avatar");
   }
+
+  const equippedAvatar = (equippedAvatarData || null) as Avatar | null;
 
   let totalHp = userStatus.hp;
   let totalAttack = userStatus.attack;

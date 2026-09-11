@@ -323,7 +323,5 @@ begin
 end;
 $$;
 
-revoke execute on function public.start_battle(text, integer, integer, integer) from public, anon, authenticated;
-revoke execute on function public.attack_battle(text, uuid) from public, anon, authenticated;
-grant execute on function public.start_battle(text, integer, integer, integer) to service_role;
-grant execute on function public.attack_battle(text, uuid) to service_role;
+revoke execute on function public.start_battle(text, integer, integer, integer) from public;
+revoke execute on function public.attack_battle(text, uuid) from public;

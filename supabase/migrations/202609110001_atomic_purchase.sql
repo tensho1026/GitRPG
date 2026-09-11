@@ -215,9 +215,9 @@ begin
 end;
 $$;
 
-revoke execute on function public.purchase_item(text, text, text, text, text, text, integer, integer, integer) from public, anon, authenticated;
-revoke execute on function public.purchase_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer) from public, anon, authenticated;
-revoke execute on function public.unlock_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer, integer) from public, anon, authenticated;
-grant execute on function public.purchase_item(text, text, text, text, text, text, integer, integer, integer) to service_role;
-grant execute on function public.purchase_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer) to service_role;
-grant execute on function public.unlock_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer, integer) to service_role;
+-- Neon does not provide the provider-specific anon/authenticated/service_role
+-- roles. The app connects with the database owner and calls these SECURITY
+-- DEFINER functions directly.
+revoke execute on function public.purchase_item(text, text, text, text, text, text, integer, integer, integer) from public;
+revoke execute on function public.purchase_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer) from public;
+revoke execute on function public.unlock_avatar(text, uuid, text, text, text, text, integer, integer, integer, integer, integer) from public;

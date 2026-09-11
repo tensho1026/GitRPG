@@ -2,7 +2,7 @@
 
 import { getAuthenticatedUserId } from "@/lib/authenticatedUser";
 import { getUserBattleStatusById } from "@/lib/userBattleStatus";
-import { supabase } from "@/supabase/supabase.config";
+import { db } from "@/db/neon";
 
 export type GameBattle = {
   id: string;
@@ -66,7 +66,7 @@ const asRpcResult = (value: unknown): BattleRpcResult => {
 };
 
 const getUserProfile = async (userId: string) => {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("Users")
     .select("name, image")
     .eq("id", userId)
@@ -87,7 +87,7 @@ export async function getBattleState(): Promise<GameState> {
     getUserProfile(userId),
   ]);
 
-  const { data, error } = await supabase.rpc("start_battle", {
+  const { data, error } = await db.rpc("start_battle", {
     p_user_id: userId,
     p_player_max_hp: battleStatus.totalStats.hp,
     p_player_attack: battleStatus.totalStats.attack,
@@ -118,7 +118,7 @@ export async function attackBattle(battleId: string) {
     throw new Error("Battle ID is required");
   }
 
-  const { data, error } = await supabase.rpc("attack_battle", {
+  const { data, error } = await db.rpc("attack_battle", {
     p_user_id: userId,
     p_battle_id: battleId,
   });

@@ -14,6 +14,9 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      // GitHub now includes RFC 9207's `iss` parameter in OAuth callbacks.
+      // NextAuth's openid-client validation needs the expected issuer here.
+      issuer: "https://github.com/login/oauth",
       authorization: {
         params: {
           scope: githubScope,

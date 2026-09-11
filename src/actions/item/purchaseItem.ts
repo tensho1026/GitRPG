@@ -2,7 +2,7 @@
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
 import { equipmentData } from "@/data/equipment";
 import { revalidatePath } from "next/cache";
 
@@ -20,7 +20,7 @@ export const purchaseItem = async (userId: string, equipmentId: string) => {
     const equipment = equipmentData.find((item) => item.id === equipmentId);
     if (!equipment) throw new Error("Equipment not found");
 
-    const { data, error } = await supabase.rpc("purchase_item", {
+    const { data, error } = await db.rpc("purchase_item", {
       p_user_id: userId,
       p_equipment_id: equipment.id,
       p_name: equipment.name,

@@ -3,7 +3,7 @@
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { ensureDefaultAvatar } from "@/lib/defaultAvatar";
 
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 
 interface UserData {
   id: string;
@@ -26,7 +26,7 @@ export const saveUserToDatabase = async (userData: UserData) => {
 
   try {
     // Check if user already exists
-    const { data: existingUser, error: userCheckError } = await supabase
+    const { data: existingUser, error: userCheckError } = await db
       .from("Users")
       .select("id, createdAt")
       .eq("id", userData.id)
@@ -60,7 +60,7 @@ export const saveUserToDatabase = async (userData: UserData) => {
 
     console.log("📝 [DEBUG] Upserting user with data:", upsertData);
 
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await db
       .from("Users")
       .upsert(upsertData, {
         onConflict: "id",
@@ -73,7 +73,7 @@ export const saveUserToDatabase = async (userData: UserData) => {
     }
 
     // Check if UserStatus exists
-    const { data: existingStatus, error: statusCheckError } = await supabase
+    const { data: existingStatus, error: statusCheckError } = await db
       .from("UserStatus")
       .select("id")
       .eq("userId", userData.id)
@@ -115,7 +115,7 @@ export const saveUserToDatabase = async (userData: UserData) => {
         initialCommits: insertData.commit,
       });
 
-      const { data: userStatus, error: statusError } = await supabase
+      const { data: userStatus, error: statusError } = await db
         .from("UserStatus")
         .upsert(insertData, {
           onConflict: "userId",

@@ -7,7 +7,7 @@ import type { NextApiRequest } from "next";
 import { authOptions } from "@/app/utils/authOptions";
 
 /**
- * Server Actions use the Supabase service key, so every caller must be tied to
+ * Server Actions use the Neon database connection, so every caller must be tied to
  * the authenticated session rather than trusting an id supplied by the browser.
  */
 export async function getAuthenticatedUserId() {

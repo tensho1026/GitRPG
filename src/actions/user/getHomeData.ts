@@ -1,7 +1,8 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
+import type { HomeAvatar, HomeItem } from "@/types/user/userStatus";
 
 export const getHomeData = async (userId: string) => {
   await assertAuthenticatedUser(userId);
@@ -10,7 +11,7 @@ export const getHomeData = async (userId: string) => {
     // The home screen only needs equipped data. Inventory pages own the full
     // Items/Avatar queries, so never transfer or scan the complete inventory
     // as part of the initial dashboard request.
-    const { data: userData, error: userError } = await supabase
+    const { data: userData, error: userError } = await db
       .from("Users")
       .select(
         `
@@ -85,8 +86,12 @@ export const getHomeData = async (userId: string) => {
     const userStatus = Array.isArray(userData.status)
       ? userData.status[0]
       : userData.status;
-    const equippedItems = userData.items || [];
-    const equippedAvatars = userData.avatar || [];
+    const equippedItems: HomeItem[] = Array.isArray(userData.items)
+      ? userData.items
+      : [];
+    const equippedAvatars: HomeAvatar[] = Array.isArray(userData.avatar)
+      ? userData.avatar
+      : [];
     const equippedAvatar = equippedAvatars[0] || null;
 
     // Calculate battle stats (base stats + equipped bonuses)

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { avatarCharacters } from "@/data/avatar";
-import { supabase } from "@/supabase/supabase.config";
+import { db } from "@/db/neon";
 import { randomUUID } from "crypto";
 
 const DEFAULT_AVATAR = avatarCharacters.find(
@@ -17,7 +17,7 @@ if (!DEFAULT_AVATAR) {
  * The operation is intentionally idempotent so it can be called during login.
  */
 export async function ensureDefaultAvatar(userId: string) {
-  const { data: existingAvatar, error: avatarLookupError } = await supabase
+  const { data: existingAvatar, error: avatarLookupError } = await db
     .from("Avatar")
     .select("id, equipped")
     .eq("userId", userId)
@@ -32,7 +32,7 @@ export async function ensureDefaultAvatar(userId: string) {
   let avatar = existingAvatar;
   if (!avatar) {
     const now = new Date().toISOString();
-    const { data: insertedAvatar, error: insertError } = await supabase
+    const { data: insertedAvatar, error: insertError } = await db
       .from("Avatar")
       .insert({
         id: randomUUID(),
@@ -55,7 +55,7 @@ export async function ensureDefaultAvatar(userId: string) {
     if (insertError) {
       // Another request may have initialized the same account at the same
       // time. Re-read before treating the insert as a real failure.
-      const { data: racedAvatar, error: rereadError } = await supabase
+      const { data: racedAvatar, error: rereadError } = await db
         .from("Avatar")
         .select("id, equipped")
         .eq("userId", userId)
@@ -72,7 +72,7 @@ export async function ensureDefaultAvatar(userId: string) {
     }
   }
 
-  const { data: equippedAvatar, error: equippedLookupError } = await supabase
+  const { data: equippedAvatar, error: equippedLookupError } = await db
     .from("Avatar")
     .select("id")
     .eq("userId", userId)
@@ -85,7 +85,7 @@ export async function ensureDefaultAvatar(userId: string) {
   }
 
   if (!equippedAvatar && avatar && !avatar.equipped) {
-    const { error: equipError } = await supabase
+    const { error: equipError } = await db
       .from("Avatar")
       .update({ equipped: true, updatedAt: new Date().toISOString() })
       .eq("id", avatar.id)
@@ -96,7 +96,7 @@ export async function ensureDefaultAvatar(userId: string) {
     }
   }
 
-  const { data: userStatus, error: statusLookupError } = await supabase
+  const { data: userStatus, error: statusLookupError } = await db
     .from("UserStatus")
     .select("selectedAvatar, unlockedAvatars")
     .eq("userId", userId)
@@ -117,7 +117,7 @@ export async function ensureDefaultAvatar(userId: string) {
     !userStatus.selectedAvatar;
 
   if (needsStatusUpdate) {
-    const { error: statusUpdateError } = await supabase
+    const { error: statusUpdateError } = await db
       .from("UserStatus")
       .update({
         selectedAvatar: userStatus.selectedAvatar || DEFAULT_AVATAR.id,

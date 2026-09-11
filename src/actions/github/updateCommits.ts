@@ -4,11 +4,9 @@
 import { getAuthenticatedUserId } from "@/lib/authenticatedUser";
 import { fetchTotalContributions } from "@/actions/github/fetchCommits";
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
-import { supabase } from "../../supabase/supabase.config";
+import { db } from "../../db/neon";
 import { getSyncPlan, type SyncStatus } from "@/lib/sync";
-
-export const SYNC_INTERVAL_MS = 5 * 60 * 1000;
-export const SYNC_LEASE_MS = 2 * 60 * 1000;
+import { SYNC_INTERVAL_MS, SYNC_LEASE_MS } from "@/actions/github/syncConstants";
 
 type CurrentStatus = {
   commit: number;
@@ -26,7 +24,7 @@ type CurrentStatus = {
 export const updateCommits = async (options: { force?: boolean } = {}) => {
   const userId = await getAuthenticatedUserId();
 
-  const { data: user, error: userError } = await supabase
+  const { data: user, error: userError } = await db
     .from("Users")
     .select("createdAt")
     .eq("id", userId)
@@ -42,7 +40,7 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
   }
 
   try {
-    const { data: currentStatus, error: fetchError } = await supabase
+    const { data: currentStatus, error: fetchError } = await db
       .from("UserStatus")
       .select(
         "commit, coin, level, hp, attack, defense, lastSyncAt, syncStartedAt, syncStatus, syncError"
@@ -84,7 +82,7 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
     // Claim the row before calling GitHub. A second tab seeing the same
     // snapshot cannot claim the same idle/success state and will skip.
     const claimTime = new Date().toISOString();
-    const { data: claim, error: claimError } = await supabase
+    const { data: claim, error: claimError } = await db
       .from("UserStatus")
       .update({
         syncStatus: "syncing",
@@ -117,7 +115,7 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
     try {
       contributions = await fetchTotalContributions(fromDate);
     } catch (error) {
-      await supabase
+      await db
         .from("UserStatus")
         .update({
           syncStatus: "error",
@@ -194,7 +192,7 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
 
     // Avoid awarding the same commits twice when React Strict Mode or two tabs
     // synchronize the account at the same time.
-    const { data: updatedStatus, error: updateError } = await supabase
+    const { data: updatedStatus, error: updateError } = await db
       .from("UserStatus")
       .update({
         commit: newCommitCount,

@@ -20,7 +20,7 @@ Git-RPG は、**GitHub のコミット数に応じてコインや経験値を獲
 - **バックエンド**: Next.js Server Actions
 - **認証**: NextAuth
 - **コミット数取得**: GitHub GraphQL API
-- **データベース**: Supabase
+- **データベース**: Neon Postgres
 
 ---
 

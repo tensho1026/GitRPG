@@ -1,14 +1,14 @@
 "use server";
 
 import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
-import { supabase } from "../../../supabase/supabase.config";
+import { db } from "../../../db/neon";
 
 export const getUserStatus = async (userId: string) => {
   await assertAuthenticatedUser(userId);
 
   try {
     // Get user basic info
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await db
       .from("Users")
       .select("id, name, image, createdAt, updatedAt")
       .eq("id", userId)
@@ -24,7 +24,7 @@ export const getUserStatus = async (userId: string) => {
     }
 
     // Get user status
-    const { data: userStatus, error: statusError } = await supabase
+    const { data: userStatus, error: statusError } = await db
       .from("UserStatus")
       .select("id, userId, level, commit, coin, hp, attack, defense, selectedAvatar, unlockedAvatars, createdAt, updatedAt")
       .eq("userId", userId)

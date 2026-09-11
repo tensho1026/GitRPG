@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getUserBattleStatusById } from "../../../../lib/userBattleStatus";
-import { supabase } from "../../../../supabase/supabase.config";
+import { db } from "../../../../db/neon";
 
 export const runtime = "nodejs";
 
@@ -13,7 +13,7 @@ const clamp = (value: number, max: number) => Math.max(4, Math.min(100, (value /
 export async function GET(_request: Request, { params }: { params: Promise<{ name: string }> }) {
   const { name } = await params;
   try {
-    const { data: user, error } = await supabase.from("Users").select("id, name").eq("name", name).single();
+    const { data: user, error } = await db.from("Users").select("id, name").eq("name", name).single();
     if (error || !user) return new NextResponse("User Not Found", { status: 404 });
 
     const status = await getUserBattleStatusById(user.id);
