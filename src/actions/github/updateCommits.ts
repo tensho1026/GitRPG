@@ -6,7 +6,25 @@ import { fetchTotalContributions } from "@/actions/github/fetchCommits";
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
 import { supabase } from "../../supabase/supabase.config";
 
-export const updateCommits = async () => {
+export const SYNC_INTERVAL_MS = 5 * 60 * 1000;
+export const SYNC_LEASE_MS = 2 * 60 * 1000;
+
+type SyncStatus = "idle" | "syncing" | "success" | "error";
+
+type CurrentStatus = {
+  commit: number;
+  coin: number;
+  level: number;
+  hp: number;
+  attack: number;
+  defense: number;
+  lastSyncAt: string | null;
+  syncStartedAt: string | null;
+  syncStatus: SyncStatus;
+  syncError: string | null;
+};
+
+export const updateCommits = async (options: { force?: boolean } = {}) => {
   const userId = await getAuthenticatedUserId();
 
   const { data: user, error: userError } = await supabase
@@ -27,7 +45,9 @@ export const updateCommits = async () => {
   try {
     const { data: currentStatus, error: fetchError } = await supabase
       .from("UserStatus")
-      .select("commit, coin, level, hp, attack, defense")
+      .select(
+        "commit, coin, level, hp, attack, defense, lastSyncAt, syncStartedAt, syncStatus, syncError"
+      )
       .eq("userId", userId)
       .single();
 
@@ -38,8 +58,85 @@ export const updateCommits = async () => {
       );
     }
 
-    const fromDate = createdAt.toISOString();
-    const contributions = await fetchTotalContributions(fromDate);
+    const now = Date.now();
+    const current = currentStatus as CurrentStatus;
+    const lastSyncAt = current.lastSyncAt
+      ? new Date(current.lastSyncAt)
+      : null;
+    const syncStartedAt = current.syncStartedAt
+      ? new Date(current.syncStartedAt)
+      : null;
+    const isSyncing =
+      current.syncStatus === "syncing" &&
+      syncStartedAt &&
+      !Number.isNaN(syncStartedAt.getTime()) &&
+      now - syncStartedAt.getTime() < SYNC_LEASE_MS;
+    const recentlySynced =
+      !options.force &&
+      current.syncStatus === "success" &&
+      lastSyncAt &&
+      !Number.isNaN(lastSyncAt.getTime()) &&
+      now - lastSyncAt.getTime() < SYNC_INTERVAL_MS;
+
+    if (isSyncing || recentlySynced) {
+      return {
+        success: true,
+        skipped: true,
+        reason: isSyncing ? "in_progress" : "cooldown",
+        updatedStatus: currentStatus,
+        coinsAwarded: 0,
+        newCommits: 0,
+      };
+    }
+
+    // Claim the row before calling GitHub. A second tab seeing the same
+    // snapshot cannot claim the same idle/success state and will skip.
+    const claimTime = new Date().toISOString();
+    const { data: claim, error: claimError } = await supabase
+      .from("UserStatus")
+      .update({
+        syncStatus: "syncing",
+        syncStartedAt: claimTime,
+        syncError: null,
+        updatedAt: claimTime,
+      })
+      .eq("userId", userId)
+      .eq("syncStatus", current.syncStatus || "idle")
+      .select("syncStartedAt")
+      .maybeSingle();
+
+    if (claimError) {
+      throw new Error(`Failed to claim GitHub sync: ${claimError.message}`);
+    }
+    if (!claim) {
+      return {
+        success: true,
+        skipped: true,
+        reason: "in_progress",
+        updatedStatus: currentStatus,
+        coinsAwarded: 0,
+        newCommits: 0,
+      };
+    }
+
+    const initialSync = !lastSyncAt;
+    const fromDate = (lastSyncAt || createdAt).toISOString();
+    let contributions;
+    try {
+      contributions = await fetchTotalContributions(fromDate);
+    } catch (error) {
+      await supabase
+        .from("UserStatus")
+        .update({
+          syncStatus: "error",
+          syncStartedAt: null,
+          syncError: error instanceof Error ? error.message : "GitHub sync failed",
+          updatedAt: new Date().toISOString(),
+        })
+        .eq("userId", userId)
+        .eq("syncStatus", "syncing");
+      throw error;
+    }
     if (
       !Number.isSafeInteger(currentStatus.commit) ||
       currentStatus.commit < 0 ||
@@ -64,7 +161,9 @@ export const updateCommits = async () => {
     // GitHub's aggregate can temporarily move backwards while contributions
     // are re-indexed. Never lower the stored total, otherwise the next sync
     // could award the same commits again.
-    let newCommitCount = Math.max(currentStatus.commit, contributions.commits);
+    let newCommitCount = initialSync
+      ? Math.max(currentStatus.commit, contributions.commits)
+      : currentStatus.commit + contributions.commits;
 
     // GitHub's contribution graph can lag immediately after a new account is
     // linked. Use the recent events endpoint as a best-effort lower-level
@@ -74,6 +173,7 @@ export const updateCommits = async () => {
     if (
       newCommitCount === 0 &&
       currentStatus.commit === 0 &&
+      initialSync &&
       hoursSinceCreation >= 0 &&
       hoursSinceCreation < 24
     ) {
@@ -111,11 +211,17 @@ export const updateCommits = async () => {
         hp: newHp,
         attack: newAttack,
         defense: newDefense,
+        lastSyncAt: new Date().toISOString(),
+        syncStartedAt: null,
+        syncStatus: "success",
+        syncError: null,
         updatedAt: new Date().toISOString(),
       })
       .eq("userId", userId)
       .eq("commit", currentStatus.commit)
       .eq("coin", currentStatus.coin)
+      .eq("syncStatus", "syncing")
+      .eq("syncStartedAt", claimTime)
       .select("id, userId, level, commit, coin, hp, attack, defense, updatedAt")
       .maybeSingle();
 
