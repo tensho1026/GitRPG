@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
-import { UserWithStatus, Item, Avatar } from "@/types/user/userStatus";
+import { UserWithStatus, HomeItem, HomeAvatar } from "@/types/user/userStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import { getHomeData } from "@/actions/user/getHomeData";
 import { updateCommits } from "@/actions/github/updateCommits";
@@ -8,11 +8,11 @@ import { saveUserToDatabase } from "@/actions/user/auth/saveUser";
 
 export const useHomeData = (session: Session | null, status: string) => {
   const [userStatus, setUserStatus] = useState<UserWithStatus | null>(null);
-  const [userItems, setUserItems] = useState<Item[]>([]);
+  const [userItems, setUserItems] = useState<HomeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expInfo, setExpInfo] = useState({});
   const [battleStatus, setBattleStatus] = useState<any>(null);
-  const [equippedAvatar, setEquippedAvatar] = useState<Avatar | null>(null);
+  const [equippedAvatar, setEquippedAvatar] = useState<HomeAvatar | null>(null);
   const userEmail = session?.user?.email ?? null;
   const userName = session?.user?.name ?? null;
   const userImage = session?.user?.image ?? null;
