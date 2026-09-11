@@ -30,6 +30,10 @@ export const getHomeData = async (userId: string) => {
           defense,
           selectedAvatar,
           unlockedAvatars,
+          lastSyncAt,
+          syncStartedAt,
+          syncStatus,
+          syncError,
           createdAt,
           updatedAt
         ),

@@ -17,6 +17,19 @@ export const useHomeData = (session: Session | null, status: string) => {
   const userName = session?.user?.name ?? null;
   const userImage = session?.user?.image ?? null;
 
+  const loadHomeData = async () => {
+    if (!userEmail) return;
+    const homeData = await getHomeData(userEmail);
+    if (!homeData) throw new Error("Home data not found");
+
+    setUserStatus(homeData.userWithStatus);
+    setUserItems(homeData.items);
+    setBattleStatus(homeData.battleStatus);
+    setEquippedAvatar(homeData.equippedAvatar);
+    const totalCommits = homeData.status?.commit ?? 0;
+    setExpInfo(getRemainingCommitsToNextLevel(totalCommits));
+  };
+
   useEffect(() => {
     let cancelled = false;
 
@@ -54,18 +67,7 @@ export const useHomeData = (session: Session | null, status: string) => {
 
         if (cancelled) return;
 
-        const homeData = await getHomeData(userEmail);
-        if (!homeData) {
-          throw new Error("Home data not found");
-        }
-
-        setUserStatus(homeData.userWithStatus);
-        setUserItems(homeData.items);
-        setBattleStatus(homeData.battleStatus);
-        setEquippedAvatar(homeData.equippedAvatar);
-
-        const totalCommits = homeData.status?.commit ?? 0;
-        setExpInfo(getRemainingCommitsToNextLevel(totalCommits));
+        await loadHomeData();
       } catch (error) {
         if (!cancelled) {
           console.error("Failed to fetch user data on home screen:", error);
@@ -83,6 +85,12 @@ export const useHomeData = (session: Session | null, status: string) => {
     };
   }, [status, userEmail, userName, userImage]);
 
+  const retrySync = async () => {
+    if (!userEmail) return;
+    await updateCommits({ force: true });
+    await loadHomeData();
+  };
+
   return {
     userStatus,
     userItems,
@@ -90,5 +98,6 @@ export const useHomeData = (session: Session | null, status: string) => {
     expInfo,
     battleStatus,
     equippedAvatar,
+    retrySync,
   };
 };

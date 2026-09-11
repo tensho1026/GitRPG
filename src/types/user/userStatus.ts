@@ -19,6 +19,10 @@ export interface UserStatus {
   defense: number;
   selectedAvatar?: string | null;
   unlockedAvatars: string[];
+  lastSyncAt?: string | null;
+  syncStartedAt?: string | null;
+  syncStatus?: "idle" | "syncing" | "success" | "error" | null;
+  syncError?: string | null;
   createdAt: string;
   updatedAt: string;
 }
