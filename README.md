@@ -1,7 +1,35 @@
+<div align="center">
+
 # Git-RPG 🎮
+
+[![Play Now](https://img.shields.io/badge/PLAY%20NOW-git--game.vercel.app-7c3aed?style=for-the-badge&logo=vercel&logoColor=white)](https://git-game.vercel.app/)
+[![Status](https://img.shields.io/badge/STATUS-LIVE-22c55e?style=for-the-badge&logo=statuspage&logoColor=white)](https://git-game.vercel.app/)
+
+</div>
 
 Git-RPG は、**GitHub のコミット数に応じてコインや経験値を獲得し、アバターや装備を強化できるアプリ**です。  
 エンジニアのモチベーションを RPG 感覚で高めることを目的としています。
+
+---
+
+## ⚔️ 冒険者ステータス
+
+GitHubでの活動を、コミット・Pull Request・Issue・総合貢献数のステータスとして表示しています。
+
+<div align="center">
+
+<a href="https://github.com/tensho1026">
+  <img src="https://github-readme-stats.vercel.app/api?username=tensho1026&show_icons=true&include_all_commits=true&hide_border=true&theme=tokyonight&custom_title=GitHub%20RPG%20Adventurer%20Status" alt="GitHub stats: commits, pull requests, issues and contributions" />
+</a>
+
+<br />
+
+[![Commit Activity](https://img.shields.io/github/commit-activity/t/tensho1026/GitRPG?style=for-the-badge&label=COMMIT%20ACTIVITY)](https://github.com/tensho1026/GitRPG/commits/main)
+[![Pull Requests](https://img.shields.io/github/issues-pr/tensho1026/GitRPG?style=for-the-badge&label=PULL%20REQUESTS)](https://github.com/tensho1026/GitRPG/pulls)
+[![Issues](https://img.shields.io/github/issues/tensho1026/GitRPG?style=for-the-badge&label=ISSUES)](https://github.com/tensho1026/GitRPG/issues)
+[![Stars](https://img.shields.io/github/stars/tensho1026/GitRPG?style=for-the-badge&label=STARS)](https://github.com/tensho1026/GitRPG/stargazers)
+
+</div>
 
 ---
 
