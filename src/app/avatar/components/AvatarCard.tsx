@@ -63,6 +63,7 @@ export default function AvatarCard({
       {/* Selection Indicator */}
       {character.equipped && (
         <div
+          aria-label="選択中"
           className="absolute -top-4 -right-4 w-12 h-12 border-4 border-white flex items-center justify-center pixel-border z-10"
           style={{
             backgroundColor: colors.bg,
@@ -98,6 +99,8 @@ export default function AvatarCard({
           </div>
           {canUnlock && (
             <button
+              type="button"
+              aria-label={`${character.name}を解放する`}
               onClick={() => onUnlock(character.id)}
               disabled={isProcessing}
               className="touch-target px-6 py-3 border-4 font-bold pixel-text text-lg"
@@ -187,6 +190,8 @@ export default function AvatarCard({
 
           {character.owned ? (
               <button
+              type="button"
+              aria-label={character.equipped ? `${character.name}は選択中` : `${character.name}を選択する`}
               onClick={() => character.dbId && onEquip(character.dbId)}
               disabled={isProcessing}
               className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"

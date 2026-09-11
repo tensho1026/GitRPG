@@ -242,6 +242,7 @@ export default function AuthButton() {
 
                 {/* Return to Town Button */}
                   <Button
+                    aria-label="GitHubからログアウトして町へ戻る"
                     onClick={async () => {
                       await signOut({ callbackUrl: "/" });
                     }}
@@ -290,6 +291,7 @@ export default function AuthButton() {
 
                 {/* Start Adventure Button */}
                 <Button
+                  aria-label="GitHubでログインして冒険を始める"
                   onClick={() => signIn("github", { callbackUrl: "/home" })}
                   className="w-full h-14 bg-gradient-to-b from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 border-4 border-blue-500 text-white font-mono font-bold text-lg pixel-text shadow-lg transform hover:translate-y-[-2px] active:translate-y-[1px] transition-all duration-150 pixel-border relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>

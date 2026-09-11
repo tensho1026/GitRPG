@@ -107,8 +107,10 @@ export default function MyAvatar({ userItems, equippedAvatar }: MyAvatarProps) {
             </div>
 
             {/* Dress Up Button */}
-            <Link href="/avatar">
-              <Button
+            <Button asChild>
+              <Link
+                href="/avatar"
+                aria-label="アバター変更画面を開く"
                 className="w-full bg-gradient-to-b from-pink-500 to-pink-600 hover:from-pink-400 hover:to-pink-500 border-3 border-pink-400 text-white font-bold pixel-text text-base py-4 rounded-lg transition-all duration-200 transform hover:scale-105"
                 style={{
                   boxShadow: "0 4px 0 #be185d, 0 6px 12px rgba(0,0,0,0.4)",
@@ -116,8 +118,8 @@ export default function MyAvatar({ userItems, equippedAvatar }: MyAvatarProps) {
                 }}>
                 <Shirt className="w-4 h-4 mr-2" />
                 アバター変更
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
