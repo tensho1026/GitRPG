@@ -36,20 +36,18 @@ export default function Avatar() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <main className="guild-shell min-h-screen">
       <BackGround backgroundImage="newavatar.JPG" />
 
       {/* Processing overlay for actions */}
       {isProcessing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="text-white text-xl font-bold pixel-text animate-pulse">
-            処理中...
-          </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="guild-panel p-7 text-lg font-bold text-amber-200">名鑑を更新中...</div>
         </div>
       )}
 
-      <div className="relative z-10 p-3 sm:p-4 font-mono">
-        <div className="max-w-6xl mx-auto">
+      <div className="guild-container font-mono">
+        <div>
           {actionError && <InlineError message={actionError} />}
           <AvatarHeader level={playerData.level} coins={coins} />
 
@@ -63,6 +61,6 @@ export default function Avatar() {
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

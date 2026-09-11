@@ -1,123 +1,92 @@
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { CalendarDays, ChevronRight, Coins, Github, Shield, Sparkles, Sword } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+const quests = [
+  { icon: Sword, title: "コードを刻む", reward: "+50 EXP" },
+  { icon: Shield, title: "Issueを解決する", reward: "+30 COIN" },
+  { icon: CalendarDays, title: "連続記録を伸ばす", reward: "STREAK" },
+];
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-green-900 relative overflow-hidden">
-      {/* Background pattern overlay */}
-      <div className="absolute inset-0 opacity-20">
-        <div
-          className="w-full h-full bg-repeat"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-      </div>
+    <main className="guild-shell overflow-hidden">
+      <div aria-hidden="true" className="guild-backdrop fixed inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: "url('/newhomepage.JPG')" }} />
 
-      <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex items-center">
-        <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
-          {/* Left side - Content */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <div className="inline-block">
-                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-lg font-bold text-lg shadow-lg">
-                  🎮 RPG Developer Quest
+      <div className="guild-container flex min-h-screen items-center py-6 lg:py-10">
+        <div className="w-full">
+          <header className="guild-header mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="guild-chip h-11 w-11 p-0"><Sword size={21} /></div>
+              <div>
+                <p className="guild-kicker">Developer&apos;s Guild</p>
+                <p className="guild-title text-xl">GIT-RPG</p>
+              </div>
+            </div>
+            <div className="hidden items-center gap-2 text-xs text-stone-300 sm:flex">
+              <span className="h-2 w-2 bg-emerald-500" /> GUILD GATE / ONLINE
+            </div>
+          </header>
+
+          <div className="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
+            <section className="guild-panel flex min-h-[590px] flex-col justify-between overflow-hidden p-6 sm:p-9">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl" />
+              <div>
+                <p className="guild-kicker mb-4">A small commit, a braver world.</p>
+                <h1 className="guild-title max-w-2xl text-4xl leading-tight sm:text-5xl lg:text-6xl">コードを刻み、<br />冒険者として成長せよ。</h1>
+                <p className="mt-6 max-w-xl text-base leading-8 text-stone-300 sm:text-lg">
+                  GitHubの活動が経験値になり、装備になり、次の冒険につながる。
+                  毎日の開発をひとつの物語に変える、開発者のためのRPGギルドです。
+                </p>
+              </div>
+
+              <div className="mt-8 grid gap-2">
+                {quests.map(({ icon: Icon, title, reward }) => (
+                  <div key={title} className="guild-inset flex items-center gap-3 p-3">
+                    <span className="grid h-9 w-9 place-items-center border border-amber-700/70 bg-black/20 text-amber-200"><Icon size={17} /></span>
+                    <span className="flex-1 font-bold text-stone-100">{title}</span>
+                    <span className="font-mono text-xs font-bold text-amber-200">{reward}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <Button asChild size="lg">
+                  <Link href="/auth" className="guild-button h-14 px-7 text-base"><Github size={20} />ギルドに参加する<ChevronRight size={18} /></Link>
+                </Button>
+                <span className="text-xs text-stone-400">GitHubアカウントで冒険記録を同期</span>
+              </div>
+            </section>
+
+            <section className="grid gap-4">
+              <div className="parchment-panel min-h-[350px] p-5 sm:p-7">
+                <div className="mb-5 flex items-center justify-between border-b border-stone-700/30 pb-3">
+                  <div><p className="font-mono text-[10px] font-bold tracking-[.2em] text-stone-600">GUILD ARCHIVE</p><h2 className="text-2xl font-black">冒険者の記録</h2></div>
+                  <Coins className="text-amber-800" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[{ label: "STATUS", src: "/equipmentStatus.png" }, { label: "EQUIPMENT", src: "/commitStatus.png" }].map((preview) => (
+                    <div key={preview.label} className="parchment-inset p-2">
+                      <p className="mb-2 text-center font-mono text-[10px] font-bold tracking-widest">{preview.label}</p>
+                      <Image src={preview.src} alt={`${preview.label}画面の例`} width={220} height={300} className="mx-auto h-56 w-auto object-contain [image-rendering:pixelated]" />
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
-                コードを書いて
-                <span className="bg-gradient-to-r from-yellow-400 to-red-500 bg-clip-text text-transparent block">
-                  レベルアップ！
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-300 leading-relaxed">
-                GitHubのコミット履歴をRPG風に可視化。
-                <br />
-                毎日のコーディングが冒険になる、
-                <br />
-                開発者のためのゲーミフィケーションアプリ
-              </p>
-
-              <div className="space-y-4 text-gray-400">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span>GitHubと連携してコミット数を自動取得</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <span>レベルアップ・装備・ステータス管理</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                  <span>ドット絵アバターでキャラクターカスタマイズ</span>
+              <div className="guild-panel p-5">
+                <div className="guild-section-title mb-3"><Sparkles size={18} />冒険の掟</div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {[["COMMIT", "経験値"], ["EQUIP", "能力強化"], ["BATTLE", "報酬獲得"]].map(([key, value]) => (
+                    <div key={key} className="guild-stat"><div className="guild-stat__value text-sm">{key}</div><div className="mt-1 text-[11px] text-stone-400">{value}</div></div>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <Button asChild size="lg">
-                <Link
-                  href="/auth"
-                  aria-label="GitHubログイン画面を開く"
-                  className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200">
-                  <Github className="mr-3 h-5 w-5" />
-                  GitHubでログイン
-                </Link>
-              </Button>
-
-              <div className="text-sm text-gray-400">
-                ※ GitHubアカウントが必要です
-              </div>
-            </div>
-          </div>
-
-          {/* Right side - Images */}
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <h3 className="text-white font-bold text-sm text-center">
-                📊 ステータス
-              </h3>
-              <div className="rounded-lg overflow-hidden shadow-xl">
-                <Image
-                  src="/equipmentStatus.png"
-                  alt="RPG Status Screen"
-                  width={220}
-                  height={300}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-white font-bold text-sm text-center">
-                ⚔️ 装備・戦闘
-              </h3>
-              <div className="rounded-lg overflow-hidden shadow-xl">
-                <Image
-                  src="/commitStatus.png"
-                  alt="RPG Equipment Screen"
-                  width={220}
-                  height={300}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
+            </section>
           </div>
         </div>
       </div>
-
-      {/* Floating particles effect */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-blue-400 rounded-full animate-ping"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-1 h-1 bg-green-400 rounded-full animate-ping"></div>
-      </div>
-    </div>
+    </main>
   );
 }

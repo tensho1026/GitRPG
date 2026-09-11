@@ -16,62 +16,58 @@ function UserStatus({
 }: UserStatusProps) {
   return (
     <div className="lg:col-span-2">
-      <Card className="bg-gradient-to-b from-blue-800/95 to-blue-900/95 border-4 border-cyan-400 shadow-2xl pixel-border h-full">
+      <Card className="guild-panel h-full rounded-none border-2 py-0">
         <CardContent className="p-6">
-          <div className="flex items-center mb-10">
-            <TrendingUp className="w-6 h-6 text-cyan-300 mr-2" />
-            <h2 className="text-cyan-200 text-lg pixel-text font-bold">
-              📊 現在のステータス
-            </h2>
+          <div className="guild-section-title">
+            <TrendingUp className="w-5 h-5" /><h2>Guild Status</h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-20">
-            <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
-              <div className="text-cyan-300 text-2xl pixel-text font-bold">
+          <div className="mb-5 grid grid-cols-3 gap-3">
+            <div className="guild-stat">
+              <div className="guild-stat__value text-2xl">
                 Lv.{userStatus?.status?.level}
               </div>
-              <div className="text-blue-200 text-xs pixel-text">
-                ✅ 現在のレベル
+              <div className="mt-1 text-xs text-stone-400">
+                現在のレベル
               </div>
             </div>
 
-            <div className="bg-blue-700/60 p-4 rounded pixel-border border-2 border-cyan-400 text-center">
-              <div className="text-cyan-300 text-xl pixel-text font-bold">
+            <div className="guild-stat">
+              <div className="guild-stat__value">
                 {userStatus?.status?.commit}
               </div>
-              <div className="text-blue-200 text-xs pixel-text">
-                💻 総コミット数
+              <div className="mt-1 text-xs text-stone-400">
+                総コミット
               </div>
             </div>
 
-            <div className="bg-yellow-600/80 p-4 rounded pixel-border border-2 border-yellow-400 text-center">
+            <div className="guild-stat">
               <div className="flex items-center justify-center mb-1">
-                <Coins className="w-5 h-5 text-yellow-200 mr-1" />
-                <span className="text-yellow-100 text-xl pixel-text font-bold">
+                <Coins className="mr-1 w-5 h-5 text-amber-300" />
+                <span className="guild-stat__value">
                   {userStatus?.status?.coin}
                 </span>
               </div>
-              <div className="text-yellow-200 text-xs pixel-text">
-                🪙 コイン数
+              <div className="mt-1 text-xs text-stone-400">
+                所持コイン
               </div>
             </div>
           </div>
 
-          <div className="bg-purple-700/60 p-4 rounded pixel-border border-2 border-purple-400">
+          <div className="guild-inset p-4">
             <div className="flex items-center justify-center mb-2">
-              <Star className="w-5 h-5 text-purple-300 mr-2" />
-              <span className="text-purple-200 text-sm pixel-text">
+              <Star className="mr-2 w-5 h-5 text-amber-300" />
+              <span className="text-sm text-stone-300">
                 次のレベルまで
               </span>
             </div>
             <div className="text-center mb-3">
-              <span className="text-purple-100 text-lg pixel-text font-bold">
+              <span className="guild-title text-lg">
                 あと{remainingCommits}コミット！
               </span>
             </div>
-            <div className="w-full bg-purple-800 rounded-full h-3 border border-purple-400">
+            <div className="guild-progress">
               <div
-                className="bg-gradient-to-r from-purple-400 to-purple-300 h-full rounded-full"
                 style={{
                   width: `${progressPercentage}%`,
                 }}></div>

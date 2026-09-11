@@ -17,27 +17,21 @@ export default function MenuButton({
   icon: Icon,
   title,
   description,
-  bgColor,
-  borderColor,
-  shadowColor,
+  bgColor: _bgColor,
+  borderColor: _borderColor,
+  shadowColor: _shadowColor,
   descriptionColor,
 }: MenuButtonProps) {
   return (
     <Link
       href={href}
       aria-label={`${title}: ${description}`}
-      className="block min-h-12 p-6 border-4 font-bold pixel-text text-xl transform transition-all duration-200 hover:scale-105 focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300"
-      style={{
-        backgroundColor: bgColor,
-        borderColor: borderColor,
-        color: "white",
-        boxShadow: `6px 6px 0px ${shadowColor}, 12px 12px 0px rgba(0,0,0,0.4)`,
-      }}>
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <Icon className="w-8 h-8" />
-          <span className="text-2xl">{title}</span>
+      className="guild-nav-card focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
+        <div className="mb-3 flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center border border-amber-700/70 bg-black/25 text-amber-200"><Icon className="w-5 h-5" /></span>
+          <span className="guild-title text-xl">{title}</span>
         </div>
-        <p className={`${descriptionColor} text-sm`}>{description}</p>
+        <p className={`${descriptionColor} font-mono text-xs opacity-75`}>{description}</p>
     </Link>
   );
 }

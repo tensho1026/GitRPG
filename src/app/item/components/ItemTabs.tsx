@@ -41,11 +41,7 @@ export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
       <div
         role="tablist"
         aria-label="装備カテゴリ"
-        className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-2 sm:p-4 pixel-border"
-        style={{
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          borderColor: "#fbbf24",
-        }}>
+        className="guild-panel grid grid-cols-2 gap-2 p-3 md:grid-cols-4">
         {tabs.map((tab, index) => (
           <button
             key={tab.value}
@@ -82,17 +78,9 @@ export default function ItemTabs({ selectedTab, onTabChange }: ItemTabsProps) {
               onTabChange(nextTab.value);
               tabRefs.current[nextIndex]?.focus();
             }}
-            className="touch-target p-3 sm:p-4 border-4 font-bold text-white pixel-text text-sm sm:text-lg"
+            className={`guild-button touch-target p-3 text-sm sm:text-base ${selectedTab === tab.value ? "!border-amber-200 !bg-emerald-800" : "guild-button--stone"}`}
             style={{
-              backgroundColor:
-                selectedTab === tab.value ? tab.color : "#4b5563",
-              borderColor: selectedTab === tab.value ? "#ffffff" : "#6b7280",
-              boxShadow:
-                selectedTab === tab.value
-                  ? `4px 4px 0px ${tab.shadow}, 8px 8px 0px rgba(0,0,0,0.4)`
-                  : "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)",
               cursor: "pointer",
-              transition: "all 0.1s ease",
             }}>
             {tab.label}
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { Sword, Shield, Star, Coins, Lock } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Coins, Lock, Shield, Star, Sword } from "lucide-react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { equipmentData } from "@/data/equipment";
@@ -11,336 +11,68 @@ import type { Item as UserItem } from "@/types/user/userStatus";
 import type { Equipment } from "@/types/equipment/equipment";
 import { InlineError } from "@/app/components/DataState";
 
-type DisplayEquipment = Equipment & {
-  dbId?: string;
-};
+type DisplayEquipment = Equipment & { dbId?: string };
+const icons = { weapon: Sword, armor: Shield, accessory: Star };
 
-/* ---------- アイコン ---------- */
-const typeIcons = {
-  weapon: <Sword className="w-4 h-4" style={{ imageRendering: "pixelated" }} />,
-  armor: <Shield className="w-4 h-4" style={{ imageRendering: "pixelated" }} />,
-  accessory: (
-    <Star className="w-4 h-4" style={{ imageRendering: "pixelated" }} />
-  ),
-};
-
-/* ---------- メインコンポーネント ---------- */
-export default function EquipmentShop({
-  selectedTab,
-  userItems,
-  coins,
-  onDataUpdate,
-}: {
-  selectedTab: string;
-  userItems: UserItem[];
-  coins: number;
-  onDataUpdate: () => Promise<void>;
+export default function EquipmentShop({ selectedTab, userItems, coins, onDataUpdate }: {
+  selectedTab: string; userItems: UserItem[]; coins: number; onDataUpdate: () => Promise<void>;
 }) {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const equipmentToDisplay = useMemo((): DisplayEquipment[] => {
-    return equipmentData.map((staticItem) => {
-      const userItem = userItems.find(
-        (item) => item.equipmentId === staticItem.id
-      );
-      return {
-        ...staticItem,
-        owned: !!userItem,
-        equipped: userItem?.equipped || false,
-        dbId: userItem?.id,
-      };
-    });
-  }, [userItems]);
+  const items = useMemo((): DisplayEquipment[] => equipmentData.map((item) => {
+    const owned = userItems.find((entry) => entry.equipmentId === item.id);
+    return { ...item, owned: !!owned, equipped: owned?.equipped || false, dbId: owned?.id };
+  }).filter((item) => selectedTab === "all" || item.type === selectedTab), [userItems, selectedTab]);
 
-  const handlePurchase = async (equipmentId: string) => {
-    if (!session?.user?.email) return;
-    setIsProcessing(true);
-    try {
-      setActionError(null);
-      await purchaseItem(session.user.email, equipmentId);
-      await onDataUpdate();
-    } catch (error) {
-      console.error("Purchase failed:", error);
-      setActionError(
-        error instanceof Error ? error.message : "購入に失敗しました"
-      );
-    } finally {
-      setIsProcessing(false);
-    }
+  const run = async (action: () => Promise<unknown>) => {
+    setIsProcessing(true); setActionError(null);
+    try { await action(); await onDataUpdate(); }
+    catch (error) { setActionError(error instanceof Error ? error.message : "操作に失敗しました"); }
+    finally { setIsProcessing(false); }
   };
-
-  const handleEquip = async (dbId: string | undefined) => {
-    if (!dbId || !session?.user?.email) return;
-    setIsProcessing(true);
-    try {
-      setActionError(null);
-      await equipItem(session.user.email, dbId);
-      await onDataUpdate();
-    } catch (error) {
-      console.error("Equip failed:", error);
-      setActionError(
-        error instanceof Error ? error.message : "装備変更に失敗しました"
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const filteredEquipment = equipmentToDisplay.filter((item) => {
-    if (selectedTab === "all") return true;
-    return item.type === selectedTab;
-  });
 
   return (
-    <div
-      id="equipment-panel"
-      role="tabpanel"
-      aria-label="装備一覧"
-      className="font-mono relative"
-      style={{
-        fontFamily: '"Courier New", monospace',
-        fontSize: "14px",
-        imageRendering: "pixelated",
-      }}>
+    <div id="equipment-panel" role="tabpanel" aria-label="装備一覧" className="font-mono">
       {actionError && <InlineError message={actionError} />}
-      {/* {isProcessing && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <p className="text-white text-3xl font-bold pixel-text animate-pulse">
-            ... PROCESSING ...
-          </p>
-        </div>
-      )} */}
-
-      <div className="max-w-7xl mx-auto">
-        {/* -------- Equipment Grid -------- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-          {filteredEquipment.map((item) => (
-            <div
-              key={item.id}
-              className="relative pixel-border flex flex-col h-full"
-              style={{
-                backgroundColor: "#1f2937",
-                borderWidth: "5px",
-                borderColor: item.owned ? "#10b981" : "#6b7280",
-                boxShadow: item.owned
-                  ? "6px 6px 0px #059669, 12px 12px 0px rgba(0,0,0,0.5)"
-                  : "4px 4px 0px #374151, 8px 8px 0px rgba(0,0,0,0.4)",
-                opacity: !item.owned ? 0.8 : 1,
-              }}>
-              {/* ------------ Lock Overlay ------------ */}
-              {!item.owned && (
-                <div
-                  className="absolute inset-0 flex flex-col items-center justify-center z-10 p-4"
-                  style={{
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    backdropFilter: "none",
-                  }}>
-                  <div className="text-center mb-4">
-                    <Lock
-                      className="w-20 h-20 text-red-400 mx-auto mb-3"
-                      style={{ imageRendering: "pixelated" }}
-                    />
-                    <span className="text-red-400 font-bold pixel-text text-xl">
-                      LOCKED
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    aria-label={`${item.name}を購入する（${item.price}コイン）`}
-                    onClick={() => handlePurchase(item.id)}
-                    disabled={coins < item.price || isProcessing}
-                    className="px-6 py-3 border-4 font-bold pixel-text text-lg"
-                    style={{
-                      backgroundColor:
-                        coins >= item.price ? "#22c55e" : "#6b7280",
-                      borderColor: coins >= item.price ? "#16a34a" : "#4b5563",
-                      color: "white",
-                      boxShadow:
-                        coins >= item.price
-                          ? "4px 4px 0px #15803d, 8px 8px 0px rgba(0,0,0,0.4)"
-                          : "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)",
-                      cursor:
-                        coins >= item.price && !isProcessing
-                          ? "pointer"
-                          : "not-allowed",
-                    }}>
-                    購入する
-                  </button>
+      <div className="grid gap-4 md:grid-cols-2">
+        {items.map((item) => {
+          const Icon = icons[item.type as keyof typeof icons];
+          const canBuy = coins >= item.price;
+          return (
+            <article key={item.id} className={`guild-panel flex min-h-[330px] flex-col p-5 ${item.equipped ? "!border-emerald-400" : ""}`}>
+              <div className="mb-4 flex items-start gap-4">
+                <div className="guild-inset grid h-24 w-24 shrink-0 place-items-center p-2">
+                  <Image src={item.image} alt={item.name} width={80} height={80} className="h-20 w-20 object-contain [image-rendering:pixelated]" />
                 </div>
-              )}
-
-              {/* ------------ Card Body ------------ */}
-              <div className="p-4 sm:p-6 flex flex-col h-full min-w-0">
-                {/* Equipment Image */}
-                <div className="mb-4 flex justify-center">
-                  <div
-                    className="border-3 p-3"
-                    style={{
-                      backgroundColor: "#374151",
-                      borderColor: "#6b7280",
-                      boxShadow:
-                        "2px 2px 0px #1f2937, 4px 4px 0px rgba(0,0,0,0.3)",
-                    }}>
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={80}
-                      height={80}
-                      className="pixel-border"
-                      style={{
-                        imageRendering: "pixelated",
-                        borderWidth: "2px",
-                        borderColor: "#9ca3af",
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* Header */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    {typeIcons[item.type as keyof typeof typeIcons]}
-                    <h3 className="text-xl font-bold text-white pixel-text break-words">
-                      {item.name}
-                    </h3>
-                  </div>
-                </div>
-
-                <p className="text-white text-opacity-90 text-sm mb-4 pixel-text leading-relaxed break-words">
-                  {item.description}
-                </p>
-
-                {/* Stats */}
-                <div className="space-y-3 mb-5">
-                  {item.attack && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-white text-sm pixel-text">
-                        <Sword
-                          className="w-5 h-5 text-red-300"
-                          style={{ imageRendering: "pixelated" }}
-                        />
-                        <span>攻撃力</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-24 h-4 border-2 overflow-hidden"
-                          style={{
-                            backgroundColor: "rgba(0,0,0,0.6)",
-                            borderColor: "rgba(255,255,255,0.4)",
-                          }}>
-                          <div
-                            className="h-full"
-                            style={{
-                              width: `${(item.attack / 120) * 100}%`,
-                              backgroundColor: "#ef4444",
-                              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.3)",
-                            }}
-                          />
-                        </div>
-                        <span className="text-white font-bold text-lg w-10 text-right pixel-text">
-                          {item.attack}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {item.defense && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-white text-sm pixel-text">
-                        <Shield
-                          className="w-5 h-5 text-blue-300"
-                          style={{ imageRendering: "pixelated" }}
-                        />
-                        <span>防御力</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-24 h-4 border-2 overflow-hidden"
-                          style={{
-                            backgroundColor: "rgba(0,0,0,0.6)",
-                            borderColor: "rgba(255,255,255,0.4)",
-                          }}>
-                          <div
-                            className="h-full"
-                            style={{
-                              width: `${(item.defense / 120) * 100}%`,
-                              backgroundColor: "#3b82f6",
-                              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.3)",
-                            }}
-                          />
-                        </div>
-                        <span className="text-white font-bold text-lg w-10 text-right pixel-text">
-                          {item.defense}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* ------------ Price & Actions ------------ */}
-                <div
-                  className="border-t-3 pt-4 mt-auto"
-                  style={{ borderColor: "rgba(255,255,255,0.3)" }}>
-                  <div className="flex items-center gap-2 mb-4">
-                    <Coins
-                      className="w-6 h-6 text-yellow-300"
-                      style={{ imageRendering: "pixelated" }}
-                    />
-                    <span className="font-bold text-white text-xl pixel-text">
-                      {item.price.toLocaleString()}
-                    </span>
-                  </div>
-
-                  {!item.owned ? (
-                    <button
-                      type="button"
-                      aria-label={`${item.name}を購入する（${item.price}コイン）`}
-                      onClick={() => handlePurchase(item.id)}
-                      disabled={coins < item.price || isProcessing}
-                      className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
-                      style={{
-                        backgroundColor:
-                          coins >= item.price ? "#22c55e" : "#6b7280",
-                        borderColor:
-                          coins >= item.price ? "#16a34a" : "#4b5563",
-                        color: "white",
-                        boxShadow:
-                          coins >= item.price
-                            ? "4px 4px 0px #15803d, 8px 8px 0px rgba(0,0,0,0.4)"
-                            : "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)",
-                        cursor:
-                          coins >= item.price && !isProcessing
-                            ? "pointer"
-                            : "not-allowed",
-                      }}>
-                      購入する
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      aria-label={item.equipped ? `${item.name}は装備中` : `${item.name}を装備する`}
-                      onClick={() => handleEquip(item.dbId)}
-                      disabled={isProcessing}
-                      className="touch-target w-full p-3 sm:p-4 border-4 font-bold pixel-text text-base sm:text-lg"
-                      style={{
-                        backgroundColor: item.equipped ? "#6b7280" : "#3b82f6",
-                        borderColor: item.equipped ? "#4b5563" : "#1d4ed8",
-                        color: "white",
-                        boxShadow: item.equipped
-                          ? "3px 3px 0px #374151, 6px 6px 0px rgba(0,0,0,0.3)"
-                          : "4px 4px 0px #1e40af, 8px 8px 0px rgba(0,0,0,0.4)",
-                        cursor: isProcessing ? "not-allowed" : "pointer",
-                      }}>
-                      {item.equipped ? "装備中" : "装備"}
-                    </button>
-                  )}
+                <div className="min-w-0 flex-1">
+                  <p className="guild-kicker flex items-center gap-2"><Icon size={14} />{item.type}</p>
+                  <h3 className="guild-title mt-1 break-words text-xl">{item.name}</h3>
+                  <p className="mt-2 text-xs leading-5 text-stone-400">{item.description}</p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div className="guild-stat"><p className="text-[10px] text-stone-400">ATK</p><p className="guild-stat__value">{item.attack || 0}</p></div>
+                <div className="guild-stat"><p className="text-[10px] text-stone-400">DEF</p><p className="guild-stat__value">{item.defense || 0}</p></div>
+              </div>
+
+              <div className="mt-auto flex items-center gap-3 border-t border-amber-800/40 pt-4">
+                <div className="flex flex-1 items-center gap-2 text-amber-200"><Coins size={18} /><b>{item.price.toLocaleString()}</b></div>
+                {!item.owned ? (
+                  <button type="button" onClick={() => session?.user?.email && void run(() => purchaseItem(session.user!.email!, item.id))} disabled={!canBuy || isProcessing} className="guild-button px-5">
+                    <Lock size={16} />購入
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => item.dbId && session?.user?.email && void run(() => equipItem(session.user!.email!, item.dbId!))} disabled={isProcessing || item.equipped} className="guild-button px-5">
+                    {item.equipped ? "装備中" : "装備する"}
+                  </button>
+                )}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   );

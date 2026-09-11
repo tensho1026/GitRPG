@@ -30,6 +30,17 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --guild-ink: #101513;
+    --guild-stone: #202724;
+    --guild-stone-light: #343b36;
+    --guild-gold: #c89a45;
+    --guild-gold-light: #f1cf78;
+    --guild-parchment: #d8c292;
+    --guild-parchment-light: #ead9ad;
+    --guild-green: #1f5a45;
+    --guild-green-light: #50a179;
+    --guild-red: #8f3f36;
+    --guild-blue: #456b78;
   }
 
   .dark {
@@ -60,9 +71,11 @@
   }
 
   body {
-    font-family: "Courier New", ui-monospace, monospace;
+    font-family: Georgia, "Yu Mincho", "Hiragino Mincho ProN", serif;
     max-width: 100%;
     overflow-x: hidden;
+    background: var(--guild-ink);
+    color: #f7eed8;
   }
 }
 
@@ -70,6 +83,192 @@
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+}
+
+.guild-shell {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+  background: #101513;
+}
+
+.guild-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 12%, rgba(226, 158, 67, 0.18), transparent 24rem),
+    radial-gradient(circle at 88% 35%, rgba(44, 104, 76, 0.2), transparent 28rem),
+    linear-gradient(180deg, rgba(6, 9, 8, 0.24), rgba(6, 9, 8, 0.78));
+}
+
+.guild-backdrop {
+  filter: saturate(0.72) brightness(0.48) contrast(1.08);
+  image-rendering: pixelated;
+}
+
+.guild-container {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 1.5rem));
+  margin-inline: auto;
+  padding-block: 1rem 2.5rem;
+}
+
+.guild-panel,
+.guild-header,
+.parchment-panel {
+  position: relative;
+  border: 2px solid var(--guild-gold);
+  border-radius: 2px;
+}
+
+.guild-panel,
+.guild-header {
+  color: #f7eed8;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.035), transparent 28%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg, rgba(39, 47, 43, 0.98), rgba(19, 25, 23, 0.98));
+  box-shadow:
+    inset 0 0 0 3px #111715,
+    inset 0 0 0 4px rgba(228, 190, 105, 0.28),
+    0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+.guild-panel::after,
+.guild-header::after,
+.parchment-panel::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  border: 1px solid rgba(241, 207, 120, 0.18);
+}
+
+.guild-header {
+  padding: 1rem 1.25rem;
+  border-width: 3px;
+  background:
+    linear-gradient(90deg, rgba(20, 66, 51, 0.94), rgba(27, 33, 31, 0.98) 42%, rgba(27, 33, 31, 0.98) 70%, rgba(91, 53, 27, 0.9));
+}
+
+.parchment-panel {
+  color: #2a2419;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(107, 68, 27, 0.1), transparent 18rem),
+    repeating-linear-gradient(0deg, rgba(82, 52, 21, 0.028) 0 1px, transparent 1px 5px),
+    linear-gradient(135deg, var(--guild-parchment-light), var(--guild-parchment));
+  box-shadow: inset 0 0 28px rgba(77, 48, 20, 0.24), 0 12px 28px rgba(0, 0, 0, 0.38);
+}
+
+.guild-kicker {
+  color: var(--guild-gold-light);
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.guild-title {
+  color: #fff4d3;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-shadow: 2px 2px 0 #101513, 0 0 18px rgba(225, 169, 70, 0.18);
+}
+
+.guild-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  color: var(--guild-gold-light);
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.guild-section-title::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(200,154,69,.7), transparent);
+}
+
+.guild-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 2px solid #b8883e;
+  border-radius: 1px;
+  padding: 0.7rem 1rem;
+  color: #fff5d6;
+  background: linear-gradient(180deg, #355f4d, #1f4537);
+  box-shadow: inset 0 0 0 2px rgba(18, 28, 23, 0.65), 3px 3px 0 rgba(7, 10, 9, 0.72);
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
+}
+
+.guild-button:hover { filter: brightness(1.13); border-color: var(--guild-gold-light); transform: translateY(-2px); }
+.guild-button:active { transform: translateY(1px); }
+.guild-button:disabled { cursor: not-allowed; filter: grayscale(.7); opacity: .58; }
+.guild-button--danger { background: linear-gradient(180deg, #78463f, #512d29); }
+.guild-button--stone { background: linear-gradient(180deg, #48514c, #303733); }
+
+.guild-chip {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid #a77b36;
+  padding: 0.45rem 0.75rem;
+  color: #2b2113;
+  background: linear-gradient(180deg, #efcf78, #bd893d);
+  box-shadow: inset 0 0 0 2px rgba(255, 241, 189, 0.28), 2px 2px 0 #332517;
+  font-family: "Courier New", ui-monospace, monospace;
+  font-weight: 900;
+}
+
+.guild-inset { border: 1px solid #725a32; background: rgba(7, 12, 10, 0.48); box-shadow: inset 0 2px 8px rgba(0,0,0,.46); }
+.parchment-inset { border: 1px solid rgba(83, 55, 24, 0.38); background: rgba(255, 246, 210, 0.3); box-shadow: inset 0 2px 8px rgba(82, 50, 19, 0.14); }
+
+.guild-progress { height: 0.8rem; overflow: hidden; border: 2px solid #665332; background: #111715; box-shadow: inset 0 2px 4px rgba(0,0,0,.7); }
+.guild-progress > * { height: 100%; background: repeating-linear-gradient(90deg, #3f8d69 0 10px, #55a87f 10px 18px); }
+
+.guild-grid-runes {
+  background-image: linear-gradient(rgba(199, 157, 77, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(199, 157, 77, .06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.guild-nav-card {
+  position: relative;
+  display: block;
+  min-height: 126px;
+  padding: 1.25rem;
+  border: 2px solid #76633e;
+  color: #f8efd8;
+  background: linear-gradient(145deg, rgba(53, 64, 59, .98), rgba(24, 30, 28, .98));
+  box-shadow: inset 0 0 0 3px #151a18, 5px 6px 0 rgba(0,0,0,.55);
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.guild-nav-card:hover { transform: translateY(-3px); border-color: var(--guild-gold-light); background: linear-gradient(145deg, #3d5b4d, #222b27); }
+.guild-nav-card::before { content: ""; position: absolute; top: 8px; right: 8px; width: 7px; height: 7px; border: 1px solid #c89a45; transform: rotate(45deg); }
+.guild-stat { border: 1px solid #79623c; padding: 0.85rem; text-align: center; background: rgba(12, 18, 15, 0.52); }
+.guild-stat__value { color: var(--guild-gold-light); font-family: "Courier New", ui-monospace, monospace; font-size: 1.2rem; font-weight: 900; }
+
+@media (max-width: 640px) {
+  .guild-container { width: min(100% - 1rem, 1180px); padding-top: .5rem; }
+  .guild-header { padding: .85rem; }
 }
 
 .pixel-art {

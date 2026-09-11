@@ -4,181 +4,84 @@ import { supabase } from "../../../../supabase/supabase.config";
 
 export const runtime = "nodejs";
 
-const escapeXml = (value: unknown) =>
-  String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
+const escapeXml = (value: unknown) => String(value ?? "")
+  .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ name: string }> }
-) {
-  const { name } = await params; // ✅ Promise を await する
+const clamp = (value: number, max: number) => Math.max(4, Math.min(100, (value / max) * 100));
 
+export async function GET(_request: Request, { params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
   try {
-    // Find user by name
-    const { data: user, error: userError } = await supabase
-      .from("Users")
-      .select("id, name")
-      .eq("name", name)
-      .single();
+    const { data: user, error } = await supabase.from("Users").select("id, name").eq("name", name).single();
+    if (error || !user) return new NextResponse("User Not Found", { status: 404 });
 
-    if (userError || !user) {
-      return new NextResponse("User Not Found", { status: 404 });
-    }
+    const status = await getUserBattleStatusById(user.id);
+    const level = status.level || 1;
+    const weapon = status.equippedItems.find((item) => item.type === "weapon");
+    const armor = status.equippedItems.find((item) => item.type === "armor");
+    const avatar = status.equippedAvatar;
+    const hp = status.totalStats.hp || 0;
+    const attack = status.totalStats.attack || 0;
+    const defense = status.totalStats.defense || 0;
 
-    // Get battle status
-    const battleStatus = await getUserBattleStatusById(user.id);
-    const level = battleStatus.level || 1;
-    const equippedItems = battleStatus.equippedItems;
-
-    // Get weapon and armor info
-    const weapon = equippedItems.find((item) => item.type === "weapon") || null;
-    const armor = equippedItems.find((item) => item.type === "armor") || null;
-
-    // Generate RPG-style SVG
-    const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="550" height="320">
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="680" height="300" viewBox="0 0 680 300" role="img" aria-label="${escapeXml(user.name)} Git-RPG guild status">
       <defs>
+        <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#343b36"/><stop offset="1" stop-color="#171d1a"/></linearGradient>
+        <linearGradient id="green" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#214f3d"/><stop offset="1" stop-color="#17231e"/></linearGradient>
+        <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edddb4"/><stop offset="1" stop-color="#cbb17c"/></linearGradient>
+        <pattern id="grain" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 1h8M0 6h8" stroke="#fff" stroke-opacity=".025"/></pattern>
+        <filter id="shadow"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-opacity=".5"/></filter>
         <style>
-          .pixel-font { font-family: 'Courier New', monospace; font-weight: bold; }
-          .main-title { font-size: 24px; fill: #ffd700; text-shadow: 3px 3px 0px #000000; }
-          .subtitle { font-size: 14px; fill: #ffffff; text-shadow: 2px 2px 0px #000000; }
-          .title { font-size: 16px; fill: #ffffff; text-shadow: 2px 2px 0px #000000; }
-          .label { font-size: 12px; fill: #ffffff; text-shadow: 1px 1px 0px #000000; }
-          .value { font-size: 14px; fill: #ffff00; text-shadow: 1px 1px 0px #000000; }
-          .stat-value { font-size: 16px; fill: #00ff00; text-shadow: 1px 1px 0px #000000; }
-          .item-name { font-size: 11px; fill: #ffffff; text-shadow: 1px 1px 0px #000000; }
-          .domain { font-size: 10px; fill: #87ceeb; text-shadow: 1px 1px 0px #000000; }
+          .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.serif{font-family:Georgia,'Times New Roman',serif}
+          .gold{fill:#f1cf78}.cream{fill:#fff4d3}.muted{fill:#aab1ab}.ink{fill:#292218}.label{font-size:10px;font-weight:700;letter-spacing:2px}.value{font-size:18px;font-weight:800}
         </style>
-        <!-- Pixel-art patterns -->
-        <pattern id="grass" patternUnits="userSpaceOnUse" width="20" height="20">
-          <rect width="20" height="20" fill="#2d5016"/>
-          <rect x="0" y="0" width="5" height="5" fill="#3d6020"/>
-          <rect x="10" y="5" width="5" height="5" fill="#3d6020"/>
-          <rect x="5" y="10" width="5" height="5" fill="#4d7030"/>
-          <rect x="15" y="15" width="5" height="5" fill="#3d6020"/>
-        </pattern>
-        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:#4c1d95;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
-        </linearGradient>
       </defs>
-      
-      <!-- Background with pixel grass pattern -->
-      <rect width="550" height="320" fill="url(#grass)"/>
-      
-      <!-- Header panel with title -->
-      <rect x="10" y="10" width="530" height="60" rx="12" fill="url(#headerGrad)" stroke="#ffd700" stroke-width="3"/>
-      <rect x="15" y="15" width="520" height="50" rx="8" fill="#3730a3" opacity="0.7"/>
-      
-      <!-- Game title and subtitle -->
-      <text x="275" y="35" class="pixel-font main-title" text-anchor="middle">🎮 Git-RPG</text>
-      <text x="275" y="50" class="pixel-font subtitle" text-anchor="middle">RPG Developer Quest - コードを書いてレベルアップ！</text>
-      <text x="275" y="62" class="pixel-font domain" text-anchor="middle">🌐 git-game.vercel.app</text>
-      
-      <!-- Character panel (blue) -->
-      <rect x="20" y="80" width="260" height="110" rx="8" fill="#1e3a8a" stroke="#3b82f6" stroke-width="3"/>
-      <rect x="25" y="85" width="250" height="100" rx="5" fill="#1e40af" opacity="0.8"/>
-      
-      <!-- Character info -->
-      <text x="35" y="105" class="pixel-font title">👤 ${escapeXml(
-        user.name
-      )}</text>
-      <text x="35" y="125" class="pixel-font label">Level:</text>
-      <text x="85" y="125" class="pixel-font value">Lv.${escapeXml(
-        level
-      )}</text>
-      <text x="35" y="145" class="pixel-font label">Commits:</text>
-      <text x="95" y="145" class="pixel-font value">${
-        escapeXml(battleStatus.commit || 0)
-      }</text>
-      <text x="35" y="165" class="pixel-font label">Coins:</text>
-      <text x="85" y="165" class="pixel-font value">💰${
-        escapeXml(battleStatus.coin || 0)
-      }</text>
-      
-      <!-- Stats panel (purple) -->
-      <rect x="300" y="80" width="230" height="110" rx="8" fill="#7c2d91" stroke="#a855f7" stroke-width="3"/>
-      <rect x="305" y="85" width="220" height="100" rx="5" fill="#8b3aa0" opacity="0.8"/>
-      
-      <text x="315" y="105" class="pixel-font title">⚔️ Battle Status</text>
-      <text x="315" y="125" class="pixel-font label">HP:</text>
-      <text x="345" y="125" class="pixel-font stat-value">${
-        escapeXml(battleStatus.totalStats.hp)
-      }</text>
-      <text x="315" y="145" class="pixel-font label">ATK:</text>
-      <text x="345" y="145" class="pixel-font stat-value">${
-        escapeXml(battleStatus.totalStats.attack)
-      }</text>
-      <text x="315" y="165" class="pixel-font label">DEF:</text>
-      <text x="345" y="165" class="pixel-font stat-value">${
-        escapeXml(battleStatus.totalStats.defense)
-      }</text>
-      
-      <!-- Equipment panel (red) -->
-      <rect x="20" y="210" width="250" height="90" rx="8" fill="#991b1b" stroke="#ef4444" stroke-width="3"/>
-      <rect x="25" y="215" width="240" height="80" rx="5" fill="#b91c1c" opacity="0.8"/>
-      
-      <text x="35" y="235" class="pixel-font title">🛡️ Equipment</text>
-      <text x="35" y="255" class="pixel-font label">Weapon:</text>
-      <text x="35" y="270" class="pixel-font item-name">${
-        weapon
-          ? escapeXml(`⚔️ ${weapon.name} (+${weapon.attack || 0} ATK)`)
-          : "❌ None"
-      }</text>
-      <text x="35" y="285" class="pixel-font label">Armor:</text>
-      <text x="35" y="300" class="pixel-font item-name">${
-        armor
-          ? escapeXml(`🛡️ ${armor.name} (+${armor.defense || 0} DEF)`)
-          : "❌ None"
-      }</text>
-      
-      <!-- Avatar panel (green) -->
-      <rect x="290" y="210" width="240" height="90" rx="8" fill="#166534" stroke="#22c55e" stroke-width="3"/>
-      <rect x="295" y="215" width="230" height="80" rx="5" fill="#16a34a" opacity="0.8"/>
-      
-      <text x="305" y="235" class="pixel-font title">🎭 Avatar</text>
-      <text x="305" y="255" class="pixel-font label">Equipped:</text>
-      <text x="305" y="270" class="pixel-font item-name">${
-        battleStatus.equippedAvatar
-          ? escapeXml(`👤 ${battleStatus.equippedAvatar.name}`)
-          : "❌ Default Avatar"
-      }</text>
-      <text x="305" y="285" class="pixel-font label">Bonus:</text>
-      <text x="305" y="300" class="pixel-font item-name">${
-        battleStatus.equippedAvatar
-          ? escapeXml(
-              `HP+${battleStatus.equippedAvatar.hp || 0} ATK+${
-                battleStatus.equippedAvatar.attack || 0
-              } DEF+${battleStatus.equippedAvatar.defense || 0}`
-            )
-          : "No Bonus"
-      }</text>
-      
-      <!-- Decorative borders -->
-      <rect x="0" y="0" width="550" height="320" rx="15" fill="none" stroke="#ffd700" stroke-width="4"/>
-      <rect x="3" y="3" width="544" height="314" rx="12" fill="none" stroke="#f59e0b" stroke-width="2"/>
-      
-      <!-- Corner decorations -->
-      <circle cx="25" cy="25" r="8" fill="#ffd700" opacity="0.8"/>
-      <circle cx="525" cy="25" r="8" fill="#ffd700" opacity="0.8"/>
-      <circle cx="25" cy="295" r="8" fill="#ffd700" opacity="0.8"/>
-      <circle cx="525" cy="295" r="8" fill="#ffd700" opacity="0.8"/>
-    </svg>
-  `;
+      <rect width="680" height="300" rx="4" fill="#0f1412"/>
+      <rect x="3" y="3" width="674" height="294" rx="3" fill="url(#stone)" stroke="#c89a45" stroke-width="3"/>
+      <rect x="10" y="10" width="660" height="280" fill="url(#grain)" stroke="#6f572f"/>
+      <path d="M18 18h26v4H22v22h-4zM662 18h-26v4h22v22h4zM18 282h26v-4H22v-22h-4zM662 282h-26v-4h22v-22h4z" fill="#e8bd62"/>
 
-    return new NextResponse(svg, {
-      status: 200,
-      headers: {
-        "Content-Type": "image/svg+xml; charset=utf-8",
-        "Cache-Control": "no-store",
-        "X-Content-Type-Options": "nosniff",
-      },
-    });
+      <g filter="url(#shadow)">
+        <rect x="22" y="22" width="636" height="58" fill="url(#green)" stroke="#b88a40" stroke-width="2"/>
+        <rect x="29" y="29" width="44" height="44" fill="#d2a453" stroke="#f1cf78"/>
+        <path d="M42 61V42l9-7 9 7v19l-9-5z" fill="#173c2e"/><path d="M45 43l6 4 6-4v9l-6 4-6-4z" fill="#e9ce86"/>
+        <text x="88" y="46" class="mono gold label">DEVELOPER'S GUILD / STATUS ARCHIVE</text>
+        <text x="88" y="68" class="serif cream" font-size="24" font-weight="800">${escapeXml(user.name)}</text>
+        <text x="630" y="58" text-anchor="end" class="mono gold" font-size="24" font-weight="900">LV. ${escapeXml(level)}</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="22" y="92" width="294" height="184" fill="#151b18" stroke="#8c6a35" stroke-width="2"/>
+        <text x="38" y="116" class="mono gold label">BATTLE STATUS</text>
+        <text x="38" y="143" class="mono muted" font-size="12">HP</text><text x="288" y="143" text-anchor="end" class="mono cream value">${escapeXml(hp)}</text>
+        <rect x="38" y="151" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="153" width="${clamp(hp, 500) * 2.46}" height="6" fill="#4c9a71"/>
+        <text x="38" y="185" class="mono muted" font-size="12">ATK</text><text x="288" y="185" text-anchor="end" class="mono cream value">${escapeXml(attack)}</text>
+        <rect x="38" y="193" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="195" width="${clamp(attack, 150) * 2.46}" height="6" fill="#a85145"/>
+        <text x="38" y="227" class="mono muted" font-size="12">DEF</text><text x="288" y="227" text-anchor="end" class="mono cream value">${escapeXml(defense)}</text>
+        <rect x="38" y="235" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="237" width="${clamp(defense, 150) * 2.46}" height="6" fill="#517b8c"/>
+        <text x="38" y="264" class="mono gold" font-size="11">${escapeXml(status.commit || 0)} COMMITS</text>
+        <text x="288" y="264" text-anchor="end" class="mono gold" font-size="11">${escapeXml(status.coin || 0)} COINS</text>
+      </g>
+
+      <g filter="url(#shadow)">
+        <rect x="330" y="92" width="328" height="184" fill="url(#paper)" stroke="#9b7137" stroke-width="2"/>
+        <path d="M338 100h312v168H338z" fill="none" stroke="#5b4328" stroke-opacity=".34"/>
+        <text x="348" y="118" class="mono ink label">ADVENTURER LOADOUT</text>
+        <path d="M348 128h290" stroke="#6b4b26" stroke-opacity=".45"/>
+        <text x="348" y="151" class="mono ink" font-size="10" font-weight="700">WEAPON</text>
+        <text x="348" y="169" class="serif ink" font-size="15" font-weight="800">${escapeXml(weapon?.name || "No weapon equipped")}</text>
+        <text x="628" y="169" text-anchor="end" class="mono ink" font-size="11">ATK +${escapeXml(weapon?.attack || 0)}</text>
+        <text x="348" y="196" class="mono ink" font-size="10" font-weight="700">ARMOR</text>
+        <text x="348" y="214" class="serif ink" font-size="15" font-weight="800">${escapeXml(armor?.name || "No armor equipped")}</text>
+        <text x="628" y="214" text-anchor="end" class="mono ink" font-size="11">DEF +${escapeXml(armor?.defense || 0)}</text>
+        <text x="348" y="241" class="mono ink" font-size="10" font-weight="700">AVATAR</text>
+        <text x="348" y="259" class="serif ink" font-size="15" font-weight="800">${escapeXml(avatar?.name || "Default adventurer")}</text>
+        <circle cx="628" cy="246" r="14" fill="#264d3c" stroke="#8b6839" stroke-width="2"/><path d="M622 247l4 4 8-10" fill="none" stroke="#f1cf78" stroke-width="3"/>
+      </g>
+    </svg>`;
+
+    return new NextResponse(svg, { status: 200, headers: { "Content-Type": "image/svg+xml; charset=utf-8", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
   } catch (error) {
     console.error("Error fetching user status:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

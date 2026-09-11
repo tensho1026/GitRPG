@@ -43,13 +43,13 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
 
   return (
     <div className="lg:col-span-2">
-      <Card className="bg-gradient-to-b from-green-800/95 to-green-900/95 border-4 border-lime-400 shadow-2xl pixel-border">
+      <Card className="parchment-panel rounded-none border-2 py-0">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-green-100 font-mono pixel-text">
-              📈 今月の草
+            <h2 className="text-2xl font-black text-stone-800">
+              今月の活動地図
             </h2>
-            <span className="bg-green-700 text-green-100 py-1 px-2 rounded font-mono text-sm pixel-text">
+            <span className="border border-stone-700/30 bg-amber-950/10 px-2 py-1 font-mono text-sm font-bold text-stone-700">
               活動合計: {thisMonthTotal}
             </span>
           </div>
@@ -67,27 +67,27 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
             ].map((metric) => (
               <div
                 key={metric.label}
-                className="bg-green-700/60 border-2 border-green-400/70 p-3 text-center">
-                <div className={`text-lg font-bold pixel-text ${metric.color}`}>
+                className="parchment-inset p-3 text-center">
+                <div className="font-mono text-lg font-black text-emerald-900">
                   {metric.value}
                 </div>
-                <div className="text-xs text-green-100 pixel-text">
+                <div className="text-xs font-bold text-stone-700">
                   {metric.label}
                 </div>
               </div>
             ))}
           </div>
 
-          <p className="text-green-100 text-sm pixel-text mb-4">
+          <p className="mb-4 text-sm text-stone-700">
             カレンダーと活動合計はContribution全体、レベル・コインはコミット数を基準にしています。
           </p>
 
-          <div className="bg-green-700/60 p-4 rounded pixel-border border-2 border-lime-400">
+          <div className="parchment-inset guild-grid-runes p-4">
             <div className="grid grid-cols-7 gap-2">
               {["日", "月", "火", "水", "木", "金", "土"].map((day) => (
                 <div
                   key={day}
-                  className="text-center font-bold text-lime-300 pixel-text text-xs">
+                  className="text-center font-mono text-xs font-bold text-stone-700">
                   {day}
                 </div>
               ))}
@@ -122,12 +122,12 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
                 return (
                   <div
                     key={day}
-                    className={`aspect-square rounded pixel-border border-2 flex flex-col items-center justify-center ${bgColor} ${borderColor} p-1`}>
-                    <div className="text-xs text-green-200/80 pixel-text mb-1">
+                    className={`flex aspect-square flex-col items-center justify-center border-2 ${bgColor} ${borderColor} p-1`}>
+                    <div className="mb-1 text-xs font-bold text-stone-700/70">
                       {day}
                     </div>
                     <div
-                      className={`font-bold text-sm pixel-text ${textColor}`}>
+                      className={`font-mono text-sm font-black ${textColor}`}>
                       {contributions}
                     </div>
                   </div>
@@ -135,10 +135,10 @@ const MonthlyActivity: React.FC<MonthlyActivityProps> = ({
               })}
             </div>
           </div>
-          <p className="text-green-200 font-mono text-lg pixel-text mt-4 text-center">
-            🌱 活動の草を育てよう！
+          <p className="mt-4 text-center font-mono text-lg font-black text-emerald-900">
+            足跡を刻み、地図を緑で満たそう。
           </p>
-          <p className="text-green-300 font-mono text-sm pixel-text mt-1 text-center">
+          <p className="mt-1 text-center font-mono text-sm text-stone-600">
             継続は力なり - 毎日少しずつでも成長しよう
           </p>
         </CardContent>

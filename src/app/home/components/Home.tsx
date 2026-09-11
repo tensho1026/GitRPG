@@ -89,11 +89,11 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   }
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
+    <main className="guild-shell min-h-screen w-full overflow-hidden">
       {/* Background */}
       <BackGround backgroundImage={"/newhomepage.JPG"} />
 
-      <div className="relative z-10 p-3 sm:p-4 max-w-6xl mx-auto">
+      <div className="guild-container">
         {/* Header */}
         <Header userStatus={userStatus as UserWithStatus} />
 
@@ -105,7 +105,7 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         )}
 
         {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+        <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
           {/* User Basic Information */}
           <UserBasicInfo userData={userData} />
 
@@ -121,10 +121,10 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 ml-0 lg:ml-8">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {menuButtons}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

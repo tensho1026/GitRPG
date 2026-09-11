@@ -37,12 +37,11 @@ export default function Item() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <main className="guild-shell min-h-screen">
       <BackGround backgroundImage="newitempage.JPG" />
 
-      <div className="absolute inset-0 bg-black/30" />
-      <div className="relative z-10 p-3 sm:p-4 font-mono">
-        <div className="max-w-6xl mx-auto">
+      <div className="guild-container font-mono">
+        <div>
           <ItemHeader coins={coins} />
           <ItemTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
           <ItemLayout
@@ -54,6 +53,6 @@ export default function Item() {
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

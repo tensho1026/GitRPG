@@ -139,23 +139,22 @@ export default function BattlePage() {
   );
 
   return (
-    <main className="min-h-screen bg-slate-800 p-3 font-mono text-white sm:p-4">
-      <div className="mx-auto max-w-4xl">
-        <header className="mb-4 border-4 border-slate-500 bg-slate-900 p-4 shadow-lg">
+    <main className="guild-shell min-h-screen font-mono text-white">
+      <div aria-hidden="true" className="guild-backdrop fixed inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: "url('/dark.jpeg')" }} />
+      <div className="guild-container max-w-5xl">
+        <header className="guild-header mb-4 p-4">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 aria-label="前の画面へ戻る"
                 onClick={() => router.push("/home")}
-                className="touch-target border-2 border-slate-400 bg-slate-700 p-2 hover:bg-slate-600">
+                className="guild-button guild-button--stone h-11 w-11 p-0">
                 <ArrowLeft aria-hidden="true" />
               </button>
-              <h1 className="text-2xl font-bold pixel-text sm:text-3xl">
-                ⚔️ バトル
-              </h1>
+              <div><p className="guild-kicker">Dungeon Encounter</p><h1 className="guild-title text-2xl sm:text-3xl">バトル</h1></div>
             </div>
-            <div className="flex items-center gap-2 text-yellow-300">
+            <div className="guild-chip">
               <Zap aria-hidden="true" />
               <span>
                 Lv.{game.player.level ?? "-"} / 第{game.battle.stageId}階層
@@ -165,9 +164,9 @@ export default function BattlePage() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="flex items-center gap-3">
-              <MapPin className="text-green-400" aria-hidden="true" />
+              <MapPin className="text-emerald-300" aria-hidden="true" />
               <div>
-                <p className="text-sm text-green-300">
+                <p className="text-sm text-emerald-300">
                   第{game.battle.stageId}階層
                 </p>
                 <p className="break-words text-lg font-bold">
@@ -176,7 +175,7 @@ export default function BattlePage() {
               </div>
             </div>
             <div>
-              <div className="mb-2 flex justify-between text-sm text-yellow-300">
+              <div className="mb-2 flex justify-between text-sm text-amber-200">
                 <span>ステージ進行</span>
                 <span>
                   {game.battle.battleNumber}/
@@ -184,14 +183,14 @@ export default function BattlePage() {
                 </span>
               </div>
               <div
-                className="h-3 border-2 border-yellow-400 bg-slate-700"
+                className="guild-progress"
                 role="progressbar"
                 aria-valuenow={progress}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-label="ステージ進行状況">
                 <div
-                  className="h-full bg-yellow-300 transition-[width]"
+                  className="transition-[width]"
                   style={{ width: progress + "%" }}
                 />
               </div>
@@ -202,7 +201,7 @@ export default function BattlePage() {
         {actionError && <InlineError message={actionError} />}
 
         <div className="mb-4 grid gap-4 lg:grid-cols-2">
-          <section className="border-4 border-blue-400 bg-blue-800 p-4 shadow-lg">
+          <section className="guild-panel p-5">
             <h2 className="mb-3 text-center text-xl font-bold">
               {game.player.name}
             </h2>
@@ -218,9 +217,9 @@ export default function BattlePage() {
                 Lv.{game.player.level ?? "-"}　
                 HP: {game.player.hp}/{game.player.maxHp}
               </p>
-              <div className="h-3 border-2 border-white bg-slate-900">
+              <div className="guild-progress">
                 <div
-                  className="h-full bg-green-400"
+                  className="!bg-emerald-500"
                   style={{
                     width:
                       Math.max(
@@ -231,11 +230,11 @@ export default function BattlePage() {
                 />
               </div>
               <div className="grid grid-cols-2 gap-2 text-center text-sm">
-                <span className="border-2 border-white p-2">
+                <span className="guild-inset p-2">
                   <Sword className="mr-1 inline" size={16} aria-hidden="true" />
                   攻撃 {game.player.attack}
                 </span>
-                <span className="border-2 border-white p-2">
+                <span className="guild-inset p-2">
                   <Shield className="mr-1 inline" size={16} aria-hidden="true" />
                   防御 {game.player.defense}
                 </span>
@@ -243,7 +242,7 @@ export default function BattlePage() {
             </div>
           </section>
 
-          <section className="border-4 border-red-400 bg-red-800 p-4 shadow-lg">
+          <section className="guild-panel !border-red-900 p-5">
             <h2 className="mb-3 break-words text-center text-xl font-bold">
               {game.monster.name}
             </h2>
@@ -259,9 +258,9 @@ export default function BattlePage() {
               <p className="text-center">
                 HP: {game.monster.hp}/{game.monster.maxHp}
               </p>
-              <div className="h-3 border-2 border-white bg-slate-900">
+              <div className="guild-progress">
                 <div
-                  className="h-full bg-red-400"
+                  className="!bg-red-600"
                   style={{
                     width:
                       Math.max(
@@ -278,13 +277,13 @@ export default function BattlePage() {
           </section>
         </div>
 
-        <section className="mb-4 border-4 border-slate-500 bg-slate-900 p-4">
-          <h2 className="mb-3 text-lg font-bold">📜 バトルログ</h2>
+        <section className="parchment-panel mb-4 p-5 text-stone-800">
+          <h2 className="mb-3 text-lg font-black">バトルログ</h2>
           <div
-            className="h-32 overflow-y-auto border-2 border-slate-500 bg-slate-700 p-3"
+            className="parchment-inset h-32 overflow-y-auto p-3"
             aria-live="polite">
             {battleLog.map((message, index) => (
-              <p key={index} className="mb-1 text-green-300">
+              <p key={index} className="mb-1 text-emerald-900">
                 &gt; {message}
               </p>
             ))}
@@ -297,7 +296,7 @@ export default function BattlePage() {
               type="button"
               onClick={() => void handleAttack()}
               disabled={isProcessing}
-              className="touch-target border-4 border-green-700 bg-green-600 px-8 py-4 text-xl font-bold hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-60">
+              className="guild-button touch-target px-8 py-4 text-xl">
               <Sword className="mr-2 inline" aria-hidden="true" />
               {isProcessing ? "処理中..." : "攻撃"}
             </button>
@@ -306,7 +305,7 @@ export default function BattlePage() {
 
         {battleFinished && (
           <section
-            className="mt-4 border-4 border-yellow-400 bg-slate-900 p-6 text-center"
+            className="guild-panel mt-4 p-6 text-center"
             role="status"
             aria-live="assertive">
             <h2 className="mb-4 text-3xl font-bold">
@@ -317,7 +316,7 @@ export default function BattlePage() {
                   : "💀 敗北..."}
             </h2>
             {game.battle.status === "won" && (
-              <p className="mb-4 text-yellow-300">
+              <p className="mb-4 text-amber-200">
                 報酬はサーバーで確定・保存されました。次の敵へ進めます。
               </p>
             )}
@@ -325,7 +324,7 @@ export default function BattlePage() {
               <button
                 type="button"
                 onClick={() => void loadBattle()}
-                className="touch-target border-4 border-green-700 bg-green-600 px-8 py-3 font-bold hover:bg-green-500">
+                className="guild-button touch-target px-8 py-3">
                 {game.battle.status === "won" ? "次の敵へ" : "再挑戦"}
               </button>
             )}

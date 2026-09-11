@@ -27,10 +27,10 @@ export default function Battle() {
   }
 
   return (
-    <div className="min-h-screen p-3 sm:p-4 font-mono battle-background">
+    <main className="guild-shell min-h-screen font-mono battle-background">
       <BattleStyles />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="guild-container">
         <BattleHeader
           userLevel={userLevel}
           totalHp={battleStatus.totalStats.hp}
@@ -63,6 +63,6 @@ export default function Battle() {
 
         <BattleTips />
       </div>
-    </div>
+    </main>
   );
 }

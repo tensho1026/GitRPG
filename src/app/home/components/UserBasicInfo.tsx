@@ -19,13 +19,10 @@ interface UserBasicInfoProps {
 function UserBasicInfo({ userData }: UserBasicInfoProps) {
   return (
     <div className="lg:col-span-1">
-      <Card className="bg-gradient-to-b from-emerald-800/95 to-emerald-900/95 border-4 border-yellow-500 shadow-2xl pixel-border h-full">
+      <Card className="guild-panel h-full rounded-none border-2 py-0">
         <CardContent className="p-4">
-          <div className="flex items-center mb-8">
-            <Crown className="w-5 h-5 text-yellow-400 mr-2" />
-            <h2 className="text-yellow-200 font-mono text-sm pixel-text font-bold">
-              🔑 冒険者情報
-            </h2>
+          <div className="guild-section-title">
+            <Crown className="w-5 h-5" /><h2>Adventurer</h2>
           </div>
 
           <div className="text-center mb-3">
@@ -33,24 +30,24 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
               <Image
                 src={userData.avatar}
                 alt="User Avatar"
-                className="w-16 h-16 rounded-full border-3 border-yellow-400 pixelated mx-auto"
+                className="mx-auto h-20 w-20 border-2 border-amber-300 object-cover pixelated"
                 width={64}
                 height={64}
               />
-              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center border border-amber-300 bg-emerald-700">
+                <div className="w-2 h-2 bg-emerald-200"></div>
               </div>
             </div>
-            <h3 className="text-yellow-100 font-mono text-lg pixel-text font-bold mt-2 mb-5">
+            <h3 className="guild-title mt-3 text-lg">
               {userData.name}
             </h3>
-            <p className="text-emerald-200 font-mono text-xs pixel-text">
+            <p className="font-mono text-xs text-stone-400">
               @{userData.username}
             </p>
           </div>
 
-          <div className="space-y-2 mb-3 mt-10">
-            <div className="flex items-center text-emerald-300 font-mono text-xs pixel-text">
+          <div className="guild-inset my-4 p-3">
+            <div className="flex items-center text-stone-300 font-mono text-xs">
               <Calendar className="w-3 h-3 mr-1" />
               <span>{userData.registrationDate}</span>
             </div>
@@ -60,7 +57,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             <Link
               href={userData.githubUrl}
               aria-label="GitHubプロフィールを開く"
-              className="w-full bg-gray-800/80 border-2 border-gray-600 text-gray-200 hover:bg-gray-700/80 pixel-border text-xs mb-8 mt-5">
+              className="guild-button guild-button--stone mb-2 w-full text-xs">
               <Github className="w-3 h-3 mr-1" />
               GitHub
             </Link>
@@ -70,7 +67,7 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
             variant="outline"
             size="sm"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="w-full bg-red-800/80 border-2 border-red-600 text-red-200 hover:bg-red-700/80 pixel-border text-xs">
+            className="guild-button guild-button--danger w-full text-xs">
             <LogOut className="w-3 h-3 mr-1" />
             ログアウト
           </Button>

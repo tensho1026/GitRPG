@@ -32,11 +32,11 @@ export default function Grass() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <main className="guild-shell min-h-screen">
       <BackGround backgroundImage="/newhomepage.JPG" />
 
-      <div className="relative z-10 p-3 sm:p-4 font-mono">
-        <div className="max-w-6xl mx-auto">
+      <div className="guild-container font-mono">
+        <div>
           <GrassHeader thisMonthTotal={thisMonthTotal} />
 
           {/* Grass Display */}
@@ -52,6 +52,6 @@ export default function Grass() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
