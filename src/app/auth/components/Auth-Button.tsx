@@ -10,6 +10,7 @@ import { getUserStatus } from "@/actions/user/status/getUserStatus";
 import { getCurrentUserBattleStatus } from "@/actions/user/status/getCurrentUserBattleStatus";
 import { getRemainingCommitsToNextLevel } from "@/lib/leveling";
 import type { UserWithStatus, BattleStatus } from "@/types/user/userStatus";
+import GitHubPermissionNotice from "./GitHubPermissionNotice";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
@@ -295,6 +296,8 @@ export default function AuthButton() {
                   <Github className="w-6 h-6 mr-3" />
                   冒険を始める
                 </Button>
+
+                <GitHubPermissionNotice />
 
                 {/* Terrain indicators */}
                 <div className="flex justify-center space-x-4 mt-6">

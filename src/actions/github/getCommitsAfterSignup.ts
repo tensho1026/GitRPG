@@ -68,10 +68,10 @@ export const getCommitsAfterSignup = async (): Promise<number> => {
       );
 
       if (!response.ok) {
-        if (response.status === 403) {
-          console.error("GitHub API rate limit exceeded");
+        if (response.status === 401 || response.status === 403) {
+          console.error("GitHub authorization or rate limit error");
           throw new Error(
-            "GitHub API rate limit exceeded. Please try again later."
+            "GitHubの権限が不足しているか、APIのレート制限に達しました。ログインし直して権限を更新してください。"
           );
         }
         throw new Error(

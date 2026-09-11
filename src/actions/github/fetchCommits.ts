@@ -46,6 +46,12 @@ export const fetchTotalContributions = async (
       }),
     });
 
+    if (response.status === 401 || response.status === 403) {
+      throw new Error(
+        "GitHubの権限が不足しているか、APIのレート制限に達しました。ログインし直して権限を更新してください。"
+      );
+    }
+
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
     }
