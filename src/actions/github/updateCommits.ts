@@ -5,11 +5,10 @@ import { getAuthenticatedUserId } from "@/lib/authenticatedUser";
 import { fetchTotalContributions } from "@/actions/github/fetchCommits";
 import { getCommitsAfterSignup } from "@/actions/github/getCommitsAfterSignup";
 import { supabase } from "../../supabase/supabase.config";
+import { getSyncPlan, type SyncStatus } from "@/lib/sync";
 
 export const SYNC_INTERVAL_MS = 5 * 60 * 1000;
 export const SYNC_LEASE_MS = 2 * 60 * 1000;
-
-type SyncStatus = "idle" | "syncing" | "success" | "error";
 
 type CurrentStatus = {
   commit: number;
@@ -60,29 +59,22 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
 
     const now = Date.now();
     const current = currentStatus as CurrentStatus;
-    const lastSyncAt = current.lastSyncAt
-      ? new Date(current.lastSyncAt)
-      : null;
-    const syncStartedAt = current.syncStartedAt
-      ? new Date(current.syncStartedAt)
-      : null;
-    const isSyncing =
-      current.syncStatus === "syncing" &&
-      syncStartedAt &&
-      !Number.isNaN(syncStartedAt.getTime()) &&
-      now - syncStartedAt.getTime() < SYNC_LEASE_MS;
-    const recentlySynced =
-      !options.force &&
-      current.syncStatus === "success" &&
-      lastSyncAt &&
-      !Number.isNaN(lastSyncAt.getTime()) &&
-      now - lastSyncAt.getTime() < SYNC_INTERVAL_MS;
+    const plan = getSyncPlan({
+      now,
+      createdAt: createdAt.toISOString(),
+      lastSyncAt: current.lastSyncAt,
+      syncStartedAt: current.syncStartedAt,
+      syncStatus: current.syncStatus,
+      force: options.force,
+      intervalMs: SYNC_INTERVAL_MS,
+      leaseMs: SYNC_LEASE_MS,
+    });
 
-    if (isSyncing || recentlySynced) {
+    if (!plan.shouldSync) {
       return {
         success: true,
         skipped: true,
-        reason: isSyncing ? "in_progress" : "cooldown",
+        reason: plan.reason,
         updatedStatus: currentStatus,
         coinsAwarded: 0,
         newCommits: 0,
@@ -119,8 +111,8 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
       };
     }
 
-    const initialSync = !lastSyncAt;
-    const fromDate = (lastSyncAt || createdAt).toISOString();
+    const initialSync = plan.reason === "initial";
+    const fromDate = plan.fromDate;
     let contributions;
     try {
       contributions = await fetchTotalContributions(fromDate);
