@@ -19,7 +19,7 @@ GitHubでの活動を、コミット・Pull Request・Issue・総合貢献数の
 <div align="center">
 
 <a href="https://git-game.vercel.app/">
-  <img src="https://git-game.vercel.app/api/readme/tensho1026?v=2" alt="Git-RPG status" width="680" />
+  <img src="https://git-game.vercel.app/api/readme/tensho1026?v=3" alt="Git-RPG status" width="680" />
 </a>
 
 <br />
