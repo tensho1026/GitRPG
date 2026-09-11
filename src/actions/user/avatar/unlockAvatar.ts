@@ -4,7 +4,6 @@ import { assertAuthenticatedUser } from "@/lib/authenticatedUser";
 import { ensureDefaultAvatar } from "@/lib/defaultAvatar";
 
 import { supabase } from "../../../supabase/supabase.config";
-import { randomUUID } from "crypto";
 import { avatarCharacters } from "@/data/avatar";
 
 export const unlockAvatar = async (email: string, avatarId: string) => {
@@ -18,101 +17,24 @@ export const unlockAvatar = async (email: string, avatarId: string) => {
     throw new Error("Avatar not found.");
   }
 
-  const { data: userStatus, error: userStatusError } = await supabase
-    .from("UserStatus")
-    .select("level, coin")
-    .eq("userId", email)
-    .single();
-
-  if (userStatusError || !userStatus) {
-    console.error("Failed to fetch user status:", userStatusError);
-    throw new Error("User status not found.");
-  }
-
-  // Check if user already has this avatar
-  const { data: existingAvatar, error: avatarError } = await supabase
-    .from("Avatar")
-    .select("id")
-    .eq("userId", email)
-    .eq("name", avatarToUnlock.name)
-    .maybeSingle();
-
-  if (avatarError) {
-    console.error("Failed to check avatar ownership:", avatarError);
-    throw new Error("Failed to check avatar ownership.");
-  }
-
-  if (existingAvatar) {
-    throw new Error("Avatar already owned.");
-  }
-
-  if (
-    !Number.isSafeInteger(userStatus.level) ||
-    userStatus.level < 1 ||
-    !Number.isSafeInteger(userStatus.coin) ||
-    userStatus.coin < 0
-  ) {
-    throw new Error("Invalid user status");
-  }
-
-  if (userStatus.level < avatarToUnlock.unlockLevel) {
-    throw new Error("Level requirement not met.");
-  }
-
-  if (userStatus.coin < avatarToUnlock.price) {
-    throw new Error("Not enough coins.");
-  }
-
   try {
-    // Debit only if the balance has not changed since it was read. This
-    // prevents concurrent unlock requests from overspending the account.
-    const remainingCoin = userStatus.coin - avatarToUnlock.price;
-    const { data: debitedStatus, error: coinError } = await supabase
-      .from("UserStatus")
-      .update({
-        coin: remainingCoin,
-        updatedAt: new Date().toISOString(),
-      })
-      .eq("userId", email)
-      .eq("coin", userStatus.coin)
-      .gte("coin", avatarToUnlock.price)
-      .select("coin")
-      .maybeSingle();
-
-    if (coinError) {
-      console.error("Failed to update coins:", coinError);
-      throw new Error("Failed to deduct coins.");
-    }
-
-    if (!debitedStatus) {
-      throw new Error("Coin balance changed. Please try again.");
-    }
-
-    // Create the avatar
-    const { error: createError } = await supabase.from("Avatar").insert({
-      id: randomUUID(),
-      name: avatarToUnlock.name,
-      image: avatarToUnlock.image,
-      description: avatarToUnlock.description,
-      type: avatarToUnlock.type,
-      hp: avatarToUnlock.statBonus.hp,
-      attack: avatarToUnlock.statBonus.attack,
-      defense: avatarToUnlock.statBonus.defense,
-      price: avatarToUnlock.price,
-      userId: email,
-      equipped: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+    const { data, error } = await supabase.rpc("unlock_avatar", {
+      p_user_id: email,
+      p_avatar_id: crypto.randomUUID(),
+      p_name: avatarToUnlock.name,
+      p_image: avatarToUnlock.image,
+      p_description: avatarToUnlock.description,
+      p_type: avatarToUnlock.type,
+      p_hp: avatarToUnlock.statBonus.hp,
+      p_attack: avatarToUnlock.statBonus.attack,
+      p_defense: avatarToUnlock.statBonus.defense,
+      p_price: avatarToUnlock.price,
+      p_unlock_level: avatarToUnlock.unlockLevel,
     });
 
-    if (createError) {
-      console.error("Failed to create avatar:", createError);
-      await supabase
-        .from("UserStatus")
-        .update({ coin: userStatus.coin, updatedAt: new Date().toISOString() })
-        .eq("userId", email)
-        .eq("coin", remainingCoin);
-      throw new Error("Failed to create avatar.");
+    if (error || !data?.avatar) {
+      console.error("Failed to unlock avatar transaction:", error);
+      throw new Error(error?.message || "Failed to unlock avatar.");
     }
 
     return { success: true };
