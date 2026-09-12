@@ -34,9 +34,6 @@ function UserBasicInfo({ userData }: UserBasicInfoProps) {
                 width={64}
                 height={64}
               />
-              <div className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center border border-amber-300 bg-emerald-700">
-                <div className="w-2 h-2 bg-emerald-200"></div>
-              </div>
             </div>
             <h3 className="guild-title mt-3 text-lg">
               {userData.name}
