@@ -164,7 +164,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ nam
         <text x="628" y="211" text-anchor="end" class="mono ink value">${escapeXml(githubData.stats.issues)}</text>
         <text x="348" y="241" class="mono ink" font-size="10" font-weight="700">PUBLIC REPOSITORIES</text>
         <text x="628" y="241" text-anchor="end" class="mono ink value">${escapeXml(githubData.stats.repositories)}</text>
-        <circle cx="628" cy="246" r="14" fill="#264d3c" stroke="#8b6839" stroke-width="2"/><path d="M622 247l4 4 8-10" fill="none" stroke="#f1cf78" stroke-width="3"/>
       </g>
     </svg>`;
 
