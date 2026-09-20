@@ -42,15 +42,15 @@ interface InlineErrorProps {
 export function InlineError({ message, onRetry }: InlineErrorProps) {
   return (
     <div
-      className="guild-panel mb-4 !border-red-700 p-3 text-red-100"
+      className="guild-notice guild-notice--error mb-4"
       role="alert"
       aria-live="assertive">
-      <p className="pixel-text">{message}</p>
+      <p className="min-w-0 flex-1 text-sm leading-5">{message}</p>
       {onRetry && (
         <button
           type="button"
           onClick={() => void onRetry()}
-          className="guild-button guild-button--danger mt-3 min-h-11 px-4 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
+          className="guild-button guild-button--danger min-h-10 shrink-0 px-4 py-2 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
           再試行
         </button>
       )}

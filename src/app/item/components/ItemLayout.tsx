@@ -27,7 +27,7 @@ export default function ItemLayout({
   return (
     <div className="grid grid-cols-1 xl:grid-cols-10 gap-8">
       {/* Left Side - Equipment Status and Combat Status (30%) */}
-      <div className="xl:col-span-3 space-y-6">
+      <div className="space-y-6 xl:sticky xl:top-4 xl:col-span-3 xl:self-start">
         <EquipmentStatus userItems={userItems} />
         <CombatStatus
           hp={battleStatus.hp}

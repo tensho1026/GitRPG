@@ -2,16 +2,6 @@ import { Sword, Calendar, Target, Crown } from "lucide-react";
 
 export const menuItems = [
   {
-    href: "/avatar",
-    icon: Crown,
-    title: "アバター",
-    description: "キャラクター選択",
-    bgColor: "#7c3aed",
-    borderColor: "#a78bfa",
-    shadowColor: "#5b21b6",
-    descriptionColor: "text-purple-200",
-  },
-  {
     href: "/game",
     icon: Target,
     title: "バトル",
@@ -20,6 +10,7 @@ export const menuItems = [
     borderColor: "#fb923c",
     shadowColor: "#c2410c",
     descriptionColor: "text-orange-200",
+    featured: true,
   },
   {
     href: "/item",
@@ -30,6 +21,17 @@ export const menuItems = [
     borderColor: "#f87171",
     shadowColor: "#991b1b",
     descriptionColor: "text-red-200",
+    featured: true,
+  },
+  {
+    href: "/avatar",
+    icon: Crown,
+    title: "アバター",
+    description: "キャラクター選択",
+    bgColor: "#7c3aed",
+    borderColor: "#a78bfa",
+    shadowColor: "#5b21b6",
+    descriptionColor: "text-purple-200",
   },
   {
     href: "/grass",

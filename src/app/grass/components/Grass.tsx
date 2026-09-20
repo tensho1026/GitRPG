@@ -6,6 +6,7 @@ import { useGrassData } from "../hooks/useGrassData";
 import BackGround from "@/components/BackGround";
 import Loading from "@/components/ Loading";
 import { DataState } from "@/app/components/DataState";
+import GuildNavigation from "@/components/GuildNavigation";
 
 export default function Grass() {
   const {
@@ -32,12 +33,13 @@ export default function Grass() {
   }
 
   return (
-    <main className="guild-shell min-h-screen">
+    <main className="guild-shell min-h-screen pb-20 md:pb-0">
       <BackGround backgroundImage="/newhomepage.JPG" />
 
       <div className="guild-container font-mono">
         <div>
           <GrassHeader thisMonthTotal={thisMonthTotal} />
+          <GuildNavigation />
 
           {/* Grass Display */}
           <div className="lg:col-span-3">

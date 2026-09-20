@@ -7,6 +7,7 @@ import { useItemData } from "../hooks/useItemData";
 import BackGround from "@/components/BackGround";
 import Loading from "@/components/ Loading";
 import { DataState } from "@/app/components/DataState";
+import GuildNavigation from "@/components/GuildNavigation";
 
 export default function Item() {
   const {
@@ -37,12 +38,13 @@ export default function Item() {
   }
 
   return (
-    <main className="guild-shell min-h-screen">
+    <main className="guild-shell min-h-screen pb-20 md:pb-0">
       <BackGround backgroundImage="newitempage.JPG" />
 
       <div className="guild-container font-mono">
         <div>
           <ItemHeader coins={coins} />
+          <GuildNavigation />
           <ItemTabs selectedTab={selectedTab} onTabChange={setSelectedTab} />
           <ItemLayout
             userItems={userItems}
