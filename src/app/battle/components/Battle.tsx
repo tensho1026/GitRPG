@@ -8,6 +8,7 @@ import BattleStyles from "./BattleStyles";
 import { useBattleData } from "../hooks/useBattleData";
 import Loading from "@/components/ Loading";
 import { DataState } from "@/app/components/DataState";
+import GuildNavigation from "@/components/GuildNavigation";
 
 export default function Battle() {
   const { battleStatus, userLevel, isLoading, error, retry } = useBattleData();
@@ -27,7 +28,7 @@ export default function Battle() {
   }
 
   return (
-    <main className="guild-shell min-h-screen font-mono battle-background">
+    <main className="guild-shell min-h-screen pb-20 font-mono battle-background md:pb-0">
       <BattleStyles />
 
       <div className="guild-container">
@@ -35,6 +36,7 @@ export default function Battle() {
           userLevel={userLevel}
           totalHp={battleStatus.totalStats.hp}
         />
+        <GuildNavigation />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Combat Status Card */}

@@ -2,8 +2,7 @@
 import { useEffect, useMemo } from "react";
 import { Session } from "next-auth";
 import MenuButton from "./MenuButton";
-import MyAvatar from "@/app/home/components/MyAvatar";
-import UserBasicInfo from "./UserBasicInfo";
+import AdventurerOverview from "./AdventurerOverview";
 import UserStatus from "./UserStatus";
 import Header from "./Header";
 import { UserWithStatus } from "@/types/user/userStatus";
@@ -14,6 +13,7 @@ import { useHomeData } from "../hooks/useHomeData";
 import { useUserStats } from "../hooks/useUserStats";
 import Loading from "@/components/ Loading";
 import { DataState, InlineError } from "@/app/components/DataState";
+import GuildNavigation from "@/components/GuildNavigation";
 
 interface HomeScreenProps {
   session: Session | null;
@@ -55,15 +55,11 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         githubUrl: githubUsername
           ? `https://github.com/${encodeURIComponent(githubUsername)}`
           : "https://github.com",
-        registrationDate: userStatus?.user?.createdAt
-          ? new Date(userStatus.user.createdAt).toLocaleDateString()
-          : "",
       };
     },
     [
       userStatus?.user?.name,
       userStatus?.user?.image,
-      userStatus?.user?.createdAt,
       session?.user?.githubUsername,
     ]
   );
@@ -89,13 +85,14 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
   }
 
   return (
-    <main className="guild-shell min-h-screen w-full overflow-hidden">
+    <main className="guild-shell min-h-screen w-full overflow-hidden pb-20 md:pb-0">
       {/* Background */}
       <BackGround backgroundImage={"/newhomepage.JPG"} />
 
       <div className="guild-container">
         {/* Header */}
         <Header userStatus={userStatus as UserWithStatus} />
+        <GuildNavigation />
 
         {syncError && (
           <InlineError
@@ -104,20 +101,17 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
           />
         )}
 
-        {/* Main Dashboard Grid */}
-        <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
-          {/* User Basic Information */}
-          <UserBasicInfo userData={userData} />
-
-          {/* User Status */}
+        <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(280px,0.75fr)]">
           <UserStatus
             userStatus={userStatus as UserWithStatus}
             remainingCommits={remainingCommits}
             progressPercentage={progressPercentage}
           />
-
-          {/* Avatar Display */}
-          <MyAvatar userItems={items} equippedAvatar={equippedAvatar} />
+          <AdventurerOverview
+            userData={userData}
+            userItems={items}
+            equippedAvatar={equippedAvatar}
+          />
         </div>
 
         {/* Navigation Buttons */}

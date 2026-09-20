@@ -10,6 +10,7 @@ interface MenuButtonProps {
   borderColor: string;
   shadowColor: string;
   descriptionColor: string;
+  featured?: boolean;
 }
 
 export default function MenuButton({
@@ -21,12 +22,13 @@ export default function MenuButton({
   borderColor: _borderColor,
   shadowColor: _shadowColor,
   descriptionColor,
+  featured = false,
 }: MenuButtonProps) {
   return (
     <Link
       href={href}
       aria-label={`${title}: ${description}`}
-      className="guild-nav-card focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
+      className={`guild-nav-card focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-yellow-300 ${featured ? "guild-nav-card--featured" : ""}`}>
         <div className="mb-3 flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center border border-amber-700/70 bg-black/25 text-amber-200"><Icon className="w-5 h-5" /></span>
           <span className="guild-title text-xl">{title}</span>

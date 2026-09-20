@@ -5,6 +5,7 @@ import { useAvatarData } from "../hooks/useAvatarData";
 import BackGround from "@/components/BackGround";
 import Loading from "@/components/ Loading";
 import { DataState, InlineError } from "@/app/components/DataState";
+import GuildNavigation from "@/components/GuildNavigation";
 
 export default function Avatar() {
   const {
@@ -36,7 +37,7 @@ export default function Avatar() {
   }
 
   return (
-    <main className="guild-shell min-h-screen">
+    <main className="guild-shell min-h-screen pb-20 md:pb-0">
       <BackGround backgroundImage="newavatar.JPG" />
 
       {/* Processing overlay for actions */}
@@ -50,6 +51,7 @@ export default function Avatar() {
         <div>
           {actionError && <InlineError message={actionError} />}
           <AvatarHeader level={playerData.level} coins={coins} />
+          <GuildNavigation />
 
           <AvatarGrid
             displayAvatars={displayAvatars}

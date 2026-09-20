@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, MapPin, Shield, Sword, Zap } from "lucide-react";
+import { MapPin, Shield, Sword, Zap } from "lucide-react";
 import {
   attackBattle,
   getBattleState,
@@ -12,6 +12,7 @@ import {
 } from "@/actions/game/battle";
 import { DataState, InlineError } from "@/app/components/DataState";
 import Loading from "@/components/ Loading";
+import GuildNavigation from "@/components/GuildNavigation";
 
 const INITIAL_LOG = ["戦闘準備中..."];
 
@@ -139,19 +140,12 @@ export default function BattlePage() {
   );
 
   return (
-    <main className="guild-shell min-h-screen font-mono text-white">
+    <main className="guild-shell min-h-screen pb-20 font-mono text-white md:pb-0">
       <div aria-hidden="true" className="guild-backdrop fixed inset-0 -z-10 bg-cover bg-center" style={{ backgroundImage: "url('/dark.jpeg')" }} />
       <div className="guild-container max-w-5xl">
         <header className="guild-header mb-4 p-4">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                aria-label="前の画面へ戻る"
-                onClick={() => router.push("/home")}
-                className="guild-button guild-button--stone h-11 w-11 p-0">
-                <ArrowLeft aria-hidden="true" />
-              </button>
               <div><p className="guild-kicker">Dungeon Encounter</p><h1 className="guild-title text-2xl sm:text-3xl">バトル</h1></div>
             </div>
             <div className="guild-chip">
@@ -197,6 +191,7 @@ export default function BattlePage() {
             </div>
           </div>
         </header>
+        <GuildNavigation />
 
         {actionError && <InlineError message={actionError} />}
 
