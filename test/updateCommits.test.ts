@@ -56,6 +56,10 @@ describe("updateCommits", () => {
       lastSyncAt: new Date().toISOString(),
       syncStatus: "success",
     };
+    const claim = chain(null, {
+      data: { syncStartedAt: new Date().toISOString() },
+      error: null,
+    });
     let userStatusQueries = 0;
 
     from.mockImplementation((table: string) => {
@@ -67,10 +71,7 @@ describe("updateCommits", () => {
         return chain({ data: initialStatus, error: null }, null);
       }
       if (userStatusQueries === 2) {
-        return chain(null, {
-          data: { syncStartedAt: new Date().toISOString() },
-          error: null,
-        });
+        return claim;
       }
       if (userStatusQueries === 3) {
         return chain(null, { data: updatedStatus, error: null });
@@ -96,6 +97,13 @@ describe("updateCommits", () => {
     });
     expect(fetchContributions).toHaveBeenCalledTimes(1);
     expect(fetchContributions).toHaveBeenCalledWith(createdAt, expect.any(String));
+    const startedAt = fetchContributions.mock.calls[0][1];
+    expect(claim.update).toHaveBeenCalledWith({
+      syncStatus: "syncing",
+      syncStartedAt: startedAt,
+      syncError: null,
+      updatedAt: startedAt,
+    });
   });
 
   it.each([

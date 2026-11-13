@@ -89,7 +89,7 @@ export const updateCommits = async (options: { force?: boolean } = {}) => {
         syncStatus: "syncing",
         syncStartedAt: startedAt,
         syncError: null,
-        updatedAt: claimTime,
+        updatedAt: startedAt,
       })
       .eq("userId", userId)
       .eq("syncStatus", current.syncStatus || "idle")
