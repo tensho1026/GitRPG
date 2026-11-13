@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { from, getUserId, fetchContributions, getRecentCommits } = vi.hoisted(
+const { from, getUserId, fetchContributions } = vi.hoisted(
   () => ({
     from: vi.fn(),
     getUserId: vi.fn().mockResolvedValue("user@example.com"),
     fetchContributions: vi.fn(),
-    getRecentCommits: vi.fn(),
   })
 );
 
@@ -14,9 +13,6 @@ vi.mock("@/lib/authenticatedUser", () => ({
 }));
 vi.mock("@/actions/github/fetchCommits", () => ({
   fetchTotalContributions: fetchContributions,
-}));
-vi.mock("@/actions/github/getCommitsAfterSignup", () => ({
-  getCommitsAfterSignup: getRecentCommits,
 }));
 vi.mock("@/db/neon", () => ({ db: { from } }));
 
@@ -36,7 +32,6 @@ describe("updateCommits", () => {
   beforeEach(() => {
     from.mockReset();
     fetchContributions.mockReset();
-    getRecentCommits.mockReset();
   });
 
   it("awards only the delta and skips the next request during cooldown", async () => {
@@ -82,13 +77,7 @@ describe("updateCommits", () => {
       }
       return chain({ data: updatedStatus, error: null }, null);
     });
-    fetchContributions.mockResolvedValue({
-      commits: 10,
-      issues: 0,
-      pullRequests: 0,
-      reviews: 0,
-      repositories: 0,
-    });
+    fetchContributions.mockResolvedValue(10);
 
     const first = await updateCommits();
     const second = await updateCommits();
@@ -106,6 +95,38 @@ describe("updateCommits", () => {
       newCommits: 0,
     });
     expect(fetchContributions).toHaveBeenCalledTimes(1);
-    expect(fetchContributions).toHaveBeenCalledWith(createdAt);
+    expect(fetchContributions).toHaveBeenCalledWith(createdAt, expect.any(String));
+  });
+
+  it.each([
+    [10001, { commit: 10001, coin: 8, level: 1001, hp: 10101, attack: 12001, defense: 10006 }],
+    [9999, { commit: 10000, coin: 7, level: 1001, hp: 10100, attack: 12000, defense: 10005 }],
+  ])("reconciles a lifetime total of %i commits without losing progress", async (total, expected) => {
+    const createdAt = "2024-09-01T00:00:00.000Z";
+    const status = {
+      commit: 10000,
+      coin: 7,
+      level: 1001,
+      hp: 10100,
+      attack: 12000,
+      defense: 10005,
+      lastSyncAt: new Date(Date.now() - 600_000).toISOString(),
+      syncStartedAt: null,
+      syncStatus: "success",
+      syncError: null,
+    };
+    const write = chain(null, { data: expected, error: null });
+    from
+      .mockReturnValueOnce(chain({ data: { createdAt }, error: null }, null))
+      .mockReturnValueOnce(chain({ data: status, error: null }, null))
+      .mockReturnValueOnce(chain(null, { data: {}, error: null }))
+      .mockReturnValueOnce(write);
+    fetchContributions.mockResolvedValue(total);
+
+    const result = await updateCommits();
+
+    expect(fetchContributions).toHaveBeenCalledWith(createdAt, expect.any(String));
+    expect(write.update).toHaveBeenCalledWith(expect.objectContaining(expected));
+    expect(result.newCommits).toBe(expected.commit - status.commit);
   });
 });

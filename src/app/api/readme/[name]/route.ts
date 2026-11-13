@@ -8,7 +8,7 @@ const escapeXml = (value: unknown) => String(value ?? "")
   .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
   .replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 
-const clamp = (value: number, max: number) => Math.max(4, Math.min(100, (value / max) * 100));
+const statBarWidth = (value: number, midpoint: number) => 246 * value / (value + midpoint);
 
 type GitHubProfile = {
   login?: string;
@@ -142,11 +142,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ nam
         <rect x="22" y="92" width="294" height="184" fill="#151b18" stroke="#8c6a35" stroke-width="2"/>
         <text x="38" y="116" class="mono gold label">BATTLE STATUS</text>
         <text x="38" y="143" class="mono muted" font-size="12">HP</text><text x="288" y="143" text-anchor="end" class="mono cream value">${escapeXml(hp)}</text>
-        <rect x="38" y="151" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="153" width="${clamp(hp, 500) * 2.46}" height="6" fill="#4c9a71"/>
+        <rect x="38" y="151" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="153" width="${statBarWidth(hp, 100)}" height="6" fill="#4c9a71"/>
         <text x="38" y="185" class="mono muted" font-size="12">ATK</text><text x="288" y="185" text-anchor="end" class="mono cream value">${escapeXml(attack)}</text>
-        <rect x="38" y="193" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="195" width="${clamp(attack, 150) * 2.46}" height="6" fill="#a85145"/>
+        <rect x="38" y="193" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="195" width="${statBarWidth(attack, 50)}" height="6" fill="#a85145"/>
         <text x="38" y="227" class="mono muted" font-size="12">DEF</text><text x="288" y="227" text-anchor="end" class="mono cream value">${escapeXml(defense)}</text>
-        <rect x="38" y="235" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="237" width="${clamp(defense, 150) * 2.46}" height="6" fill="#517b8c"/>
+        <rect x="38" y="235" width="250" height="10" fill="#0a0e0c" stroke="#65502e"/><rect x="40" y="237" width="${statBarWidth(defense, 50)}" height="6" fill="#517b8c"/>
         <text x="38" y="264" class="mono gold" font-size="11">${escapeXml(githubData.stats.commits)} COMMITS</text>
         <text x="288" y="264" text-anchor="end" class="mono gold" font-size="11">${escapeXml(status?.coin || 0)} COINS</text>
       </g>
