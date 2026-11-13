@@ -1,4 +1,6 @@
 "use client";
+import { GITHUB_REAUTH_MESSAGE } from "@/actions/github/syncConstants";
+import { signIn } from "next-auth/react";
 import { useEffect, useMemo } from "react";
 import { Session } from "next-auth";
 import MenuButton from "./MenuButton";
@@ -97,7 +99,10 @@ export default function HomeScreen({ session, status }: HomeScreenProps) {
         {syncError && (
           <InlineError
             message={"GitHub同期に失敗しました: " + syncError}
-            onRetry={retrySync}
+            retryLabel={syncError === GITHUB_REAUTH_MESSAGE ? "GitHubで再認証" : "再試行"}
+            onRetry={syncError === GITHUB_REAUTH_MESSAGE
+              ? async () => { await signIn("github", { callbackUrl: "/home" }); }
+              : retrySync}
           />
         )}
 

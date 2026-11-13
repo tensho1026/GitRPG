@@ -1,5 +1,6 @@
 "use server";
 
+import { GITHUB_REAUTH_MESSAGE } from "./syncConstants";
 import { getAuthenticatedGitHubAccessToken } from "@/lib/authenticatedUser";
 
 export const fetchTotalContributions = async (
@@ -46,20 +47,52 @@ export const fetchTotalContributions = async (
         }),
       });
 
-      if (response.status === 401 || response.status === 403) {
-        throw new Error(
-          "GitHubの権限が不足しているか、APIのレート制限に達しました。ログインし直して権限を更新してください。"
-        );
+      if (response.status === 401) {
+        throw new Error(GITHUB_REAUTH_MESSAGE);
       }
 
-      if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-      }
+      const json = await response.json().catch(() => null);
+      const errors: { type?: string; message?: string }[] =
+        Array.isArray(json?.errors) ? json.errors : [];
+      if (!response.ok || errors.length > 0 || !json) {
+        console.error("GitHub contribution query failed", {
+          status: response.status,
+          requestId: response.headers.get("x-github-request-id"),
+          errorTypes: errors.map((error) => error.type),
+        });
 
-      const json = await response.json();
+        const rateLimited =
+          response.status === 429 ||
+          response.headers.get("retry-after") !== null ||
+          response.headers.get("x-ratelimit-remaining") === "0" ||
+          errors.some((error) => error.type === "RATE_LIMITED") ||
+          [json?.message, ...errors.map((error) => error.message)].some(
+            (message) => typeof message === "string" && /rate limit/i.test(message)
+          );
+        if (rateLimited) {
+          const retryAfter = Number(response.headers.get("retry-after"));
+          const resetSeconds = Number(response.headers.get("x-ratelimit-reset"));
+          const waitSeconds = Math.max(
+            retryAfter,
+            response.headers.get("x-ratelimit-remaining") === "0"
+              ? resetSeconds - Date.now() / 1000
+              : 0
+          );
+          const wait = Number.isFinite(waitSeconds) && waitSeconds > 0
+            ? `${Math.ceil(waitSeconds / 60)}分ほど`
+            : "しばらく";
+          throw new Error(`GitHub APIの利用制限に達しました。${wait}待ってから再試行してください。`);
+        }
 
-      if (json.errors) {
-        throw new Error(`GitHub API GraphQL errors: ${JSON.stringify(json.errors)}`);
+        if (response.headers.get("x-github-sso")?.startsWith("required")) {
+          throw new Error("GitHub組織のSSO認証が必要です。GitHubで組織のSSOを認証してから再試行してください。");
+        }
+
+        if (response.status === 403 || errors.some((error) => error.type === "FORBIDDEN")) {
+          throw new Error("GitHubが同期リクエストを拒否しました。GitHubの設定でGit-RPGへのアクセス権を確認してください。");
+        }
+
+        throw new Error("GitHubからコミットを取得できませんでした。時間をおいて再試行してください。");
       }
 
       const commits = json.data?.viewer?.contributionsCollection?.totalCommitContributions;

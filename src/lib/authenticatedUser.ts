@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { getServerSession } from "next-auth/next";
 import { getToken } from "next-auth/jwt";
 import type { NextApiRequest } from "next";
+import { GITHUB_REAUTH_MESSAGE } from "@/actions/github/syncConstants";
 import { authOptions } from "@/app/utils/authOptions";
 
 /**
@@ -37,7 +38,7 @@ export async function getAuthenticatedGitHubAccessToken() {
 
   const accessToken = token?.accessToken;
   if (typeof accessToken !== "string" || accessToken.length === 0) {
-    throw new Error("GitHub authorization required");
+    throw new Error(GITHUB_REAUTH_MESSAGE);
   }
 
   return accessToken;

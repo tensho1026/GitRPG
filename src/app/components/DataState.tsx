@@ -36,10 +36,11 @@ export function DataState({
 
 interface InlineErrorProps {
   message: string;
+  retryLabel?: string;
   onRetry?: () => void | Promise<void>;
 }
 
-export function InlineError({ message, onRetry }: InlineErrorProps) {
+export function InlineError({ message, onRetry, retryLabel = "再試行" }: InlineErrorProps) {
   return (
     <div
       className="guild-notice guild-notice--error mb-4"
@@ -51,7 +52,7 @@ export function InlineError({ message, onRetry }: InlineErrorProps) {
           type="button"
           onClick={() => void onRetry()}
           className="guild-button guild-button--danger min-h-10 shrink-0 px-4 py-2 text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-300">
-          再試行
+          {retryLabel}
         </button>
       )}
     </div>
